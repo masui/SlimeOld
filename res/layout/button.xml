@@ -1,0 +1,6 @@
+<com.pitecan.slime.CandButton
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/button"
+        android:layout_width="100dip"
+        android:layout_height="40dip"
+        />
