@@ -22,8 +22,8 @@ public class KeyView extends View {
     private Paint buttonPaint;
     private Paint buttonTextPaint;
 
-    private Keys keys;
-    private KeyController keyController = null;
+    public Keys keys;
+    public KeyController keyController = null;
     private String[][] keypat = null;
     private int selectedKey;
     private int selectedCand;
@@ -149,15 +149,5 @@ public class KeyView extends View {
     @Override protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         setMeasuredDimension(320,216);
     }
-
-    ///////////////////////////////////////////////////////////////////////////////////////
-
-    public void setKeys(Keys _keys){
-	keys = _keys;
-    }
-
-    public void setKeyController(KeyController _keyController){
-	keyController = _keyController;
-   }
 }
 

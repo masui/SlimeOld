@@ -15,14 +15,10 @@ import java.util.ArrayList;
 import android.os.Handler;
 
 class KeyController {
-    private KeyView keyView;
-    private Keys keys;
-    private Dict dict;
-    private Slime slime;
-    public void setKeyView(KeyView _keyView){ keyView = _keyView; }
-    public void setKeys(Keys _keys){ keys = _keys; }
-    public void setDict(Dict _dict){ dict = _dict; }
-    public void setSlime(Slime _slime){ slime = _slime; }
+    public KeyView keyView;
+    public Keys keys;
+    public Dict dict;
+    public Slime slime;
 
     private float mousex, mousey;      // タッチ座標
     private float downx, downy;        // 最初にタッチしたときの座標

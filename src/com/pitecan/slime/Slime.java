@@ -65,12 +65,13 @@ public class Slime extends InputMethodService
      */
     @Override public View onCreateInputView() {
         keyView = (KeyView) getLayoutInflater().inflate(R.layout.input, null);
-	keyView.setKeys(keys);
-	keyView.setKeyController(keyController);
-	keyController.setKeyView(keyView);
-	keyController.setKeys(keys);
-	keyController.setDict(dict);
-	keyController.setSlime(this);
+	keyView.keys = keys;
+	keyView.keyController = keyController;
+
+	keyController.keyView = keyView;
+	keyController.keys = keys;
+	keyController.dict = dict;
+	keyController.slime = this;
 	keyController.reset();
 
         return keyView;
