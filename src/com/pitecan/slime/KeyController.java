@@ -15,23 +15,17 @@ import java.util.ArrayList;
 import android.os.Handler;
 
 class KeyController {
+    // これらはSlime.onCreateInputView()でセットされる
     public KeyView keyView;
     public Keys keys;
     public Dict dict;
     public Slime slime;
-
-    private float mousex, mousey;      // タッチ座標
-    private float downx, downy;        // 最初にタッチしたときの座標
 
     private String[][] keypat;          // 現在のキー配列
     private boolean keyPressed = false;
     private int selectedKey = -1;
     private int selectedCand = -1;
     private boolean shifted = false;
-
-    // タイマ処理用
-    Handler handler = new Handler();
-    Runnable keyDisp;
 
     public ArrayList<String> inputPatArray;
     public ArrayList<String> inputCharArray;
@@ -75,9 +69,22 @@ class KeyController {
 	return -1;
     }
 
+    enum Event { UP, DOWN, MOVE, SHIFTTIMER };
+    enum State { STATE0, STATE1, STATE2 };
+    // STATE0 初期状態
+    // STATE1 タップしたときの状態
+    // STATE2 スライド後またはタイムアウト後
+    private State state = State.STATE0;
+
+    private float mousex, mousey;      // タッチ座標
+    private float downx, downy;        // 最初にタッチしたときの座標
+
+    // タイマ処理用
+    Handler shiftTimeoutHandler = new Handler();
+    Runnable shiftTimeout;
+
     private void shift(){
-	shifted = true;
-	handler.removeCallbacks(keyDisp);
+	shiftTimeoutHandler.removeCallbacks(shiftTimeout);
 	switch(findKey(keys.keypat0, downx, downy)){
 	case 12: keypat = keys.keypat1;  break;
 	case 13: keypat = keys.keypat2;  break;
@@ -92,77 +99,103 @@ class KeyController {
 	case 22: keypat = keys.keypat10; break;
 	case 23: keypat = keys.keypatsp; break;
 	}
-	keyView.draw(keypat, findKey(keypat, mousex, mousey), -1, shifted);
+	keyView.draw(keypat, findKey(keypat, mousex, mousey), -1, true);
+	state = State.STATE2;
+    }
+
+    private void up(){
+	shiftTimeoutHandler.removeCallbacks(shiftTimeout);
+	selectedKey = findKey(keypat, mousex, mousey);
+	selectedCand = findCand(mousex, mousey);
+	if(selectedKey >= 0){ // 入力文字処理
+	    processKey(keypat[selectedKey][0],keypat[selectedKey][1]);
+	}
+	else if(selectedCand >= 0){ // 候補選択
+	    fix(keyView.candButtons[selectedCand].text);
+	}
+	else { // 何もないところをタップしたらキーを隠す
+	    if(keyView.candButtons[0].text == ""){
+		slime.hide();
+	    }
+	}
+	keypat = keys.keypat0;
+	keyView.draw(keypat, -1, -1, false);
+	state = State.STATE0;
     }
 
     //
-    // タッチのメイン処理
+    // タッチイベント処理
     //
     public boolean onTouchEvent(MotionEvent ev) {
 	int action = ev.getAction();
-	int i = 0;
+	mousex = ev.getX(0);
+	mousey = ev.getY(0);
 	switch (action & MotionEvent.ACTION_MASK) {
-	case MotionEvent.ACTION_UP:
-	case MotionEvent.ACTION_POINTER_UP:
-	    if(selectedKey >= 0){ // 入力文字処理
-		processKey(keypat[selectedKey][0],keypat[selectedKey][1]);
-	    }
-	    else if(selectedCand >= 0){ // 候補選択
-		fix(keyView.candButtons[selectedCand].text);
-	    }
-	    else { // 何もないところをタップしたらキーを隠す
-		if(keyView.candButtons[0].text == ""){
-		    slime.hide();
-		}
-	    }
-	    handler.removeCallbacks(keyDisp);
-	    keypat = keys.keypat0;
-	    shifted = false;
-	    keyPressed = false;
-	    keyView.draw(keypat, -1, -1, shifted);
-	    break;
-	case MotionEvent.ACTION_MOVE:
-	    if(!keyPressed) break;
 	case MotionEvent.ACTION_DOWN:
 	case MotionEvent.ACTION_POINTER_DOWN:
-	    mousex = ev.getX(i);
-	    mousey = ev.getY(i);
-
-	    selectedKey = findKey(keypat, mousex, mousey);
-	    selectedCand = findCand(mousex, mousey);
-	    if(!shifted && keyPressed &&
-		    (mousex - downx) * (mousex - downx) +
-		    (mousey - downy) * (mousey - downy) >= 30.0 * 30.0){
-		shift();
-	    }
-	    if(keyPressed){ // 五十音文字ドラッグ状態
-		keyView.draw(keypat, selectedKey, selectedCand, shifted);
-	    }
-	    else if(! keyPressed){
-		if(selectedKey >= 0){ // 五十音キーを押した
-		    downx = mousex;
-		    downy = mousey;
-		    //
-		    // タイマを設定
-		    // http://www.bpsinc.jp/blog/archives/1342
-		    // http://magpad.jugem.jp/?eid=108
-		    //
-		    // Handler reference
-		    // http://developer.android.com/reference/android/os/Handler.html
-		    //
-		    keyDisp = new Runnable(){
-			    public void run() {
-				shift();
-			    }
-			};
-		    handler.postDelayed(keyDisp,300);
-		    keyPressed = true;
-		}
-		keyView.draw(keypat, selectedKey, selectedCand, shifted);
-	    }
-	    break;
+	    trans(Event.DOWN); break;
+	case MotionEvent.ACTION_UP:
+	case MotionEvent.ACTION_POINTER_UP:
+	    trans(Event.UP); break;
+	case MotionEvent.ACTION_MOVE:
+	    trans(Event.MOVE); break;
 	}
 	return true;
+    }
+
+    //
+    // 状態遷移本体
+    //
+    private void trans(Event e){
+	switch(state){
+	case STATE0:
+	    switch(e){
+	    case DOWN:
+		downx = mousex;
+		downy = mousey;
+		selectedKey = findKey(keypat, mousex, mousey);
+		selectedCand = findCand(mousex, mousey);
+		// タイマ設定
+		shiftTimeout = new Runnable(){
+			public void run() {
+			    trans(Event.SHIFTTIMER);
+			}
+		    };
+		keyView.draw(keypat, selectedKey, selectedCand, false);
+		shiftTimeoutHandler.postDelayed(shiftTimeout,300);
+		state = State.STATE1;
+	    }
+	    break;
+	case STATE1:
+	    switch(e){
+	    case UP:
+		up();
+		break;
+	    case MOVE:
+		selectedKey = findKey(keypat, mousex, mousey);
+		selectedCand = findCand(mousex, mousey);
+		if((mousex - downx) * (mousex - downx) +
+		   (mousey - downy) * (mousey - downy) >= 30.0 * 30.0){
+		    shift();
+		}
+		break;
+	    case SHIFTTIMER:
+		shift();
+		break;
+	    }
+	    break;
+	case STATE2:
+	    switch(e){
+	    case UP:
+		up();
+		break;
+	    case MOVE:
+		selectedKey = findKey(keypat, mousex, mousey);
+		selectedCand = findCand(mousex, mousey);
+		keyView.draw(keypat, selectedKey, selectedCand, true);
+		break;
+	    }
+	}
     }
 
     //

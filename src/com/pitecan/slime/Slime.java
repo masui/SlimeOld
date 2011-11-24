@@ -1,7 +1,8 @@
 //
 //	Slime for Android
 //
-//	Toshiyuki Masui 2010/9/22
+//	Toshiyuki Masui 2010/9/22 (Lexierra.Android)
+//      Slimeとして頑張る 2011/11/20
 //
 
 package com.pitecan.slime;
@@ -64,16 +65,17 @@ public class Slime extends InputMethodService
      * a configuration change.
      */
     @Override public View onCreateInputView() {
+	/*
+	  KeyControllerクラスから他にアクセスできるようにセットする
+	 */
         keyView = (KeyView) getLayoutInflater().inflate(R.layout.input, null);
 	keyView.keys = keys;
 	keyView.keyController = keyController;
-
 	keyController.keyView = keyView;
 	keyController.keys = keys;
 	keyController.dict = dict;
 	keyController.slime = this;
 	keyController.reset();
-
         return keyView;
     }
 
