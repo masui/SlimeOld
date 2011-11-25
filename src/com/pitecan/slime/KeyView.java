@@ -15,6 +15,18 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.util.Log;
 
+class CandButton {
+    Rectangle rect;
+    String text;
+    boolean visible;
+
+    public CandButton() {
+	rect = new Rectangle(0,0,0,0);
+	text = "";
+	visible = false;
+    }
+}
+
 public class KeyView extends View {
     private Bitmap keybg, keyfg;
     private float mousex, mousey;

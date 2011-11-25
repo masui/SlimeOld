@@ -2,35 +2,6 @@ package com.pitecan.slime;
 
 import android.util.Log;
 
-class Position {
-    int x,y;
-    public Position(int _x,int _y){
-	x = _x;
-	y = _y;
-    }
-}
-
-class Size {
-    int w,h;
-    public Size(int _w,int _h){
-	w = _w;
-	h = _h;
-    }
-}
-
-class Rectangle {
-    Position pos;
-    Size size;
-    public Rectangle(int _x,int _y, int _w, int _h){
-	pos = new Position(_x,_y);
-	size = new Size(_w,_h);
-    }
-    public boolean in(int x,int y){
-	return x >= pos.x && x <= pos.x + size.w &&
-	    y >= pos.y && y <= pos.y + size.h ;
-    }
-}
-
 class Key {
     Rectangle rect;
     String str;
@@ -43,13 +14,6 @@ class Key {
 }
 
 class Keys {
-    /*
-	{1,     3, 53, 53}, {54,    3, 53, 53}, {107,   3, 53, 53}, {160,   3, 53, 53}, {213,   3, 53, 53}, {267,   3, 53, 53},
-	{1,    56, 53, 53}, {54,   56, 53, 53}, {107,  56, 53, 53}, {160,  56, 53, 53}, {213,  56, 53, 53}, {267,  56, 53, 53},
-	{1,   109, 53, 53}, {54,  109, 53, 53}, {107, 109, 53, 53}, {160, 109, 53, 53}, {213, 109, 53, 53}, {267, 109, 53, 53},
-	{1,   162, 53, 53}, {54,  162, 53, 53}, {107, 162, 53, 53}, {160, 162, 53, 53}, {213, 162, 53, 53}, {267, 162, 53, 53}
-    };
-    */
     public final Key[] keypat0 = {
 	new Key(1,   109, 53, 53, "あ", "[aiueoAIUEO]"),
 	new Key(54,  109, 53, 53, "か", "[kg][aiueo]"),
