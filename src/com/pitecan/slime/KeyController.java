@@ -117,6 +117,43 @@ class KeyController {
     //
     public boolean onTouchEvent(MotionEvent ev) {
 	int action = ev.getAction();
+	int pointerCount = ev.getPointerCount();      // マルチタッチの数
+	int actionIndex = ev.getActionIndex();        // 今回のアクション番号 (0〜pointerCount-1)
+	int pointerId = ev.getPointerId(actionIndex); // 1タッチ目か2タッチ目かの番号のはずなのだがスライドイベントだとうまくいかない?
+
+	Log.v("Slime-ontouch","actionindex="+actionIndex+", pointerid="+pointerId+", action="+action);
+
+	/*
+	switch (action & MotionEvent.ACTION_MASK) {
+	case MotionEvent.ACTION_DOWN:
+	    Log.v("Slime-event", "Action_Down"); break;
+	case MotionEvent.ACTION_POINTER_DOWN:
+	    Log.v("Slime-event", "Action_PointerDown"); break;
+	case MotionEvent.ACTION_UP:
+	    Log.v("Slime-event", "Action_Up"); break;
+	case MotionEvent.ACTION_POINTER_UP:
+	    Log.v("Slime-event", "Action_PointerUp"); break;
+	case MotionEvent.ACTION_MOVE:
+	    Log.v("Slime-event", "Action_MOVE"); break;
+	}
+
+	//Log.v("Slime-TouchEvent", "X:" + ev.getX() + ",Y:" + ev.getY());
+	int pointerCount = ev.getPointerCount();
+ 
+	//イベントの発生時刻
+	//Log.d("Slime-TouchEvent", "event time: "+ ev.getEventTime());
+ 
+	//ポインタIDの取得、ポインタ座標
+	for (int p = 0; p < pointerCount; p++) {
+	    Log.d("Slime-TouchEvent", "Pointer ID :"+ ev.getPointerId(p) +
+		  " X " + ev.getX(p) + " , " +
+		  "Y " + ev.getY(p) + " , " );
+	}
+	*/
+
+	return true;
+
+	/*
 	mousex = ev.getX(0);
 	mousey = ev.getY(0);
 	switch (action & MotionEvent.ACTION_MASK) {
@@ -130,6 +167,7 @@ class KeyController {
 	    trans(Event.MOVE); break;
 	}
 	return true;
+	*/
     }
 
     //
