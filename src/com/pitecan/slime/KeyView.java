@@ -24,7 +24,7 @@ public class KeyView extends View {
 
     public Keys keys;
     public KeyController keyController = null;
-    private String[][] keypat = null;
+    private Key[] keypat = null;
     private int selectedKey;
     private int selectedCand;
     private boolean shifted;
@@ -71,7 +71,7 @@ public class KeyView extends View {
 	return true;
     }
 
-    public void draw(String _keypat[][], int _selectedKey, int _selectedCand, boolean _shifted){
+    public void draw(Key _keypat[], int _selectedKey, int _selectedCand, boolean _shifted){
 	keypat = _keypat;
 	selectedKey = _selectedKey;
 	selectedCand = _selectedCand;
@@ -94,10 +94,10 @@ public class KeyView extends View {
 		x = 5;
 		y += 34;
 	    }
-	    button.x = x;
-	    button.y = y;
-	    button.w = w;
-	    button.h = h;
+	    button.rect.pos.x = x;
+	    button.rect.pos.y = y;
+	    button.rect.size.w = w;
+	    button.rect.size.h = h;
 	    if(y >= 6+34*3) break;
 	    button.visible = true;
 	    x += (w + 5);
@@ -110,28 +110,28 @@ public class KeyView extends View {
     }
 
     @Override public void onDraw(Canvas canvas) {
-	int[][] keypos;
 	Bitmap image;
-
-	keypos = keys.keypos;
+			    
 	if(keypat == null) keypat = keys.keypat0; // Viewを作った瞬間はkeypatが設定されてない
 
+	Log.v("Slime","onDraw - length="+keypat.length);
+
 	canvas.drawColor(0xfff0f0f0);
-	for(int i=0;i<24;i++){
-	    if(keypat[i][0] != ""){
-		image = (i == selectedKey ? keyfg : keybg);
-		canvas.drawBitmap(image,keypos[i][0],keypos[i][1],null);
-	    }
+	for(int i=0;i<keypat.length;i++){
+	    image = (i == selectedKey ? keyfg : keybg);
+	    canvas.drawBitmap(image,keypat[i].rect.pos.x,keypat[i].rect.pos.y,null);
 	}
-	for(int i=0;i<24;i++){
-	    canvas.drawText(keypat[i][0],keypos[i][0]+10,keypos[i][1]+40,keyPaint);
+	for(int i=0;i<keypat.length;i++){
+	    canvas.drawText(keypat[i].str,keypat[i].rect.pos.x+10,keypat[i].rect.pos.y+40,keyPaint);
 	}
 	if(!shifted){
 	    layoutCandButtons();
 	    for(int i=0;i<20 && candButtons[i].visible;i++){
 		CandButton button = candButtons[i];
-		canvas.drawRect((float)button.x,(float)button.y,(float)(button.x+button.w),(float)(button.y+button.h),buttonPaint);
-		canvas.drawText(button.text,button.x+7,button.y+19,buttonTextPaint);
+		canvas.drawRect((float)button.rect.pos.x,(float)button.rect.pos.y,
+				(float)(button.rect.pos.x+button.rect.size.w),(float)(button.rect.pos.y+button.rect.size.h),
+				buttonPaint);
+		canvas.drawText(button.text,button.rect.pos.x+7,button.rect.pos.y+19,buttonTextPaint);
 	    }
 	}
     }

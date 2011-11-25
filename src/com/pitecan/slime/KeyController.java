@@ -21,7 +21,7 @@ class KeyController {
     public Dict dict;
     public Slime slime;
 
-    private String[][] keypat;          // 現在のキー配列
+    private Key[] keypat;          // 現在のキー配列
     private boolean keyPressed = false;
     private int selectedKey = -1;
     private int selectedCand = -1;
@@ -38,16 +38,10 @@ class KeyController {
     //
     // 座標からキー番号を計算
     //
-    private int findKey(String[][] pat, float x, float y){
-	for(int i=0;i<24;i++){
-	    int[] rect = keys.keypos[i];
-	    int rectx = rect[0];
-	    int recty = rect[1];
-	    int rectwidth = rect[2];
-	    int rectheight = rect[3];
-	    if(rectx <= x && x < rectx+rectwidth  &&
-	       recty <= y && y < recty+rectheight &&
-	       pat[i][0] != ""){
+    private int findKey(Key[] keypat, int x, int y){
+	for(int i=0;i<keypat.length;i++){
+	    if(keypat[i].rect.in(x,y)){
+		Log.v("Slime","findKey - key="+i);
 		return i;
 	    }
 	}
@@ -57,14 +51,9 @@ class KeyController {
     //
     // 座標から候補ボタン番号を計算
     //
-    private int findCand(float x, float y){
+    private int findCand(int x, int y){
 	for(int i=0;i<20;i++){
-	    CandButton button = keyView.candButtons[i];
-	    if(button.x <= x && x < button.x+button.w  &&
-	       button.y <= y && y < button.y+button.h &&
-	       button.text != "" && button.visible){
-		return i;
-	    }
+	    if(keyView.candButtons[i].rect.in(x,y)) return i;
 	}
 	return -1;
     }
@@ -85,30 +74,30 @@ class KeyController {
 
     private void shift(){
 	shiftTimeoutHandler.removeCallbacks(shiftTimeout);
-	switch(findKey(keys.keypat0, downx, downy)){
-	case 12: keypat = keys.keypat1;  break;
-	case 13: keypat = keys.keypat2;  break;
-	case 14: keypat = keys.keypat3;  break;
-	case 15: keypat = keys.keypat4;  break;
-	case 16: keypat = keys.keypat5;  break;
-	case 17: keypat = keys.keypatbs; break;
-	case 18: keypat = keys.keypat6;  break;
-	case 19: keypat = keys.keypat7;  break;
-	case 20: keypat = keys.keypat8;  break;
-	case 21: keypat = keys.keypat9;  break;
-	case 22: keypat = keys.keypat10; break;
-	case 23: keypat = keys.keypatsp; break;
+	switch(findKey(keys.keypat0, (int)downx, (int)downy)){
+	case 0: keypat = keys.keypat1;  break;
+	case 1: keypat = keys.keypat2;  break;
+	case 2: keypat = keys.keypat3;  break;
+	case 3: keypat = keys.keypat4;  break;
+	case 4: keypat = keys.keypat5;  break;
+	case 5: keypat = keys.keypatbs; break;
+	case 6: keypat = keys.keypat6;  break;
+	case 7: keypat = keys.keypat7;  break;
+	case 8: keypat = keys.keypat8;  break;
+	case 9: keypat = keys.keypat9;  break;
+	case 10: keypat = keys.keypat10; break;
+	case 11: keypat = keys.keypatsp; break;
 	}
-	keyView.draw(keypat, findKey(keypat, mousex, mousey), -1, true);
+	keyView.draw(keypat, findKey(keypat, (int)mousex, (int)mousey), -1, true);
 	state = State.STATE2;
     }
 
     private void up(){
 	shiftTimeoutHandler.removeCallbacks(shiftTimeout);
-	selectedKey = findKey(keypat, mousex, mousey);
-	selectedCand = findCand(mousex, mousey);
+	selectedKey = findKey(keypat, (int)mousex, (int)mousey);
+	selectedCand = findCand((int)mousex, (int)mousey);
 	if(selectedKey >= 0){ // 入力文字処理
-	    processKey(keypat[selectedKey][0],keypat[selectedKey][1]);
+	    processKey(keypat[selectedKey]);
 	}
 	else if(selectedCand >= 0){ // 候補選択
 	    fix(keyView.candButtons[selectedCand].text);
@@ -153,8 +142,9 @@ class KeyController {
 	    case DOWN:
 		downx = mousex;
 		downy = mousey;
-		selectedKey = findKey(keypat, mousex, mousey);
-		selectedCand = findCand(mousex, mousey);
+		selectedKey = findKey(keypat, (int)mousex, (int)mousey);
+		selectedCand = findCand((int)mousex, (int)mousey);
+		Log.v("Slime","STATE0: selectedkey="+selectedKey);
 		// タイマ設定
 		shiftTimeout = new Runnable(){
 			public void run() {
@@ -164,6 +154,7 @@ class KeyController {
 		keyView.draw(keypat, selectedKey, selectedCand, false);
 		shiftTimeoutHandler.postDelayed(shiftTimeout,300);
 		state = State.STATE1;
+		Log.v("Slime","STATE0!!!!: selectedkey="+selectedKey);
 	    }
 	    break;
 	case STATE1:
@@ -172,8 +163,8 @@ class KeyController {
 		up();
 		break;
 	    case MOVE:
-		selectedKey = findKey(keypat, mousex, mousey);
-		selectedCand = findCand(mousex, mousey);
+		selectedKey = findKey(keypat, (int)mousex, (int)mousey);
+		selectedCand = findCand((int)mousex, (int)mousey);
 		if((mousex - downx) * (mousex - downx) +
 		   (mousey - downy) * (mousey - downy) >= 30.0 * 30.0){
 		    shift();
@@ -190,8 +181,8 @@ class KeyController {
 		up();
 		break;
 	    case MOVE:
-		selectedKey = findKey(keypat, mousex, mousey);
-		selectedCand = findCand(mousex, mousey);
+		selectedKey = findKey(keypat, (int)mousex, (int)mousey);
+		selectedCand = findCand((int)mousex, (int)mousey);
 		keyView.draw(keypat, selectedKey, selectedCand, true);
 		break;
 	    }
@@ -242,7 +233,9 @@ class KeyController {
 	keyView.draw(keypat, -1, -1, shifted);
     }
     
-    private void processKey(String c, String p){
+    private void processKey(Key key){
+	String c = key.str;
+	String p = key.pat;
 	int inputlen = inputCharArray.size();
 	if(c == "←"){
 	    if(inputlen == 0){
