@@ -23,9 +23,13 @@ class KeyController {
 
     private Key[] keypat;          // 現在のキー配列
     private boolean keyPressed = false;
+    /*
+    private int downKey = -1;
     private int selectedKey = -1;
+    */
     private int selectedCand = -1;
-    private boolean shifted = false;
+    private Key downKey = null;
+    private Key selectedKey = null;
 
     public ArrayList<String> inputPatArray;
     public ArrayList<String> inputCharArray;
@@ -38,14 +42,14 @@ class KeyController {
     //
     // 座標からキー番号を計算
     //
-    private int findKey(Key[] keypat, int x, int y){
+    private Key findKey(Key[] keypat, int x, int y){
 	for(int i=0;i<keypat.length;i++){
 	    if(keypat[i].rect.in(x,y)){
-		Log.v("Slime","findKey - key="+i);
-		return i;
+		//Log.v("Slime","findKey - key="+i);
+		return keypat[i];
 	    }
 	}
-	return -1;
+	return null;
     }
 
     //
@@ -59,7 +63,7 @@ class KeyController {
     }
 
     enum Event { UP1, UP2, DOWN1, DOWN2, MOVE, SHIFTTIMER }; // MOVE1, MOVE2の区別がつかないかも
-    enum State { STATE0, STATE1, STATE2 };
+    enum State { STATE0, STATE1, STATE2, STATE3, STATE4, STATE5, STATEC };
     // STATE0 初期状態
     // STATE1 タップしたときの状態
     // STATE2 スライド後またはタイムアウト後
@@ -72,28 +76,8 @@ class KeyController {
     Handler shiftTimeoutHandler = new Handler();
     Runnable shiftTimeout;
 
-    private void shift(){
-	shiftTimeoutHandler.removeCallbacks(shiftTimeout);
-	switch(findKey(keys.keypat0, (int)downx, (int)downy)){
-	case 0: keypat = keys.keypat1;  break;
-	case 1: keypat = keys.keypat2;  break;
-	case 2: keypat = keys.keypat3;  break;
-	case 3: keypat = keys.keypat4;  break;
-	case 4: keypat = keys.keypat5;  break;
-	case 5: keypat = keys.keypatbs; break;
-	case 6: keypat = keys.keypat6;  break;
-	case 7: keypat = keys.keypat7;  break;
-	case 8: keypat = keys.keypat8;  break;
-	case 9: keypat = keys.keypat9;  break;
-	case 10: keypat = keys.keypat10; break;
-	case 11: keypat = keys.keypatsp; break;
-	}
-	keyView.draw(keypat, findKey(keypat, (int)mousex, (int)mousey), -1, true);
-	state = State.STATE2;
-    }
-
+    /*
     private void up(){
-	shiftTimeoutHandler.removeCallbacks(shiftTimeout);
 	selectedKey = findKey(keypat, (int)mousex, (int)mousey);
 	selectedCand = findCand((int)mousex, (int)mousey);
 	if(selectedKey >= 0){ // 入力文字処理
@@ -109,8 +93,8 @@ class KeyController {
 	}
 	keypat = keys.keypat0;
 	keyView.draw(keypat, -1, -1, false);
-	state = State.STATE0;
     }
+    */
 
     //
     // タッチイベント処理
@@ -118,10 +102,13 @@ class KeyController {
     public boolean onTouchEvent(MotionEvent ev) {
 	int action = ev.getAction();
 	int pointerCount = ev.getPointerCount();      // マルチタッチの数
-	int actionIndex = ev.getActionIndex();        // 今回のアクション番号 (0〜pointerCount-1)
-	int pointerId = ev.getPointerId(actionIndex); // 1タッチ目か2タッチ目かの番号のはずなのだがスライドイベントだとうまくいかない?
+	int actionIndex = ev.getActionIndex();        // 今回のイベントのアクション番号 (0〜pointerCount-1)
+	int pointerId = ev.getPointerId(actionIndex);
+	// 1タッチ目か2タッチ目かの番号のはずなのだがスライドイベントだとうまくいかない?
+	// 2タッチ目の指をスライドさせてもpointerIdが0のままになってしまうっぽい
+	// 2タッチでスライドがあれば全部2タッチ目のスライドとして扱うことにする
 
-	Log.v("Slime-ontouch","actionindex="+actionIndex+", pointerid="+pointerId+", action="+action);
+	//Log.v("Slime-ontouch","actionindex="+actionIndex+", pointerid="+pointerId+", action="+action);
 
 	mousex = ev.getX(pointerId);
 	mousey = ev.getY(pointerId);
@@ -129,22 +116,22 @@ class KeyController {
 	case MotionEvent.ACTION_DOWN:
 	case MotionEvent.ACTION_POINTER_DOWN:
 	    if(pointerId == 0){
-		Log.v("Slime","DOWN1 - "+mousex);
+		//Log.v("Slime","DOWN1 - "+mousex);
 		trans(Event.DOWN1);
 	    }
 	    else {
-		Log.v("Slime","DOWN2 - "+mousex);
+		//Log.v("Slime","DOWN2 - "+mousex);
 		trans(Event.DOWN2);
 	    }
 	    break;
 	case MotionEvent.ACTION_UP:
 	case MotionEvent.ACTION_POINTER_UP:
 	    if(pointerId == 0){
-		Log.v("Slime","UP1 - "+mousex);
+		//Log.v("Slime","UP1 - "+mousex);
 		trans(Event.UP1);
 	    }
 	    else {
-		Log.v("Slime","UP2 - "+mousex);
+		//Log.v("Slime","UP2 - "+mousex);
 		trans(Event.UP2);
 	    }
 	    break;
@@ -153,7 +140,7 @@ class KeyController {
 		mousex = ev.getX(1);
 		mousey = ev.getY(1);
 	    }
-	    Log.v("Slime","MOVE - "+mousex);
+	    //Log.v("Slime","MOVE - "+mousex);
 	    trans(Event.MOVE);
 	    break;
 	}
@@ -164,56 +151,153 @@ class KeyController {
     // 状態遷移本体
     //
     private void trans(Event e){
+	selectedKey = findKey(keypat, (int)mousex, (int)mousey);
 	switch(state){
 	case STATE0:
 	    switch(e){
 	    case DOWN1:
 		downx = mousex;
 		downy = mousey;
-		selectedKey = findKey(keypat, (int)mousex, (int)mousey);
-		selectedCand = findCand((int)mousex, (int)mousey);
-		Log.v("Slime","STATE0: selectedkey="+selectedKey);
-		// タイマ設定
-		shiftTimeout = new Runnable(){
-			public void run() {
-			    trans(Event.SHIFTTIMER);
-			}
-		    };
-		keyView.draw(keypat, selectedKey, selectedCand, false);
-		shiftTimeoutHandler.postDelayed(shiftTimeout,300);
-		state = State.STATE1;
-		Log.v("Slime","STATE0!!!!: selectedkey="+selectedKey);
+		downKey = findKey(keypat, (int)downx, (int)downy);
+		if(downKey != null){ // キーの上を押した
+		    keyView.draw(keypat, downKey, null, false);
+		    // タイマ設定
+		    shiftTimeout = new Runnable(){
+			    public void run() {
+				trans(Event.SHIFTTIMER);
+			    }
+			};
+		    shiftTimeoutHandler.postDelayed(shiftTimeout,300);
+		    state = State.STATE1;
+		}
+		else { // 候補の上かも
+		    state = State.STATEC;
+		}
+	    }
+	    break;
+	case STATEC:
+	    selectedCand = findCand((int)mousex, (int)mousey);
+	    switch(e){
+	    case UP1:
+		state = State.STATE0;
 	    }
 	    break;
 	case STATE1:
 	    switch(e){
 	    case UP1:
-		up();
+		if(selectedKey != null){ // 入力文字処理
+		    processKey(selectedKey);
+		}
+		keypat = keys.keypat0;
+		keyView.draw(keypat, null, null, false);
+		state = State.STATE0;
+		shiftTimeoutHandler.removeCallbacks(shiftTimeout);
 		break;
 	    case MOVE:
-		selectedKey = findKey(keypat, (int)mousex, (int)mousey);
-		selectedCand = findCand((int)mousex, (int)mousey);
-		if((mousex - downx) * (mousex - downx) +
-		   (mousey - downy) * (mousey - downy) >= 30.0 * 30.0){
-		    shift();
+		if(Math.hypot(mousex-downx, mousey-downy) >= 30.0){
+		    keypat = downKey.shiftKeypat;
+		    selectedKey = findKey(keypat, (int)mousex, (int)mousey);
+		    keyView.draw(keypat, selectedKey, null, true);
+		    state = State.STATE3;
+		    shiftTimeoutHandler.removeCallbacks(shiftTimeout);
 		}
 		break;
+	    case DOWN2:
+		keyView.draw(keypat, downKey, selectedKey, false);
+		state = State.STATE4;
+		shiftTimeoutHandler.removeCallbacks(shiftTimeout);
+		break;
 	    case SHIFTTIMER:
-		shift();
+		keypat = downKey.shiftKeypat;
+		downKey = findKey(keypat, (int)downx, (int)downy);
+		keyView.draw(keypat, downKey, null, true);
+		state = State.STATE2;
+		shiftTimeoutHandler.removeCallbacks(shiftTimeout);
 		break;
 	    }
 	    break;
 	case STATE2:
 	    switch(e){
 	    case UP1:
-		up();
+		if(selectedKey != null){ // 入力文字処理
+		    processKey(selectedKey);
+		}
+		keypat = keys.keypat0;
+		keyView.draw(keypat, null, null, false);
+		state = State.STATE0;
+		break;
+	    case DOWN2:
+		keyView.draw(keypat, downKey, selectedKey, false);
+		state = State.STATE4;
 		break;
 	    case MOVE:
-		selectedKey = findKey(keypat, (int)mousex, (int)mousey);
-		selectedCand = findCand((int)mousex, (int)mousey);
-		keyView.draw(keypat, selectedKey, selectedCand, true);
+		if(Math.hypot(mousex-downx, mousey-downy) >= 30.0){
+		    // keypat = downKey.shiftKeypat;
+		    selectedKey = findKey(keypat, (int)mousex, (int)mousey);
+		    keyView.draw(keypat, selectedKey, null, true);
+		    state = State.STATE3;
+		}
+		//keyView.draw(keypat, selectedKey, null, true);
 		break;
 	    }
+	    break;
+	case STATE3:
+	    switch(e){
+	    case UP1:
+	    case UP2:
+		if(selectedKey != null){ // 入力文字処理
+		    processKey(selectedKey);
+		}
+		keypat = keys.keypat0;
+		keyView.draw(keypat, null, null, false);
+		state = State.STATE0;
+		break;
+	    case MOVE:
+		keyView.draw(keypat, selectedKey, null, true);
+		break;
+	    }
+	    break;
+	case STATE4:
+	    switch(e){
+	    case UP1:
+		if(selectedKey != null){ // 入力文字処理
+		    processKey(selectedKey);
+		}
+		keypat = keys.keypat0;
+		keyView.draw(keypat, null, null, false);
+		state = State.STATE0;
+		break;
+	    case UP2:
+		if(selectedKey != null){ // 入力文字処理
+		    processKey(selectedKey);
+		}
+		keyView.draw(keypat, downKey, null, true);
+		state = State.STATE5;
+		break;
+	    case MOVE:
+		keyView.draw(keypat, downKey, selectedKey, true);
+		break;
+	    }
+	    break;
+	case STATE5:
+	    switch(e){
+	    case UP1:
+		keypat = keys.keypat0;
+		keyView.draw(keypat, null, null, false);
+		state = State.STATE0;
+		break;
+	    case DOWN2:
+		keyView.draw(keypat, downKey, selectedKey, false);
+		state = State.STATE4;
+		break;
+	    case MOVE:
+		/*
+		selectedKey = findKey(keypat, (int)down, (int)down);
+		keyView.draw(keypat, selectedKey, null, true);
+		*/
+		break;
+	    }
+	    break;
 	}
     }
 
@@ -222,15 +306,19 @@ class KeyController {
     // 独立させたいものだが
     //
 
-    public void reset(){
+    private void resetInput(){
 	inputPatArray = new ArrayList<String>();
 	inputCharArray = new ArrayList<String>();
 	for(int i=0;i<20;i++){
 	    keyView.candButtons[i].text = "";
 	    keyView.candButtons[i].visible = false;
 	}
+    }
+
+    public void reset(){
+	resetInput();
 	keypat = keys.keypat0;
-	keyView.draw(keypat, -1, -1, shifted);
+	keyView.draw(keypat, null, null, false);
     }
 
     public String inputPat(){
@@ -258,7 +346,6 @@ class KeyController {
 		keyView.setButton(dict.candWords[i-1],i);
 	    }
 	}
-	keyView.draw(keypat, -1, -1, shifted);
     }
     
     private void processKey(Key key){
@@ -273,6 +360,8 @@ class KeyController {
 		inputCharArray.remove(inputlen-1);
 		inputPatArray.remove(inputlen-1);
 		searchAndDispCand();
+		state = State.STATE0;
+		keyView.draw(keypat, null, null, false);
 		slime.showComposingText();
 	    }
 	}
@@ -283,7 +372,7 @@ class KeyController {
 	    else {
 		fix(inputWord());
 	    }
-	    reset();
+	    resetInput();
 	}
 	else if(keypat == keys.keypatbs || keypat == keys.keypatsp ||
 		c.matches("[a-zA-Z0-9]")){
@@ -291,7 +380,7 @@ class KeyController {
 		fix(inputWord());
 	    }
 	    fix(c);
-	    reset();
+	    resetInput();
 	}
 	else {
 	    inputPatArray.add(p);
@@ -303,6 +392,6 @@ class KeyController {
 
     public void fix(String s){
 	slime.input(s);
-	reset();
+	resetInput();
     }
 }

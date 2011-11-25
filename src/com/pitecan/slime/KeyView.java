@@ -37,8 +37,8 @@ public class KeyView extends View {
     public Keys keys;
     public KeyController keyController = null;
     private Key[] keypat = null;
-    private int selectedKey;
-    private int selectedCand;
+    private Key selectedKey;
+    private Key selectedKey2;
     private boolean shifted;
 
     public CandButton[] candButtons;
@@ -83,10 +83,10 @@ public class KeyView extends View {
 	return true;
     }
 
-    public void draw(Key _keypat[], int _selectedKey, int _selectedCand, boolean _shifted){
+    public void draw(Key _keypat[], Key _selectedKey, Key _selectedKey2, boolean _shifted){
 	keypat = _keypat;
 	selectedKey = _selectedKey;
-	selectedCand = _selectedCand;
+	selectedKey2 = _selectedKey2;
 	shifted = _shifted;
 	invalidate();
     }
@@ -130,11 +130,12 @@ public class KeyView extends View {
 
 	canvas.drawColor(0xfff0f0f0);
 	for(int i=0;i<keypat.length;i++){
-	    image = (i == selectedKey ? keyfg : keybg);
-	    canvas.drawBitmap(image,keypat[i].rect.pos.x,keypat[i].rect.pos.y,null);
-	}
-	for(int i=0;i<keypat.length;i++){
-	    canvas.drawText(keypat[i].str,keypat[i].rect.pos.x+10,keypat[i].rect.pos.y+40,keyPaint);
+	    Key key = keypat[i];
+	    image = ((selectedKey != null && key.str == selectedKey.str) ||
+		     (selectedKey2 != null && key.str == selectedKey2.str) ?
+		     keyfg : keybg);
+	    canvas.drawBitmap(image,key.rect.pos.x,key.rect.pos.y,null);
+	    canvas.drawText(key.str,key.rect.pos.x+10,key.rect.pos.y+40,keyPaint);
 	}
 	if(!shifted){
 	    layoutCandButtons();
