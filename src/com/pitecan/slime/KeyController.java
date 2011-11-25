@@ -58,7 +58,7 @@ class KeyController {
 	return -1;
     }
 
-    enum Event { UP, DOWN, MOVE, SHIFTTIMER };
+    enum Event { UP1, UP2, DOWN1, DOWN2, MOVE, SHIFTTIMER }; // MOVE1, MOVE2の区別がつかないかも
     enum State { STATE0, STATE1, STATE2 };
     // STATE0 初期状態
     // STATE1 タップしたときの状態
@@ -123,51 +123,41 @@ class KeyController {
 
 	Log.v("Slime-ontouch","actionindex="+actionIndex+", pointerid="+pointerId+", action="+action);
 
-	/*
-	switch (action & MotionEvent.ACTION_MASK) {
-	case MotionEvent.ACTION_DOWN:
-	    Log.v("Slime-event", "Action_Down"); break;
-	case MotionEvent.ACTION_POINTER_DOWN:
-	    Log.v("Slime-event", "Action_PointerDown"); break;
-	case MotionEvent.ACTION_UP:
-	    Log.v("Slime-event", "Action_Up"); break;
-	case MotionEvent.ACTION_POINTER_UP:
-	    Log.v("Slime-event", "Action_PointerUp"); break;
-	case MotionEvent.ACTION_MOVE:
-	    Log.v("Slime-event", "Action_MOVE"); break;
-	}
-
-	//Log.v("Slime-TouchEvent", "X:" + ev.getX() + ",Y:" + ev.getY());
-	int pointerCount = ev.getPointerCount();
- 
-	//イベントの発生時刻
-	//Log.d("Slime-TouchEvent", "event time: "+ ev.getEventTime());
- 
-	//ポインタIDの取得、ポインタ座標
-	for (int p = 0; p < pointerCount; p++) {
-	    Log.d("Slime-TouchEvent", "Pointer ID :"+ ev.getPointerId(p) +
-		  " X " + ev.getX(p) + " , " +
-		  "Y " + ev.getY(p) + " , " );
-	}
-	*/
-
-	return true;
-
-	/*
-	mousex = ev.getX(0);
-	mousey = ev.getY(0);
+	mousex = ev.getX(pointerId);
+	mousey = ev.getY(pointerId);
 	switch (action & MotionEvent.ACTION_MASK) {
 	case MotionEvent.ACTION_DOWN:
 	case MotionEvent.ACTION_POINTER_DOWN:
-	    trans(Event.DOWN); break;
+	    if(pointerId == 0){
+		Log.v("Slime","DOWN1 - "+mousex);
+		trans(Event.DOWN1);
+	    }
+	    else {
+		Log.v("Slime","DOWN2 - "+mousex);
+		trans(Event.DOWN2);
+	    }
+	    break;
 	case MotionEvent.ACTION_UP:
 	case MotionEvent.ACTION_POINTER_UP:
-	    trans(Event.UP); break;
+	    if(pointerId == 0){
+		Log.v("Slime","UP1 - "+mousex);
+		trans(Event.UP1);
+	    }
+	    else {
+		Log.v("Slime","UP2 - "+mousex);
+		trans(Event.UP2);
+	    }
+	    break;
 	case MotionEvent.ACTION_MOVE:
-	    trans(Event.MOVE); break;
+	    if(pointerCount == 2){
+		mousex = ev.getX(1);
+		mousey = ev.getY(1);
+	    }
+	    Log.v("Slime","MOVE - "+mousex);
+	    trans(Event.MOVE);
+	    break;
 	}
 	return true;
-	*/
     }
 
     //
@@ -177,7 +167,7 @@ class KeyController {
 	switch(state){
 	case STATE0:
 	    switch(e){
-	    case DOWN:
+	    case DOWN1:
 		downx = mousex;
 		downy = mousey;
 		selectedKey = findKey(keypat, (int)mousex, (int)mousey);
@@ -197,7 +187,7 @@ class KeyController {
 	    break;
 	case STATE1:
 	    switch(e){
-	    case UP:
+	    case UP1:
 		up();
 		break;
 	    case MOVE:
@@ -215,7 +205,7 @@ class KeyController {
 	    break;
 	case STATE2:
 	    switch(e){
-	    case UP:
+	    case UP1:
 		up();
 		break;
 	    case MOVE:
