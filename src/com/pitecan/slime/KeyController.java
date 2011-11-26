@@ -23,10 +23,6 @@ class KeyController {
 
     private Key[] keypat;          // 現在のキー配列
     private boolean keyPressed = false;
-    /*
-    private int downKey = -1;
-    private int selectedKey = -1;
-    */
     private int selectedCand = -1;
     private Key downKey = null;
     private Key selectedKey = null;
@@ -45,7 +41,6 @@ class KeyController {
     private Key findKey(Key[] keypat, int x, int y){
 	for(int i=0;i<keypat.length;i++){
 	    if(keypat[i].rect.in(x,y)){
-		//Log.v("Slime","findKey - key="+i);
 		return keypat[i];
 	    }
 	}
@@ -75,26 +70,6 @@ class KeyController {
     // タイマ処理用
     Handler shiftTimeoutHandler = new Handler();
     Runnable shiftTimeout;
-
-    /*
-    private void up(){
-	selectedKey = findKey(keypat, (int)mousex, (int)mousey);
-	selectedCand = findCand((int)mousex, (int)mousey);
-	if(selectedKey >= 0){ // 入力文字処理
-	    processKey(keypat[selectedKey]);
-	}
-	else if(selectedCand >= 0){ // 候補選択
-	    fix(keyView.candButtons[selectedCand].text);
-	}
-	else { // 何もないところをタップしたらキーを隠す
-	    if(keyView.candButtons[0].text == ""){
-		slime.hide();
-	    }
-	}
-	keypat = keys.keypat0;
-	keyView.draw(keypat, -1, -1, false);
-    }
-    */
 
     //
     // タッチイベント処理
@@ -136,7 +111,7 @@ class KeyController {
 	    }
 	    break;
 	case MotionEvent.ACTION_MOVE:
-	    if(pointerCount == 2){
+	    if(pointerCount == 2){ // 2本指でタッチしているときは2本目の座標を取得
 		mousex = ev.getX(1);
 		mousey = ev.getY(1);
 	    }
@@ -179,6 +154,16 @@ class KeyController {
 	    selectedCand = findCand((int)mousex, (int)mousey);
 	    switch(e){
 	    case UP1:
+		if(selectedCand >= 0){ // 候補選択
+		    fix(keyView.candButtons[selectedCand].text);
+		}
+		else { // 何もないところをタップしたらキーを隠す
+		    if(keyView.candButtons[0].text == ""){
+			slime.hide();
+		    }
+		}
+		keypat = keys.keypat0;
+		keyView.draw(keypat, null, null, false);
 		state = State.STATE0;
 	    }
 	    break;
