@@ -174,20 +174,27 @@ class KeyController {
 		    processKey(selectedKey);
 		}
 		keypat = keys.keypat0;
-		keyView.draw(keypat, null, null, false);
+		keyView.draw(keypat, null, null, true);
 		state = State.STATE0;
 		shiftTimeoutHandler.removeCallbacks(shiftTimeout);
 		break;
 	    case MOVE:
 		if(Math.hypot(mousex-downx, mousey-downy) >= 30.0){
 		    keypat = downKey.shiftKeypat;
+
+		    downKey = findKey(keypat, (int)downx, (int)downy);
+		    keypat = downKey.shiftKeypat; //!!!!!
+
 		    selectedKey = findKey(keypat, (int)mousex, (int)mousey);
-		    keyView.draw(keypat, selectedKey, null, true);
+		    keyView.draw(keypat, selectedKey, null, false);
 		    state = State.STATE3;
 		    shiftTimeoutHandler.removeCallbacks(shiftTimeout);
 		}
 		break;
 	    case DOWN2:
+		keypat = downKey.shiftKeypat;
+		downKey = findKey(keypat, (int)downx, (int)downy);
+		selectedKey = findKey(keypat, (int)mousex, (int)mousey);
 		keyView.draw(keypat, downKey, selectedKey, false);
 		state = State.STATE4;
 		shiftTimeoutHandler.removeCallbacks(shiftTimeout);
@@ -195,7 +202,7 @@ class KeyController {
 	    case SHIFTTIMER:
 		keypat = downKey.shiftKeypat;
 		downKey = findKey(keypat, (int)downx, (int)downy);
-		keyView.draw(keypat, downKey, null, true);
+		keyView.draw(keypat, downKey, null, false);
 		state = State.STATE2;
 		shiftTimeoutHandler.removeCallbacks(shiftTimeout);
 		break;
@@ -208,7 +215,7 @@ class KeyController {
 		    processKey(selectedKey);
 		}
 		keypat = keys.keypat0;
-		keyView.draw(keypat, null, null, false);
+		keyView.draw(keypat, null, null, true);
 		state = State.STATE0;
 		break;
 	    case DOWN2:
@@ -217,9 +224,11 @@ class KeyController {
 		break;
 	    case MOVE:
 		if(Math.hypot(mousex-downx, mousey-downy) >= 30.0){
-		    // keypat = downKey.shiftKeypat;
+		    downKey = findKey(keypat, (int)downx, (int)downy);
+		    keypat = downKey.shiftKeypat;
+
 		    selectedKey = findKey(keypat, (int)mousex, (int)mousey);
-		    keyView.draw(keypat, selectedKey, null, true);
+		    keyView.draw(keypat, selectedKey, null, false);
 		    state = State.STATE3;
 		}
 		//keyView.draw(keypat, selectedKey, null, true);
@@ -234,11 +243,11 @@ class KeyController {
 		    processKey(selectedKey);
 		}
 		keypat = keys.keypat0;
-		keyView.draw(keypat, null, null, false);
+		keyView.draw(keypat, null, null, true);
 		state = State.STATE0;
 		break;
 	    case MOVE:
-		keyView.draw(keypat, selectedKey, null, true);
+		keyView.draw(keypat, selectedKey, null, false);
 		break;
 	    }
 	    break;
@@ -249,18 +258,18 @@ class KeyController {
 		    processKey(selectedKey);
 		}
 		keypat = keys.keypat0;
-		keyView.draw(keypat, null, null, false);
+		keyView.draw(keypat, null, null, true);
 		state = State.STATE0;
 		break;
 	    case UP2:
 		if(selectedKey != null){ // 入力文字処理
 		    processKey(selectedKey);
 		}
-		keyView.draw(keypat, downKey, null, true);
+		keyView.draw(keypat, downKey, null, false);
 		state = State.STATE5;
 		break;
 	    case MOVE:
-		keyView.draw(keypat, downKey, selectedKey, true);
+		keyView.draw(keypat, downKey, selectedKey, false);
 		break;
 	    }
 	    break;
@@ -268,7 +277,7 @@ class KeyController {
 	    switch(e){
 	    case UP1:
 		keypat = keys.keypat0;
-		keyView.draw(keypat, null, null, false);
+		keyView.draw(keypat, null, null, true);
 		state = State.STATE0;
 		break;
 	    case DOWN2:
@@ -359,8 +368,7 @@ class KeyController {
 	    }
 	    resetInput();
 	}
-	else if(keypat == keys.keypatbs || keypat == keys.keypatsp ||
-		c.matches("[a-zA-Z0-9]")){
+	else if(keypat == keys.keypatbs || keypat == keys.keypatsp || c.matches("[a-zA-Z0-9]") || key.pat == ""){
 	    if(inputlen != 0){
 		fix(inputWord());
 	    }

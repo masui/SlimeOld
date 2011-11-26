@@ -28,9 +28,14 @@ class CandButton {
 }
 
 public class KeyView extends View {
-    private Bitmap keybg, keyfg;
+    private Bitmap keybg32x53, keyfg32x53;
+    private Bitmap keybg53x53, keyfg53x53;
+    private Bitmap keybg53x106, keyfg53x106;
+    private Bitmap keybg106x53, keyfg106x53;
+    private Bitmap keybg106x106, keyfg106x106;
     private float mousex, mousey;
     private Paint keyPaint;
+    private Paint smallKeyPaint;
     private Paint buttonPaint;
     private Paint buttonTextPaint;
 
@@ -39,7 +44,7 @@ public class KeyView extends View {
     private Key[] keypat = null;
     private Key selectedKey;
     private Key selectedKey2;
-    private boolean shifted;
+    private boolean showCand = false;
 
     public CandButton[] candButtons;
 
@@ -48,14 +53,26 @@ public class KeyView extends View {
 
 	// キー画像の読み込み
 	Resources r=context.getResources();
-	keybg=BitmapFactory.decodeResource(r,R.drawable.keybg);
-	keyfg=BitmapFactory.decodeResource(r,R.drawable.keyfg);
+	keybg53x53=BitmapFactory.decodeResource(r,R.drawable.keybg53x53);
+	keyfg53x53=BitmapFactory.decodeResource(r,R.drawable.keyfg53x53);
+	keybg53x106=BitmapFactory.decodeResource(r,R.drawable.keybg53x106);
+	keyfg53x106=BitmapFactory.decodeResource(r,R.drawable.keyfg53x106);
+	keybg106x53=BitmapFactory.decodeResource(r,R.drawable.keybg106x53);
+	keyfg106x53=BitmapFactory.decodeResource(r,R.drawable.keyfg106x53);
+	keybg106x106=BitmapFactory.decodeResource(r,R.drawable.keybg106x106);
+	keyfg106x106=BitmapFactory.decodeResource(r,R.drawable.keyfg106x106);
+	keybg32x53=BitmapFactory.decodeResource(r,R.drawable.keybg32x53);
+	keyfg32x53=BitmapFactory.decodeResource(r,R.drawable.keyfg32x53);
 
 	// キートップ色
 	keyPaint = new Paint();
 	keyPaint.setAntiAlias(true);
         keyPaint.setTextSize(36);
         keyPaint.setColor(0xff000000); // argb 黒
+	smallKeyPaint = new Paint();
+	smallKeyPaint.setAntiAlias(true);
+	smallKeyPaint.setTextSize(20);
+        smallKeyPaint.setColor(0xff000000); // 黒
 
 	// 背景色
 	buttonPaint = new Paint();
@@ -83,11 +100,11 @@ public class KeyView extends View {
 	return true;
     }
 
-    public void draw(Key _keypat[], Key _selectedKey, Key _selectedKey2, boolean _shifted){
+    public void draw(Key _keypat[], Key _selectedKey, Key _selectedKey2, boolean _showCand){
 	keypat = _keypat;
 	selectedKey = _selectedKey;
 	selectedKey2 = _selectedKey2;
-	shifted = _shifted;
+	showCand = _showCand;
 	invalidate();
     }
 
@@ -132,12 +149,30 @@ public class KeyView extends View {
 	for(int i=0;i<keypat.length;i++){
 	    Key key = keypat[i];
 	    image = ((selectedKey != null && key.str == selectedKey.str) ||
-		     (selectedKey2 != null && key.str == selectedKey2.str) ?
-		     keyfg : keybg);
+		     (selectedKey2 != null && key.str == selectedKey2.str)
+		     ?
+		     (key.rect.size.w == 32 ? keyfg32x53 :
+		      (key.rect.size.h == 106 ? (key.rect.size.w == 106 ? keyfg106x106 : keyfg53x106) : (key.rect.size.w == 106 ? keyfg106x53 : keyfg53x53))
+		      )
+		     :
+		     (key.rect.size.w == 32 ? keybg32x53 :
+		      (key.rect.size.h == 106 ? (key.rect.size.w == 106 ? keybg106x106 : keybg53x106) : (key.rect.size.w == 106 ? keybg106x53 : keybg53x53))
+		      )
+		     );
 	    canvas.drawBitmap(image,key.rect.pos.x,key.rect.pos.y,null);
-	    canvas.drawText(key.str,key.rect.pos.x+10,key.rect.pos.y+40,keyPaint);
+	    int offsetx = 8;
+	    int offsety = 36;
+	    if(key.str.matches("[!\"#$%&'()\\*\\+,-./:;<=>\\?@\\[\\]^_`\\{|\\}~]")){
+		offsetx = 12;
+	    }
+	    if(key.rect.size.w == 32){
+		canvas.drawText(key.str,key.rect.pos.x+offsetx,key.rect.pos.y+offsety,smallKeyPaint);
+	    }
+	    else {
+		canvas.drawText(key.str,key.rect.pos.x+offsetx,key.rect.pos.y+offsety,keyPaint);
+	    }
 	}
-	if(!shifted){
+	if(showCand){
 	    layoutCandButtons();
 	    for(int i=0;i<20 && candButtons[i].visible;i++){
 		CandButton button = candButtons[i];
