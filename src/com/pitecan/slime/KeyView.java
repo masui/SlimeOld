@@ -214,10 +214,10 @@ public class KeyView extends View {
 
     ///////////////////////////////////////////////////////////////////////////////////////
 
-    public void setButton(String word, int index){
-	CandButton button = candButtons[index];
-	button.text = word;
-    }
+    //public void setButton(String word, int index){
+    //	CandButton button = candButtons[index];
+    //	button.text = word;
+    //}
 
     ///////////////////////////////////////////////////////////////////////////////////////
 

@@ -352,19 +352,18 @@ class KeyController {
 	dict.search(inputPat());
 	if(Dict.exactMode){
 	    String hira = inputWord();
-	    CandButton button;
-	    button = keyView.candButtons[buttonInd++];
-	    button.text = hira;
-	    button = keyView.candButtons[buttonInd++];
-	    button.text = h2k(hira);
-
-	    //keyView.setButton(hira,buttonInd++);
-	    //keyView.setButton(h2k(hira),buttonInd++);
+	    keyView.candButtons[buttonInd++].text = hira;
+	    keyView.candButtons[buttonInd++].text = h2k(hira);
 	}
 	if(dict.ncands > 0){
 	    for(;buttonInd<keyView.candButtons.length && i <dict.ncands;i++,buttonInd++){
 		keyView.candButtons[buttonInd].text = dict.candWords[i];
-		// keyView.setButton(dict.candWords[i],buttonInd);
+	    }
+	}
+	if(buttonInd < keyView.candButtons.length){ // まだ余裕あり
+	    String[] suggestions = GoogleSuggest.suggest(inputWord());
+	    for(i=0;buttonInd < keyView.candButtons.length && suggestions[i] != "";i++,buttonInd++){
+		keyView.candButtons[buttonInd].text = suggestions[i];
 	    }
 	}
 	for(;buttonInd<keyView.candButtons.length;buttonInd++){
