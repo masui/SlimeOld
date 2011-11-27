@@ -475,7 +475,7 @@ class Keys {
 	new Key(54,  162, 53, 53, "ま", "m[aiueo]", keypat7),
 	new Key(107, 162, 53, 53, "や", "[yY][auo]", keypat8),
 	new Key(160, 162, 53, 53, "ら", "r[aiueo]", keypat9),
-	new Key(213, 162, 53, 53, "わ", "[wWN]", keypat10),
+	new Key(213, 162, 53, 53, "ん", "[wWN]", keypat10),
 	new Key(267, 162, 53, 53, "↴", "", keypatsp),
     };
 

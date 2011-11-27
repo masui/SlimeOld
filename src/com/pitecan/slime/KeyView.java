@@ -42,12 +42,14 @@ public class KeyView extends View {
     private Paint smallKeyPaint;
     private Paint buttonPaint;
     private Paint buttonTextPaint;
-    private final int buttonMarginX = 5;  // ボタン間の隙間
-    private final int buttonMarginY = 6;
+    private final int keyViewWidth =     320;
+    private final int buttonMarginX =    5;  // ボタン間の隙間
+    private final int buttonMarginY =    6;
     private final int buttonTextMargin = 5;
-    private final int buttonHeight = 28;
-    private final int buttonTextSize = 18;
-    private final int keyViewWidth = 320;
+    private final int buttonHeight =     28;
+    private final int buttonTextSize =   18;
+    private final int largeKeyTextSize = 36;
+    private final int smallKeyTextSize = 24;
 
     public Keys keys;
     public KeyController keyController = null;
@@ -62,26 +64,26 @@ public class KeyView extends View {
 	super(context,attrs);
 
 	// キー画像の読み込み
-	Resources r=context.getResources();
-	keybg53x53=BitmapFactory.decodeResource(r,R.drawable.keybg53x53);
-	keyfg53x53=BitmapFactory.decodeResource(r,R.drawable.keyfg53x53);
-	keybg53x106=BitmapFactory.decodeResource(r,R.drawable.keybg53x106);
-	keyfg53x106=BitmapFactory.decodeResource(r,R.drawable.keyfg53x106);
-	keybg106x53=BitmapFactory.decodeResource(r,R.drawable.keybg106x53);
-	keyfg106x53=BitmapFactory.decodeResource(r,R.drawable.keyfg106x53);
-	keybg106x106=BitmapFactory.decodeResource(r,R.drawable.keybg106x106);
-	keyfg106x106=BitmapFactory.decodeResource(r,R.drawable.keyfg106x106);
-	keybg32x53=BitmapFactory.decodeResource(r,R.drawable.keybg32x53);
-	keyfg32x53=BitmapFactory.decodeResource(r,R.drawable.keyfg32x53);
+	Resources r = context.getResources();
+	keybg53x53 =   BitmapFactory.decodeResource(r,R.drawable.keybg53x53);
+	keyfg53x53 =   BitmapFactory.decodeResource(r,R.drawable.keyfg53x53);
+	keybg53x106 =  BitmapFactory.decodeResource(r,R.drawable.keybg53x106);
+	keyfg53x106 =  BitmapFactory.decodeResource(r,R.drawable.keyfg53x106);
+	keybg106x53 =  BitmapFactory.decodeResource(r,R.drawable.keybg106x53);
+	keyfg106x53 =  BitmapFactory.decodeResource(r,R.drawable.keyfg106x53);
+	keybg106x106 = BitmapFactory.decodeResource(r,R.drawable.keybg106x106);
+	keyfg106x106 = BitmapFactory.decodeResource(r,R.drawable.keyfg106x106);
+	keybg32x53 =   BitmapFactory.decodeResource(r,R.drawable.keybg32x53);
+	keyfg32x53 =   BitmapFactory.decodeResource(r,R.drawable.keyfg32x53);
 
 	// キートップ色
 	keyPaint = new Paint();
 	keyPaint.setAntiAlias(true);
-        keyPaint.setTextSize(36);
+        keyPaint.setTextSize(largeKeyTextSize);
         keyPaint.setColor(0xff000000); // argb 黒
 	smallKeyPaint = new Paint();
 	smallKeyPaint.setAntiAlias(true);
-	smallKeyPaint.setTextSize(20);
+	smallKeyPaint.setTextSize(smallKeyTextSize);
         smallKeyPaint.setColor(0xff000000); // 黒
 
 	// 背景色
@@ -120,10 +122,9 @@ public class KeyView extends View {
 
     private void layoutCandButtons(){
 	float x, y, w, h;   // 候補ボタンの矩形
-	x = buttonMarginX;
-	y = buttonMarginY;
 	int i;
 	int line = 0;
+	x = buttonMarginX;
 	for(i=0;i<candButtons.length;i++){
 	    CandButton button = candButtons[i];
 	    String s = button.text;
@@ -143,7 +144,7 @@ public class KeyView extends View {
 	    button.visible = true;
 	    x += (w + buttonMarginX);
 	}
-	for(;i<20;i++){
+	for(;i<candButtons.length;i++){
 	    CandButton button = candButtons[i];
 	    button.visible = false;
 	}
@@ -169,17 +170,22 @@ public class KeyView extends View {
 		     (selectedKey2 != null && key.str == selectedKey2.str)
 		     ?
 		     (key.rect.size.w == 32 ? keyfg32x53 :
-		      (key.rect.size.h == 106 ? (key.rect.size.w == 106 ? keyfg106x106 : keyfg53x106) : (key.rect.size.w == 106 ? keyfg106x53 : keyfg53x53))
+		      (key.rect.size.h == 106 ?
+		       (key.rect.size.w == 106 ? keyfg106x106 : keyfg53x106) :
+		       (key.rect.size.w == 106 ? keyfg106x53 : keyfg53x53)
+		       )
 		      )
 		     :
 		     (key.rect.size.w == 32 ? keybg32x53 :
-		      (key.rect.size.h == 106 ? (key.rect.size.w == 106 ? keybg106x106 : keybg53x106) : (key.rect.size.w == 106 ? keybg106x53 : keybg53x53))
+		      (key.rect.size.h == 106 ?
+		       (key.rect.size.w == 106 ? keybg106x106 : keybg53x106) :
+		       (key.rect.size.w == 106 ? keybg106x53 : keybg53x53)
+		       )
 		      )
 		     );
 	    canvas.drawBitmap(image,key.rect.pos.x,key.rect.pos.y,null);
+	    //
 	    // キー文字描画
-	    // フォントメトリクス取得法は以下に
-	    // http://wikiwiki.jp/android/?%A5%C6%A5%AD%A5%B9%A5%C8%A4%CE%C9%C1%B2%E8%28FontMetrics%29
 	    //
 	    float textWidth = paint.measureText(key.str);
 	    float baseX = key.rect.pos.x + (key.rect.size.w-shadewidth - textWidth)/2;
