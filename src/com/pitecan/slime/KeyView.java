@@ -10,6 +10,7 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Paint.FontMetrics;
 import android.content.res.Resources;
 import android.content.Context;
 import android.util.AttributeSet;
@@ -148,6 +149,11 @@ public class KeyView extends View {
 	canvas.drawColor(0xfff0f0f0);
 	for(int i=0;i<keypat.length;i++){
 	    Key key = keypat[i];
+	    Paint paint = (key.rect.size.w == 32 ? smallKeyPaint : keyPaint);
+	    FontMetrics fontMetrics = paint.getFontMetrics();
+	    float ascent = fontMetrics.ascent;
+	    float shadewidth = 6;
+
 	    image = ((selectedKey != null && key.str == selectedKey.str) ||
 		     (selectedKey2 != null && key.str == selectedKey2.str)
 		     ?
@@ -160,17 +166,14 @@ public class KeyView extends View {
 		      )
 		     );
 	    canvas.drawBitmap(image,key.rect.pos.x,key.rect.pos.y,null);
-	    int offsetx = 8;
-	    int offsety = 36;
-	    if(key.str.matches("[!\"#$%&'()\\*\\+,-./:;<=>\\?@\\[\\]^_`\\{|\\}~]")){
-		offsetx = 12;
-	    }
-	    if(key.rect.size.w == 32){
-		canvas.drawText(key.str,key.rect.pos.x+offsetx,key.rect.pos.y+offsety,smallKeyPaint);
-	    }
-	    else {
-		canvas.drawText(key.str,key.rect.pos.x+offsetx,key.rect.pos.y+offsety,keyPaint);
-	    }
+	    // 文字描画
+	    // フォントメトリクス取得法は以下に
+	    // http://wikiwiki.jp/android/?%A5%C6%A5%AD%A5%B9%A5%C8%A4%CE%C9%C1%B2%E8%28FontMetrics%29
+	    //
+	    float textWidth = paint.measureText(key.str);
+	    float baseX = key.rect.pos.x + (key.rect.size.w-shadewidth - textWidth)/2;
+	    float baseY = key.rect.pos.y + (key.rect.size.h-shadewidth - ascent)/2;
+	    canvas.drawText(key.str,baseX,baseY,paint);
 	}
 	if(showCand){
 	    layoutCandButtons();
