@@ -47,7 +47,7 @@ public class Dict {
     static String[] wordStack = new String[20];
     static String[] patStack = new String[20];
 
-    static boolean exactMode = false;
+    public static boolean exactMode = false;
 
     //
     // assetsディレクトリの中のdict.txtを使用
@@ -232,7 +232,6 @@ public class Dict {
 
     static int addCandidate(String word, String pat, int connection, int n, int level, int matchlen){ // 候補追加
 	int i;
-	//Log.v("Slime","addCandidate word="+word);
 	if(word == "") return n; // 2011/11/3
 	if(word.charAt(0) == '*') return n;
 

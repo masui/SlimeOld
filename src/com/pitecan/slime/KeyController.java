@@ -163,6 +163,7 @@ class KeyController {
 			slime.hide();
 		    }
 		}
+		Dict.exactMode = false;
 		keypat = keys.keypat0;
 		keyView.draw(keypat, null, null, false);
 		state = State.STATE0;
@@ -347,6 +348,7 @@ class KeyController {
 	String c = key.str;
 	String p = key.pat;
 	int inputlen = inputCharArray.size();
+	boolean toExact = false;
 	if(c == "←"){
 	    if(inputlen == 0){
                 slime.keyDownUp(KeyEvent.KEYCODE_DEL);
@@ -363,11 +365,19 @@ class KeyController {
 	else if(c == "↴"){
 	    if(inputlen == 0){
                 slime.keyDownUp(KeyEvent.KEYCODE_ENTER);
+		resetInput();
 	    }
 	    else {
-		fix(inputWord());
+		if(Dict.exactMode){
+		    fix(inputWord());
+		    resetInput();
+		}
+		else {
+		    toExact = true;
+		    Dict.exactMode = true;
+		    searchAndDispCand();
+		}
 	    }
-	    resetInput();
 	}
 	else if(keypat == keys.keypatbs || keypat == keys.keypatsp || c.matches("[a-zA-Z0-9]") || key.pat == ""){
 	    if(inputlen != 0){
@@ -382,6 +392,7 @@ class KeyController {
 	    searchAndDispCand();
 	    slime.showComposingText();
 	}
+	Dict.exactMode = toExact;
     }
 
     public void fix(String s){
