@@ -333,13 +333,31 @@ class KeyController {
 	return s;
     }
 
+    // ひらがな ⇒カタカナ
+    // http://www7a.biglobe.ne.jp/~java-master/samples/string/ZenkakuHiraganaToZenkakuKatakana.html
+    private String h2k(String s){
+	StringBuffer sb = new StringBuffer(s);
+	for (int i = 0; i < sb.length(); i++) {
+	    char c = sb.charAt(i);
+	    if (c >= 'ぁ' && c <= 'ん') {
+		sb.setCharAt(i, (char)(c - 'ぁ' + 'ァ'));
+	    }
+	}
+	return sb.toString();    
+    }
+
     private void searchAndDispCand(){
 	int i=0;
+	int buttonInd = 0;
 	dict.search(inputPat());
-	keyView.setButton(inputWord(),i++);
+	if(Dict.exactMode){
+	    String hira = inputWord();
+	    keyView.setButton(hira,buttonInd++);
+	    keyView.setButton(h2k(hira),buttonInd++);
+	}
 	if(dict.ncands > 0){
-	    for(;i<keyView.candButtons.length-1 && i-1 <dict.ncands;i++){
-		keyView.setButton(dict.candWords[i-1],i);
+	    for(;buttonInd<keyView.candButtons.length && i <dict.ncands;i++,buttonInd++){
+		keyView.setButton(dict.candWords[i],buttonInd);
 	    }
 	}
     }
