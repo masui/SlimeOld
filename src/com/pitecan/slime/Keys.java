@@ -123,7 +123,8 @@ class Keys {
 	new Key(107, 56,  53, 106, "ぬ", "nu", null),
 	new Key(160, 56,  53, 106, "ね", "ne", null),
 	new Key(213, 56,  53, 106, "の", "no", null),
-	new Key(267, 109, 53, 53, "←", "", null),
+	new Key(213, 162, 53, 53,  "。",  "",  null),
+	new Key(267, 162, 53, 53,  "、",  "",  null),
     };
     public final Key[] keypat5 =  {
 	new Key(1,   56,  53, 106, "な", "na", keypat15),
@@ -132,7 +133,8 @@ class Keys {
 	new Key(160, 56,  53, 106, "ね", "ne", keypat15),
 	new Key(213, 56,  53, 53,  "の", "no", keypat15),
 	new Key(214, 109, 53, 53,  "な", "na", keypat15),
-	new Key(267, 109, 53, 53,  "←", "", null),
+	new Key(213, 162, 53, 53,  "。",  "",  keypat15),
+	new Key(267, 162, 53, 53,  "、",  "",  keypat15),
     };
     public final Key[] keypat16 =  {
 	new Key(1,   3,   53, 53,  "ぱ", "pa", null),

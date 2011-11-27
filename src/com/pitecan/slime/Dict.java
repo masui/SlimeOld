@@ -179,6 +179,7 @@ public class Dict {
 	patInit(pat,0);
 	ncands = 0;
 	generateCand(Slime.MAXCANDS, linkInd); // 接続辞書を使って候補を生成
+	Log.v("Slime","ncands="+ncands);
     }
 
     static void generateCand(int maxcands, int linkInd){
@@ -201,9 +202,9 @@ public class Dict {
 		m = regexp[len].matcher(dict[d].pat);
 		if(m.find()){
 		    matchlen = m.group(1).length();
-		    //Log.v("Slime","find success. m.group(1)="+m.group(1)+" patlen="+patlen);
+		    // Log.v("Slime","find success. m.group(1)="+m.group(1)+" patlen="+patlen);
 		    if(matchlen == patlen && (!exactMode || exactMode && dict[d].pat.length() == matchlen)){ // 最後までマッチ
-			//Log.v("Slime","match success");
+			// Log.v("Slime","match success");
 			ncands = addCandidate(dict[d].word, dict[d].pat, dict[d].outConnection, ncands, level, matchlen);
 		    }
 		    else if(matchlen == dict[d].pat.length() && dict[d].outConnection != 0){ // とりあえずその単語まではマッチ
@@ -245,7 +246,7 @@ public class Dict {
 	    w += wordStack[i];
 	}
 	w += word;
-	//Log.v("Slime","addCandidate! word="+word);
+	Log.v("Slime","addCandidate! word="+word);
 
 	w = w.replaceAll("\\*","");
 
