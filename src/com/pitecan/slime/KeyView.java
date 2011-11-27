@@ -1,6 +1,9 @@
 //
 //	キーと候補を描画するIMEのビュー
 //
+// FontMetricsは以下を参照
+// http://wikiwiki.jp/android/?%A5%C6%A5%AD%A5%B9%A5%C8%A4%CE%C9%C1%B2%E8%28FontMetrics%29
+//
 package com.pitecan.slime;
 
 import android.view.View;
@@ -39,6 +42,12 @@ public class KeyView extends View {
     private Paint smallKeyPaint;
     private Paint buttonPaint;
     private Paint buttonTextPaint;
+    private final int buttonMarginX = 5;  // ボタン間の隙間
+    private final int buttonMarginY = 6;
+    private final int buttonTextMargin = 5;
+    private final int buttonHeight = 28;
+    private final int buttonTextSize = 18;
+    private final int keyViewWidth = 320;
 
     public Keys keys;
     public KeyController keyController = null;
@@ -82,18 +91,18 @@ public class KeyView extends View {
 	// 候補ボタンのテキスト色
 	buttonTextPaint = new Paint();
 	buttonTextPaint.setAntiAlias(true);
-        buttonTextPaint.setTextSize(18);
+        buttonTextPaint.setTextSize(buttonTextSize);
         buttonTextPaint.setColor(0xff000000); // 黒
 
 	// 候補「ボタン」の初期化
-	candButtons = new CandButton[20];
-	for(int i=0;i<20;i++){
+	candButtons = new CandButton[Slime.MAXCANDS];
+	for(int i=0;i<candButtons.length;i++){
 	    CandButton button = new CandButton();
 	    candButtons[i] = button;
 	}
     }
 
-    // keyControllerに丸投げする
+    // イベント処理はkeyControllerに丸投げする
     public boolean onTouchEvent(MotionEvent ev) {
 	if(keyController != null){
 	    keyController.onTouchEvent(ev);
@@ -110,28 +119,29 @@ public class KeyView extends View {
     }
 
     private void layoutCandButtons(){
-	int x, y, w, h;
-	String s;
+	float x, y, w, h;   // 候補ボタンの矩形
+	x = buttonMarginX;
+	y = buttonMarginY;
 	int i;
-	x = 5; y = 6;
-	for(i=0;i<20;i++){
+	int line = 0;
+	for(i=0;i<candButtons.length;i++){
 	    CandButton button = candButtons[i];
-	    s = button.text;
+	    String s = button.text;
 	    if(s == "") break;
-	    h = 28;
-	    w = s.length() * 15 + 20;
-	    if(x + w > 315){
-		x = 5;
-		y += 34;
+	    float textWidth = buttonTextPaint.measureText(s);
+	    h = buttonHeight;
+	    w = textWidth + ((float)buttonMarginX * 2); // ボタン幅
+	    if(x + w + buttonMarginX > keyViewWidth){
+		x = buttonMarginX;
+		if(++line >= 3) break; // 候補は3行まで
 	    }
-	    button.rect.pos.x = x;
-	    button.rect.pos.y = y;
-	    button.rect.size.w = w;
-	    button.rect.size.h = h;
-	    if(y >= 6+34*3) break;
+	    y = buttonMarginY + line * (buttonHeight+buttonMarginY);
+	    button.rect.pos.x = (int)x;
+	    button.rect.pos.y = (int)y;
+	    button.rect.size.w = (int)w;
+	    button.rect.size.h = (int)h;
 	    button.visible = true;
-	    x += (w + 5);
-	    //Log.v("Slime","Layout "+x+" "+y);
+	    x += (w + buttonMarginX);
 	}
 	for(;i<20;i++){
 	    CandButton button = candButtons[i];
@@ -144,14 +154,15 @@ public class KeyView extends View {
 			    
 	if(keypat == null) keypat = keys.keypat0; // Viewを作った瞬間はkeypatが設定されてない
 
-	Log.v("Slime","onDraw - length="+keypat.length);
+	//Log.v("Slime","onDraw - length="+keypat.length);
 
 	canvas.drawColor(0xfff0f0f0);
 	for(int i=0;i<keypat.length;i++){
 	    Key key = keypat[i];
 	    Paint paint = (key.rect.size.w == 32 ? smallKeyPaint : keyPaint);
 	    FontMetrics fontMetrics = paint.getFontMetrics();
-	    float ascent = fontMetrics.ascent;
+	    float ascent = fontMetrics.ascent; // これはマイナス値
+	    float descent = fontMetrics.descent;
 	    float shadewidth = 6;
 
 	    image = ((selectedKey != null && key.str == selectedKey.str) ||
@@ -166,23 +177,31 @@ public class KeyView extends View {
 		      )
 		     );
 	    canvas.drawBitmap(image,key.rect.pos.x,key.rect.pos.y,null);
-	    // 文字描画
+	    // キー文字描画
 	    // フォントメトリクス取得法は以下に
 	    // http://wikiwiki.jp/android/?%A5%C6%A5%AD%A5%B9%A5%C8%A4%CE%C9%C1%B2%E8%28FontMetrics%29
 	    //
 	    float textWidth = paint.measureText(key.str);
 	    float baseX = key.rect.pos.x + (key.rect.size.w-shadewidth - textWidth)/2;
-	    float baseY = key.rect.pos.y + (key.rect.size.h-shadewidth - ascent)/2;
+	    float baseY = key.rect.pos.y + (key.rect.size.h-shadewidth - (ascent+descent))/2;
 	    canvas.drawText(key.str,baseX,baseY,paint);
 	}
 	if(showCand){
+	    FontMetrics fontMetrics = buttonTextPaint.getFontMetrics();
+	    float ascent = fontMetrics.ascent;
+	    float descent = fontMetrics.descent;
 	    layoutCandButtons();
-	    for(int i=0;i<20 && candButtons[i].visible;i++){
+	    for(int i=0;i<candButtons.length && candButtons[i].visible;i++){
 		CandButton button = candButtons[i];
-		canvas.drawRect((float)button.rect.pos.x,(float)button.rect.pos.y,
-				(float)(button.rect.pos.x+button.rect.size.w),(float)(button.rect.pos.y+button.rect.size.h),
+		canvas.drawRect((float)button.rect.pos.x,
+				(float)button.rect.pos.y,
+				(float)(button.rect.pos.x+button.rect.size.w),
+				(float)(button.rect.pos.y+button.rect.size.h),
 				buttonPaint);
-		canvas.drawText(button.text,button.rect.pos.x+7,button.rect.pos.y+19,buttonTextPaint);
+		canvas.drawText(button.text,
+				button.rect.pos.x+buttonTextMargin,
+				button.rect.pos.y + (buttonHeight-(ascent+descent))/2,
+				buttonTextPaint);
 	    }
 	}
     }

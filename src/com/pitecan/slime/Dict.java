@@ -37,8 +37,8 @@ public class Dict {
     static int[] hashLink = new int[10];
     static int[] connectionLink = new int[2000];
 
-    public static String[] candWords = new String[20];      // 候補単語リスト
-    static String[] candPatterns = new String[20];   // その読み
+    public static String[] candWords = new String[Slime.MAXCANDS];      // 候補単語リスト
+    static String[] candPatterns = new String[Slime.MAXCANDS];   // その読み
     public static int ncands = 0;
 
     static Pattern[] regexp = new Pattern[50];       // パタンの部分文字列にマッチするRegExp
@@ -48,8 +48,6 @@ public class Dict {
     static String[] patStack = new String[20];
 
     static boolean exactMode = false;
-
-    static final int maxCands = 20;
 
     //
     // assetsディレクトリの中のdict.txtを使用
@@ -180,7 +178,7 @@ public class Dict {
 	int linkInd = patInd(pat);
 	patInit(pat,0);
 	ncands = 0;
-	generateCand(maxCands, linkInd); // 接続辞書を使って20個まで候補を生成
+	generateCand(Slime.MAXCANDS, linkInd); // 接続辞書を使って候補を生成
     }
 
     static void generateCand(int maxcands, int linkInd){

@@ -51,7 +51,8 @@ class KeyController {
     // 座標から候補ボタン番号を計算
     //
     private int findCand(int x, int y){
-	for(int i=0;i<20;i++){
+	for(int i=0;i<keyView.candButtons.length;i++){
+	    if(! keyView.candButtons[i].visible) continue;
 	    if(keyView.candButtons[i].rect.in(x,y)) return i;
 	}
 	return -1;
@@ -303,7 +304,7 @@ class KeyController {
     private void resetInput(){
 	inputPatArray = new ArrayList<String>();
 	inputCharArray = new ArrayList<String>();
-	for(int i=0;i<20;i++){
+	for(int i=0;i<keyView.candButtons.length;i++){
 	    keyView.candButtons[i].text = "";
 	    keyView.candButtons[i].visible = false;
 	}
@@ -336,7 +337,7 @@ class KeyController {
 	dict.search(inputPat());
 	keyView.setButton(inputWord(),i++);
 	if(dict.ncands > 0){
-	    for(;i<20-1 && i-1 <dict.ncands;i++){
+	    for(;i<keyView.candButtons.length-1 && i-1 <dict.ncands;i++){
 		keyView.setButton(dict.candWords[i-1],i);
 	    }
 	}

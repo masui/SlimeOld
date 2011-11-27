@@ -28,6 +28,8 @@ public class Slime extends InputMethodService
     private KeyController keyController;
     private Dict dict;
 
+    static final int MAXCANDS = 20;
+
     /**
      * Main initialization of the input method component.  Be sure to call
      * to super class.
