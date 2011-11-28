@@ -259,8 +259,7 @@ class KeyController {
 	case STATE4:
 	    switch(e){
 	    case UP1:
-		if(selectedKey != null){ // 入力文字処理
-		    //processKey(selectedKey);
+		if(secondKey != null){ // 入力文字処理
 		    processKey(secondKey);
 		}
 		keypat = keys.keypat0;

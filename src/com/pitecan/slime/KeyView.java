@@ -122,11 +122,11 @@ public class KeyView extends View {
 
     private void layoutCandButtons(){
 	float x, y, w, h;   // 候補ボタンの矩形
-	int i;
-	int line = 0;
+	int buttonIndex = 0;
+	int dispLine = 0;
 	x = buttonMarginX;
-	for(i=0;i<candButtons.length;i++){
-	    CandButton button = candButtons[i];
+	for(;buttonIndex<candButtons.length;buttonIndex++){
+	    CandButton button = candButtons[buttonIndex];
 	    String s = button.text;
 	    if(s == "") break;
 	    float textWidth = buttonTextPaint.measureText(s);
@@ -134,9 +134,9 @@ public class KeyView extends View {
 	    w = textWidth + ((float)buttonMarginX * 2); // ボタン幅
 	    if(x + w + buttonMarginX > keyViewWidth){
 		x = buttonMarginX;
-		if(++line >= 3) break; // 候補は3行まで
+		if(++dispLine >= 3) break; // 候補は3行まで
 	    }
-	    y = buttonMarginY + line * (buttonHeight+buttonMarginY);
+	    y = buttonMarginY + dispLine * (buttonHeight+buttonMarginY);
 	    button.rect.pos.x = (int)x;
 	    button.rect.pos.y = (int)y;
 	    button.rect.size.w = (int)w;
@@ -144,8 +144,8 @@ public class KeyView extends View {
 	    button.visible = true;
 	    x += (w + buttonMarginX);
 	}
-	for(;i<candButtons.length;i++){
-	    CandButton button = candButtons[i];
+	for(;buttonIndex<candButtons.length;buttonIndex++){
+	    CandButton button = candButtons[buttonIndex];
 	    button.visible = false;
 	}
     }
