@@ -26,6 +26,7 @@ class KeyController {
     private int selectedCand = -1;
     private Key downKey = null;
     private Key selectedKey = null;
+    private Key secondKey = null;
 
     public ArrayList<String> inputPatArray;
     public ArrayList<String> inputCharArray;
@@ -197,6 +198,7 @@ class KeyController {
 		keypat = downKey.shiftKeypat;
 		downKey = findKey(keypat, (int)downx, (int)downy);
 		selectedKey = findKey(keypat, (int)mousex, (int)mousey);
+		secondKey = selectedKey;
 		keyView.draw(keypat, downKey, selectedKey, false);
 		state = State.STATE4;
 		shiftTimeoutHandler.removeCallbacks(shiftTimeout);
@@ -222,6 +224,7 @@ class KeyController {
 		break;
 	    case DOWN2:
 		keyView.draw(keypat, downKey, selectedKey, false);
+		secondKey = selectedKey;
 		state = State.STATE4;
 		break;
 	    case MOVE:
@@ -257,7 +260,8 @@ class KeyController {
 	    switch(e){
 	    case UP1:
 		if(selectedKey != null){ // 入力文字処理
-		    processKey(selectedKey);
+		    //processKey(selectedKey);
+		    processKey(secondKey);
 		}
 		keypat = keys.keypat0;
 		keyView.draw(keypat, null, null, true);
@@ -272,6 +276,7 @@ class KeyController {
 		break;
 	    case MOVE:
 		keyView.draw(keypat, downKey, selectedKey, false);
+		secondKey = selectedKey;
 		break;
 	    }
 	    break;
