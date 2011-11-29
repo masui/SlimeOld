@@ -27,6 +27,9 @@ class KeyController {
     private Key downKey = null;
     private Key selectedKey = null;
     private Key secondKey = null;
+    private int nbuttons; // 生成中の候補ボタン番号
+
+    Thread thread;
 
     public ArrayList<String> inputPatArray;
     public ArrayList<String> inputCharArray;
@@ -54,7 +57,10 @@ class KeyController {
     private int findCand(int x, int y){
 	for(int i=0;i<keyView.candButtons.length;i++){
 	    if(! keyView.candButtons[i].visible) continue;
-	    if(keyView.candButtons[i].rect.in(x,y)) return i;
+	    Rectangle rect = keyView.candButtons[i].rect;
+	    Rectangle extendedRect = new Rectangle(rect.pos.x-2,rect.pos.y-2,rect.size.w+4,rect.size.h+4);
+	    if(extendedRect.in(x,y)) return i;
+	    // if(keyView.candButtons[i].rect.in(x,y)) return i;
 	}
 	return -1;
     }
@@ -72,6 +78,8 @@ class KeyController {
     // タイマ処理用
     Handler shiftTimeoutHandler = new Handler();
     Runnable shiftTimeout;
+
+    Handler handler = new Handler();
 
     //
     // タッチイベント処理
@@ -145,6 +153,9 @@ class KeyController {
 			    }
 			};
 		    shiftTimeoutHandler.postDelayed(shiftTimeout,300);
+
+		    thread = null; //Google検索スレッドを止める?? これでは止まらないだろJK
+
 		    state = State.STATE1;
 		}
 		else { // 候補の上かも
@@ -166,7 +177,10 @@ class KeyController {
 		}
 		Dict.exactMode = false;
 		keypat = keys.keypat0;
-		keyView.draw(keypat, null, null, false);
+		if(selectedCand >= 0)
+		    keyView.draw(keypat, null, null, false);
+		else
+		    keyView.draw(keypat, null, null, true);
 		state = State.STATE0;
 	    }
 	    break;
@@ -352,26 +366,58 @@ class KeyController {
 
     private void searchAndDispCand(){
 	int i=0;
-	int buttonInd = 0;
+	nbuttons = 0;
 	dict.search(inputPat());
 	if(Dict.exactMode){
 	    String hira = inputWord();
-	    keyView.candButtons[buttonInd++].text = hira;
-	    keyView.candButtons[buttonInd++].text = h2k(hira);
+	    keyView.candButtons[nbuttons++].text = hira;
+	    keyView.candButtons[nbuttons++].text = h2k(hira);
 	}
 	if(dict.ncands > 0){
-	    for(;buttonInd<keyView.candButtons.length && i <dict.ncands;i++,buttonInd++){
-		keyView.candButtons[buttonInd].text = dict.candWords[i];
+	    for(;nbuttons<keyView.candButtons.length && i <dict.ncands;i++,nbuttons++){
+		keyView.candButtons[nbuttons].text = dict.candWords[i];
 	    }
 	}
-	if(buttonInd < keyView.candButtons.length){ // まだ余裕あり
+	if(nbuttons < keyView.candButtons.length){ // まだ余裕あり
+	    // 別スレッドでGoogleSuggestを呼ぶ。
+	    thread = new Thread(new Runnable() {
+		    @Override
+		    public void run() {
+			handler.post(new Runnable() {
+				@Override
+				public void run() {
+				    Log.v("Slime", "suggest run... nbuttons="+nbuttons);
+				    int i;
+				    String[] suggestions = GoogleSuggest.suggest(inputWord());
+				    Log.v("Slime", "suggest run.........nbuttons="+nbuttons);
+				    for(i=0;nbuttons < keyView.candButtons.length && suggestions[i] != "";i++,nbuttons++){
+					keyView.candButtons[nbuttons].text = suggestions[i];
+				    }
+				    for(;nbuttons<keyView.candButtons.length;nbuttons++){
+					keyView.candButtons[nbuttons].text = "";
+				    }
+				    keyView.draw(keypat, null, null, true);
+				}
+			    });
+		    }
+		});
+	    thread.start();
+
+	    /*
 	    String[] suggestions = GoogleSuggest.suggest(inputWord());
-	    for(i=0;buttonInd < keyView.candButtons.length && suggestions[i] != "";i++,buttonInd++){
-		keyView.candButtons[buttonInd].text = suggestions[i];
+	    for(i=0;nbuttons < keyView.candButtons.length && suggestions[i] != "";i++,nbuttons++){
+		keyView.candButtons[nbuttons].text = suggestions[i];
 	    }
+	    */
 	}
-	for(;buttonInd<keyView.candButtons.length;buttonInd++){
-	    keyView.candButtons[buttonInd].text = "";
+	/*
+	for(;nbuttons<keyView.candButtons.length;nbuttons++){
+	    keyView.candButtons[nbuttons].text = "";
+	}
+	*/
+	int j;
+	for(j = nbuttons;j<keyView.candButtons.length;j++){
+	    keyView.candButtons[j].text = "";
 	}
     }
     
