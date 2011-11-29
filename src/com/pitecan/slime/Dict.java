@@ -75,7 +75,7 @@ public class Dict {
 	    br.close();
 	    in.close();
 	    is.close();
-	    Log.v("Slime","entries="+entries);
+	    //Log.v("Slime","entries="+entries);
 
 	    dict = new DictEntry[entries];
 
@@ -98,9 +98,9 @@ public class Dict {
 	} catch (IOException e) {  
 	    //e.printStackTrace();  
 	}
-	Log.v("Slime","Dict read end");
+	//Log.v("Slime","Dict read end");
 	initLink(); // 辞書エントリ間のリンク設定
-	Log.v("Slime","initLink end");
+	//Log.v("Slime","initLink end");
     }
 
     private static void initLink(){
@@ -179,7 +179,6 @@ public class Dict {
 	patInit(pat,0);
 	ncands = 0;
 	generateCand(Slime.MAXCANDS, linkInd); // 接続辞書を使って候補を生成
-	Log.v("Slime","ncands="+ncands);
     }
 
     static void generateCand(int maxcands, int linkInd){
@@ -246,7 +245,7 @@ public class Dict {
 	    w += wordStack[i];
 	}
 	w += word;
-	Log.v("Slime","addCandidate! word="+word);
+	//Log.v("Slime","addCandidate! word="+word);
 
 	w = w.replaceAll("\\*","");
 

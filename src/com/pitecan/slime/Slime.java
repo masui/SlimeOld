@@ -102,7 +102,7 @@ public class Slime extends InputMethodService
     public void showComposingText(){
 	String composingText = "";
 	for(int i=0;i<keyController.inputPatArray.size();i++){
-	    Log.v("Slime","pat=" + keyController.inputPatArray.get(i));
+	    //Log.v("Slime","pat=" + keyController.inputPatArray.get(i));
 	    // 曖昧キーの場合 "[" と "]" で囲む
 	    if(keyController.inputPatArray.get(i).matches(".*\\[..*")){
 		composingText += "[" + keyController.inputCharArray.get(i) + "]";
