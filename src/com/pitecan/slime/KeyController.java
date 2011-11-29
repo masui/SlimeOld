@@ -79,7 +79,8 @@ class KeyController {
     Handler shiftTimeoutHandler = new Handler();
     Runnable shiftTimeout;
 
-    Handler handler = new Handler();
+    Handler googleHandler = new Handler();
+    Runnable googleTimeout;
 
     //
     // タッチイベント処理
@@ -154,7 +155,8 @@ class KeyController {
 			};
 		    shiftTimeoutHandler.postDelayed(shiftTimeout,300);
 
-		    thread = null; //Google検索スレッドを止める?? これでは止まらないだろJK
+		    // thread = null; //Google検索スレッドを止める?? これでは止まらないだろJK
+		    googleHandler.removeCallbacks(googleTimeout);
 
 		    state = State.STATE1;
 		}
@@ -379,7 +381,25 @@ class KeyController {
 	    }
 	}
 	if(nbuttons < keyView.candButtons.length){ // まだ余裕あり
+	    googleTimeout = new Runnable(){
+		    public void run() {
+			int i;
+			String[] suggestions = GoogleSuggest.suggest(inputWord());
+			for(i=0;nbuttons < keyView.candButtons.length && suggestions[i] != "";i++,nbuttons++){
+			    keyView.candButtons[nbuttons].text = suggestions[i];
+			}
+			for(;nbuttons<keyView.candButtons.length;nbuttons++){
+			    keyView.candButtons[nbuttons].text = "";
+			}
+			keyView.draw(keypat, null, null, true);
+		    }
+		};
+	    googleHandler.postDelayed(googleTimeout,600);
+	    // googleHandler.removeCallbacks(googleTimeout); で無効化できる
+
+
 	    // 別スレッドでGoogleSuggestを呼ぶ。
+	    /*
 	    thread = new Thread(new Runnable() {
 		    @Override
 		    public void run() {
@@ -402,6 +422,7 @@ class KeyController {
 		    }
 		});
 	    thread.start();
+	    */
 
 	    /*
 	    String[] suggestions = GoogleSuggest.suggest(inputWord());
