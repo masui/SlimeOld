@@ -79,8 +79,8 @@ class KeyController {
     Handler shiftTimeoutHandler = new Handler();
     Runnable shiftTimeout;
 
-    Handler googleHandler = new Handler();
-    Runnable googleTimeout;
+    Handler googleSuggestHandler = new Handler();
+    Runnable googleSuggestTimeout;
 
     //
     // タッチイベント処理
@@ -154,10 +154,7 @@ class KeyController {
 			    }
 			};
 		    shiftTimeoutHandler.postDelayed(shiftTimeout,300);
-
-		    // thread = null; //Google検索スレッドを止める?? これでは止まらないだろJK
-		    googleHandler.removeCallbacks(googleTimeout);
-
+		    googleSuggestHandler.removeCallbacks(googleSuggestTimeout); // GoogleSuggestをインヒビット
 		    state = State.STATE1;
 		}
 		else { // 候補の上かも
@@ -381,7 +378,7 @@ class KeyController {
 	    }
 	}
 	if(nbuttons < keyView.candButtons.length){ // まだ余裕あり
-	    googleTimeout = new Runnable(){
+	    googleSuggestTimeout = new Runnable(){
 		    public void run() {
 			int i;
 			String[] suggestions = GoogleSuggest.suggest(inputWord());
@@ -394,48 +391,8 @@ class KeyController {
 			keyView.draw(keypat, null, null, true);
 		    }
 		};
-	    googleHandler.postDelayed(googleTimeout,600);
-	    // googleHandler.removeCallbacks(googleTimeout); で無効化できる
-
-
-	    // 別スレッドでGoogleSuggestを呼ぶ。
-	    /*
-	    thread = new Thread(new Runnable() {
-		    @Override
-		    public void run() {
-			handler.post(new Runnable() {
-				@Override
-				public void run() {
-				    Log.v("Slime", "suggest run... nbuttons="+nbuttons);
-				    int i;
-				    String[] suggestions = GoogleSuggest.suggest(inputWord());
-				    Log.v("Slime", "suggest run.........nbuttons="+nbuttons);
-				    for(i=0;nbuttons < keyView.candButtons.length && suggestions[i] != "";i++,nbuttons++){
-					keyView.candButtons[nbuttons].text = suggestions[i];
-				    }
-				    for(;nbuttons<keyView.candButtons.length;nbuttons++){
-					keyView.candButtons[nbuttons].text = "";
-				    }
-				    keyView.draw(keypat, null, null, true);
-				}
-			    });
-		    }
-		});
-	    thread.start();
-	    */
-
-	    /*
-	    String[] suggestions = GoogleSuggest.suggest(inputWord());
-	    for(i=0;nbuttons < keyView.candButtons.length && suggestions[i] != "";i++,nbuttons++){
-		keyView.candButtons[nbuttons].text = suggestions[i];
-	    }
-	    */
+	    googleSuggestHandler.postDelayed(googleSuggestTimeout,600); // 0.6秒放置するとGoogleSuggestを呼ぶ
 	}
-	/*
-	for(;nbuttons<keyView.candButtons.length;nbuttons++){
-	    keyView.candButtons[nbuttons].text = "";
-	}
-	*/
 	int j;
 	for(j = nbuttons;j<keyView.candButtons.length;j++){
 	    keyView.candButtons[j].text = "";
