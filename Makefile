@@ -11,7 +11,8 @@ clean:
 update:
 	git update
 push:
-	git push
+	git push pitecan.com:/home/masui/git/Slime.git
+	git push git@github.com:masui/Slime.git
 #
 # Gyazz.com/kdict から辞書を作成!
 #
