@@ -12,6 +12,6 @@
 	    <meta-data android:name="android.view.im" android:resource="@xml/method" />
         </service>
     </application>
-    <uses-permission android:name="android.permission.INTERNET"></uses-permission>
+    <uses-permission android:name="android.permission.INTERNET"></uses-permission> 
 </manifest> 
 
