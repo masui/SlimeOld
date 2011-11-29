@@ -441,7 +441,12 @@ class KeyController {
 	    fix(c);
 	    resetInput();
 	}
-	else {
+	else { // 普通の文字入力
+	    if(Dict.exactMode){
+		Dict.exactMode = false;
+		fix(inputWord());
+		resetInput();
+	    }
 	    inputPatArray.add(p);
 	    inputCharArray.add(c);
 	    searchAndDispCand();
