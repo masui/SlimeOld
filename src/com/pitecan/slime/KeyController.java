@@ -65,8 +65,8 @@ class KeyController {
 	return -1;
     }
 
-    enum Event { UP1, UP2, DOWN1, DOWN2, MOVE, SHIFTTIMER }; // MOVE1, MOVE2の区別がつかないかも
-    enum State { STATE0, STATE1, STATE2, STATE3, STATE4, STATE5, STATEC };
+    enum Event { UP1, UP2, DOWN1, DOWN2, MOVE, SHIFTTIMER, SHIFTLOCKTIMER }; // MOVE1, MOVE2の区別がつかないかも
+    enum State { STATE0, STATE1, STATE2, STATE3, STATE4, STATE5, STATE6, STATE7, STATEC };
     // STATE0 初期状態
     // STATE1 タップしたときの状態
     // STATE2 スライド後またはタイムアウト後
@@ -81,6 +81,9 @@ class KeyController {
 
     Handler googleSuggestHandler = new Handler();
     Runnable googleSuggestTimeout;
+
+    Handler shiftLockTimeoutHandler = new Handler();
+    Runnable shiftLockTimeout;
 
     //
     // タッチイベント処理
@@ -301,7 +304,7 @@ class KeyController {
 		break;
 	    case DOWN2:
 		keyView.draw(keypat, downKey, selectedKey, false);
-		state = State.STATE4;
+		state = State.STATE6;
 		break;
 	    case MOVE:
 		/*
@@ -309,6 +312,45 @@ class KeyController {
 		keyView.draw(keypat, selectedKey, null, true);
 		*/
 		break;
+	    }
+	    break;
+	case STATE6:
+	    switch(e){
+	    case UP1:
+	    case UP2:
+		if(selectedKey != null){ // 入力文字処理
+		    processKey(selectedKey);
+		}
+
+		shiftLockTimeout = new Runnable(){
+			public void run() {
+			    trans(Event.SHIFTLOCKTIMER);
+			}
+		    };
+		shiftLockTimeoutHandler.postDelayed(shiftLockTimeout,1200);
+
+		keyView.draw(keypat, downKey, null, false);
+		state = State.STATE7;
+		break;
+	    case MOVE:
+		keyView.draw(keypat, downKey, selectedKey, false);
+		secondKey = selectedKey;
+		break;
+	    }
+	    break;
+	case STATE7:
+	    switch(e){
+	    case DOWN1:
+	    case DOWN2:
+		shiftLockTimeoutHandler.removeCallbacks(shiftLockTimeout);
+		keyView.draw(keypat, downKey, selectedKey, false);
+		secondKey = selectedKey;
+		state = State.STATE6;
+		break;
+	    case SHIFTLOCKTIMER:
+		keypat = keys.keypat0;
+		keyView.draw(keypat, null, null, true);
+		state = State.STATE0;
 	    }
 	    break;
 	}
