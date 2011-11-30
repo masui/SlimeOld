@@ -210,14 +210,10 @@ public class Dict {
 	if(word.charAt(0) == '*') return;
 
 	String p = "";
-	for(i=0;i<level+1;i++){
-	    p += patStack[i];
-	}
+	for(i=0;i<level+1;i++) p += patStack[i];
 	p += pat;
 	String w = "";
-	for(i=0;i<level+1;i++){
-	    w += wordStack[i];
-	}
+	for(i=0;i<level+1;i++) w += wordStack[i];
 	w += word;
 	//Log.v("Slime","addCandidate! word="+word);
 
