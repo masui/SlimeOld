@@ -21,7 +21,7 @@ import java.io.IOException;
 class DictEntry {
     String pat, word;
     int inConnection, outConnection;
-    int hashLink;
+    int keyLink;
     int connectionLink;
 
     public DictEntry(String p, String w, int o, int i){
@@ -34,7 +34,7 @@ class DictEntry {
 
 public class Dict {
     static DictEntry[] dict;
-    static int[] hashLink = new int[10];
+    static int[] keyLink = new int[10];
     static int[] connectionLink = new int[2000];
 
     public static String[] candWords = new String[Slime.MAXCANDS];      // 候補単語リスト
@@ -110,19 +110,19 @@ public class Dict {
 	int[] cur;
 	cur = new int[10];
 	for(int i=0;i<10;i++){
-	    hashLink[i] = -1;
+	    keyLink[i] = -1;
 	}
 	for(int i=0;i<dict.length;i++){
 	    int ind = patInd(dict[i].pat);
-	    if(hashLink[ind] < 0){
+	    if(keyLink[ind] < 0){
 		cur[ind] = i;
-		hashLink[ind] = i;
+		keyLink[ind] = i;
 	    }
 	    else {
-		dict[cur[ind]].hashLink = i;
+		dict[cur[ind]].keyLink = i;
 		cur[ind] = i;
 	    }
-	    dict[i].hashLink = -1; // リンクの末尾
+	    dict[i].keyLink = -1; // リンクの末尾
 	}
 	//
 	// コネクションつながりのリスト
@@ -175,65 +175,39 @@ public class Dict {
     }
 
     static void search(String pat){
-	int linkInd = patInd(pat);
 	patInit(pat,0);
 	ncands = 0;
-	generateCand(Slime.MAXCANDS, linkInd); // 接続辞書を使って候補を生成
-    }
-
-    static void generateCand(int maxcands, int linkInd){
-	generateCand0(0, 0, "", "", 0, maxcands, linkInd);
+	generateCand(0, patInd(pat), 0, "", "", 0); // 接続辞書を使って候補を生成
     }
 
     // パタンのlen文字目からのマッチを調べる
-    static void generateCand0(int connection, int len, String word, String pat, int level, int maxcands, int linkInd){
+    // 接続リンクを深さ優先検索してマッチするものを候補に加えていく
+    static void generateCand(int connection, int keylink, int len, String word, String pat, int level){
 	//Log.v("Slime","GenerateCand("+word+","+pat+","+level+")");
 	wordStack[level] = word;
 	patStack[level] = pat;
-	int patlen, matchlen;
-	Matcher m;
     
-	if(connection == 0){
-	    patlen = cslength[0];
-	    int d = hashLink[linkInd];
-	    for(;d >= 0 && ncands < maxcands;d = dict[d].hashLink){
-		//Log.v("Slime","matcher="+regexp[level]+", pat="+dict[d].pat);
-		m = regexp[len].matcher(dict[d].pat);
-		if(m.find()){
-		    matchlen = m.group(1).length();
-		    // Log.v("Slime","find success. m.group(1)="+m.group(1)+" patlen="+patlen);
-		    if(matchlen == patlen && (!exactMode || exactMode && dict[d].pat.length() == matchlen)){ // 最後までマッチ
-			// Log.v("Slime","match success");
-			ncands = addCandidate(dict[d].word, dict[d].pat, dict[d].outConnection, ncands, level, matchlen);
-		    }
-		    else if(matchlen == dict[d].pat.length() && dict[d].outConnection != 0){ // とりあえずその単語まではマッチ
-			generateCand0(dict[d].outConnection, len+matchlen, dict[d].word, dict[d].pat, level+1, maxcands, 0);
-		    }
+	int patlen = cslength[len];
+	int d = (connection != 0 ? connectionLink[connection] : keyLink[keylink]);
+	for(;d >= 0 && ncands < Slime.MAXCANDS;d = (connection != 0 ? dict[d].connectionLink : dict[d].keyLink)){
+	    Matcher m = regexp[len].matcher(dict[d].pat);
+	    if(m.find()){
+		int matchlen = m.group(1).length();
+		if(matchlen == patlen && (!exactMode || exactMode && dict[d].pat.length() == matchlen)){ // 最後までマッチ
+		    addCandidate(dict[d].word, dict[d].pat, dict[d].outConnection, level, matchlen);
 		}
-	    }
-	}
-	else {
-	    patlen = cslength[len];
-	    int d = connectionLink[connection];
-	    for(;d >= 0 && ncands < maxcands;d = dict[d].connectionLink){
-		m = regexp[len].matcher(dict[d].pat);
-		if(m.find()){
-		    matchlen = m.group(1).length();
-		    if(matchlen == patlen && (!exactMode || exactMode && dict[d].pat.length() == matchlen)){ // 最後までマッチ
-			ncands = addCandidate(dict[d].word, dict[d].pat, dict[d].outConnection, ncands, level, matchlen);
-		    }
-		    else if(matchlen == dict[d].pat.length() && dict[d].outConnection != 0){ // とりあえずその単語まではマッチ
-			generateCand0(dict[d].outConnection, len+matchlen, dict[d].word, dict[d].pat, level+1, maxcands, 0);
-		    }
+		else if(matchlen == dict[d].pat.length() && dict[d].outConnection != 0){ // とりあえずその単語まではマッチ
+		    generateCand(dict[d].outConnection, 0, len+matchlen, dict[d].word, dict[d].pat, level+1);
 		}
 	    }
 	}
     }
 
-    static int addCandidate(String word, String pat, int connection, int n, int level, int matchlen){ // 候補追加
+    // static int addCandidate(String word, String pat, int connection, int n, int level, int matchlen){ // 候補追加
+    static void addCandidate(String word, String pat, int connection, int level, int matchlen){ // 候補追加
 	int i;
-	if(word == "") return n; // 2011/11/3
-	if(word.charAt(0) == '*') return n;
+	if(word == "") return; // 2011/11/3
+	if(word.charAt(0) == '*') return;
 
 	String p = "";
 	for(i=0;i<level+1;i++){
@@ -270,20 +244,18 @@ public class Dict {
 	    //Log.v("Slime", "Add "+w+" to candidates");
 	    ncands++;
 	}
-	//Log.v("Slime","ncands="+ncands);
-	return ncands;
     }
 
     private static int patInd(String str){
 	if(Pattern.matches("\\[?[aiueoAIUEO].*",str)) return 0;
-	if(Pattern.matches("\\[?[kg].*",str)) return 1;
-	if(Pattern.matches("\\[?[sz].*",str)) return 2;
-	if(Pattern.matches("\\[?[tdT].*",str)) return 3;
-	if(Pattern.matches("\\[?[hbp].*",str)) return 4;
-	if(Pattern.matches("\\[?[n].*",str)) return 5;
-	if(Pattern.matches("\\[?[m].*",str)) return 6;
-	if(Pattern.matches("\\[?[yY].*",str)) return 7;
-	if(Pattern.matches("\\[?[r].*",str)) return 8;
+	if(Pattern.matches("\\[?[kg].*",str))         return 1;
+	if(Pattern.matches("\\[?[sz].*",str))         return 2;
+	if(Pattern.matches("\\[?[tdT].*",str))        return 3;
+	if(Pattern.matches("\\[?[n].*",str))          return 4;
+	if(Pattern.matches("\\[?[hbp].*",str))        return 5;
+	if(Pattern.matches("\\[?[m].*",str))          return 6;
+	if(Pattern.matches("\\[?[yY].*",str))         return 7;
+	if(Pattern.matches("\\[?[r].*",str))          return 8;
 	return 9;
     }
 }
