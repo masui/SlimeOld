@@ -1,6 +1,7 @@
 //
 //	
 //
+package com.pitecan.slime;
 
 class Position {
     int x,y;
