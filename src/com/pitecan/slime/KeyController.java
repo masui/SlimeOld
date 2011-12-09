@@ -97,30 +97,32 @@ class KeyController {
 	// 2タッチ目の指をスライドさせてもpointerIdが0のままになってしまうっぽい
 	// 2タッチでスライドがあれば全部2タッチ目のスライドとして扱うことにする
 
-	//Log.v("Slime-ontouch","actionindex="+actionIndex+", pointerid="+pointerId+", action="+action);
+	int pointerIndex = ev.findPointerIndex(pointerId);
 
-	mousex = ev.getX(pointerId);
-	mousey = ev.getY(pointerId);
+	// Log.v("Slime-ontouch","count="+pointerCount+", actionindex="+actionIndex+", pointerid="+pointerId+", action="+action);
+
+	mousex = ev.getX(pointerIndex);
+	mousey = ev.getY(pointerIndex);
 	switch (action & MotionEvent.ACTION_MASK) {
 	case MotionEvent.ACTION_DOWN:
 	case MotionEvent.ACTION_POINTER_DOWN:
 	    if(pointerId == 0){
-		//Log.v("Slime","DOWN1 - "+mousex);
+		// Log.v("Slime","DOWN1 - "+mousex);
 		trans(Event.DOWN1);
 	    }
 	    else {
-		//Log.v("Slime","DOWN2 - "+mousex);
+		// Log.v("Slime","DOWN2 - "+mousex);
 		trans(Event.DOWN2);
 	    }
 	    break;
 	case MotionEvent.ACTION_UP:
 	case MotionEvent.ACTION_POINTER_UP:
 	    if(pointerId == 0){
-		//Log.v("Slime","UP1 - "+mousex);
+		// Log.v("Slime","UP1 - "+mousex);
 		trans(Event.UP1);
 	    }
 	    else {
-		//Log.v("Slime","UP2 - "+mousex);
+		// Log.v("Slime","UP2 - "+mousex);
 		trans(Event.UP2);
 	    }
 	    break;
@@ -129,7 +131,7 @@ class KeyController {
 		mousex = ev.getX(1);
 		mousey = ev.getY(1);
 	    }
-	    //Log.v("Slime","MOVE - "+mousex);
+	    // Log.v("Slime","MOVE - "+mousex);
 	    trans(Event.MOVE);
 	    break;
 	}
@@ -184,6 +186,7 @@ class KeyController {
 		else
 		    keyView.draw(keypat, null, null, true);
 		state = State.STATE0;
+		break;
 	    }
 	    break;
 	case STATE1:
@@ -275,12 +278,17 @@ class KeyController {
 	case STATE4:
 	    switch(e){
 	    case UP1:
+		Log.v("Slime","00000");
 		if(secondKey != null){ // 入力文字処理
 		    processKey(secondKey);
 		}
+		Log.v("Slime","1111");
 		keypat = keys.keypat0;
+		Log.v("Slime","22222");
 		keyView.draw(keypat, null, null, true);
+		Log.v("Slime","33333");
 		state = State.STATE0;
+		Log.v("Slime","44444");
 		break;
 	    case UP2:
 		if(selectedKey != null){ // 入力文字処理
@@ -304,7 +312,7 @@ class KeyController {
 		break;
 	    case DOWN2:
 		keyView.draw(keypat, downKey, selectedKey, false);
-		state = State.STATE6;
+		state = State.STATE4;
 		break;
 	    case MOVE:
 		/*
@@ -351,6 +359,7 @@ class KeyController {
 		keypat = keys.keypat0;
 		keyView.draw(keypat, null, null, true);
 		state = State.STATE0;
+		break;
 	    }
 	    break;
 	}
@@ -360,7 +369,6 @@ class KeyController {
     // 文字が入力されたときの処理
     // 独立させたいものだが
     //
-
     private void resetInput(){
 	inputPatArray = new ArrayList<String>();
 	inputCharArray = new ArrayList<String>();

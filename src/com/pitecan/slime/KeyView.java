@@ -114,6 +114,7 @@ public class KeyView extends View {
 
     public void draw(Key _keypat[], Key _selectedKey, Key _selectedKey2, boolean _showCand){
 	keypat = _keypat;
+	Log.v("Slime","draw-keypat="+keypat);
 	selectedKey = _selectedKey;
 	selectedKey2 = _selectedKey2;
 	showCand = _showCand;
