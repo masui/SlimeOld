@@ -200,7 +200,6 @@ class Keys {
 	new Key(107, 3,   53, 53,  "2",  "",   keypat17),
 	new Key(160, 3,   53, 53,  "3",  "",   keypat17),
 	new Key(213, 3,   53, 53,  "4",  "",   keypat17),
-	new Key(267, 3,   53, 53,  "=",  "",   keypat17),
 	new Key(267, 3,   53, 53,  "←",  "",   keypat17),
 	new Key(1,   56,  53, 53,  "5",  "",   keypat17),
 	new Key(54,  56,  53, 53,  "6",  "",   keypat17),
