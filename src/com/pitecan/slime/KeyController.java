@@ -312,7 +312,7 @@ class KeyController {
 		break;
 	    case DOWN2:
 		keyView.draw(keypat, downKey, selectedKey, false);
-		state = State.STATE4;
+		state = State.STATE6;
 		break;
 	    case MOVE:
 		/*
