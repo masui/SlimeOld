@@ -421,24 +421,13 @@ class KeyController {
 	    dict.addCandidate(h2k(hira),pat);
 	}
 
-	String[][] s;
-	s = sqlDict.match(inputPat(),false);
+	// 学習辞書を検索
+	String[][] s = sqlDict.match(inputPat(),false);
 	for(int k=0;k<s.length;k++){
 	    dict.addCandidate(s[k][0],s[k][1]);
 	}
 
-	/*
-	for(int k=0;nbuttons<keyView.candButtons.length && k <s.length;k++,nbuttons++){
-	    keyView.candButtons[nbuttons].text = s[k][0];
-	    keyView.candButtons[nbuttons].pat = s[k][1];
-	}
-	*/
-	/*
-	for(int k=0;k<s.length;k++){
-	    Log.v("Slime-SQLite","word="+s[k][0]);
-	}
-	*/
-
+	// 通常辞書を検索
 	dict.search(inputPat());
 	if(dict.ncands > 0){
 	    for(;nbuttons<keyView.candButtons.length && i <dict.ncands;i++,nbuttons++){
@@ -447,6 +436,7 @@ class KeyController {
 	    }
 	}
 	/*
+	  // Google Suggest検索
 	if(nbuttons < keyView.candButtons.length){ // まだ余裕あり
 	    googleSuggestTimeout = new Runnable(){
 		    public void run() {
