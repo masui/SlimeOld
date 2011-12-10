@@ -172,7 +172,8 @@ class KeyController {
 	    switch(e){
 	    case UP1:
 		if(selectedCand >= 0){ // 候補選択
-		    fix(keyView.candButtons[selectedCand].text);
+		    fix(keyView.candButtons[selectedCand].text,
+			keyView.candButtons[selectedCand].pat);
 		}
 		else { // 何もないところをタップしたらキーを隠す
 		    if(keyView.candButtons[0].text == ""){
@@ -416,15 +417,18 @@ class KeyController {
     private void searchAndDispCand(){
 	int i=0;
 	nbuttons = 0;
-	dict.search(inputPat());
+	dict.ncands = 0;
 	if(Dict.exactMode){
 	    String hira = inputWord();
-	    keyView.candButtons[nbuttons++].text = hira;
-	    keyView.candButtons[nbuttons++].text = h2k(hira);
+	    String pat = inputPat();
+	    dict.addCandidate(hira,pat);
+	    dict.addCandidate(h2k(hira),pat);
 	}
+	dict.search(inputPat());
 	if(dict.ncands > 0){
 	    for(;nbuttons<keyView.candButtons.length && i <dict.ncands;i++,nbuttons++){
 		keyView.candButtons[nbuttons].text = dict.candWords[i];
+		keyView.candButtons[nbuttons].pat = dict.candPatterns[i];
 	    }
 	}
 	if(nbuttons < keyView.candButtons.length){ // まだ余裕あり
@@ -434,9 +438,11 @@ class KeyController {
 			String[] suggestions = GoogleSuggest.suggest(inputWord());
 			for(i=0;nbuttons < keyView.candButtons.length && suggestions[i] != "";i++,nbuttons++){
 			    keyView.candButtons[nbuttons].text = suggestions[i];
+			    keyView.candButtons[nbuttons].pat = inputPat();
 			}
 			for(;nbuttons<keyView.candButtons.length;nbuttons++){
 			    keyView.candButtons[nbuttons].text = "";
+			    keyView.candButtons[nbuttons].pat = "";
 			}
 			keyView.draw(keypat, null, null, true);
 		    }
@@ -446,6 +452,7 @@ class KeyController {
 	int j;
 	for(j = nbuttons;j<keyView.candButtons.length;j++){
 	    keyView.candButtons[j].text = "";
+	    keyView.candButtons[j].pat = "";
 	}
     }
     
@@ -474,7 +481,7 @@ class KeyController {
 	    }
 	    else {
 		if(Dict.exactMode){
-		    fix(inputWord());
+		    fix(inputWord(),inputPat());
 		    resetInput();
 		}
 		else {
@@ -486,15 +493,15 @@ class KeyController {
 	}
 	else if(keypat == keys.keypatbs || keypat == keys.keypatsp || c.matches("[a-zA-Z0-9]") || key.pat == ""){
 	    if(inputlen != 0){
-		fix(inputWord());
+		fix(inputWord(),inputPat());
 	    }
-	    fix(c);
+	    fix(c,inputPat());
 	    resetInput();
 	}
 	else { // 普通の文字入力
 	    if(Dict.exactMode){
 		Dict.exactMode = false;
-		fix(inputWord());
+		fix(inputWord(),inputPat());
 		resetInput();
 	    }
 	    inputPatArray.add(p);
@@ -505,7 +512,7 @@ class KeyController {
 	Dict.exactMode = toExact;
     }
 
-    public void fix(String s){
+    public void fix(String s,String p){
 	slime.input(s);
 	resetInput();
     }

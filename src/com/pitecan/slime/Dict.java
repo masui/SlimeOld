@@ -38,7 +38,7 @@ public class Dict {
     static int[] connectionLink = new int[2000];
 
     public static String[] candWords = new String[Slime.MAXCANDS];      // 候補単語リスト
-    static String[] candPatterns = new String[Slime.MAXCANDS];   // その読み
+    public static String[] candPatterns = new String[Slime.MAXCANDS];   // その読み
     public static int ncands = 0;
 
     static Pattern[] regexp = new Pattern[50];       // パタンの部分文字列にマッチするRegExp
@@ -176,7 +176,6 @@ public class Dict {
 
     static void search(String pat){
 	patInit(pat,0);
-	ncands = 0;
 	generateCand(0, patInd(pat), 0, "", "", 0); // 接続辞書を使って候補を生成
     }
 
@@ -194,7 +193,7 @@ public class Dict {
 	    if(m.find()){
 		int matchlen = m.group(1).length();
 		if(matchlen == patlen && (!exactMode || exactMode && dict[d].pat.length() == matchlen)){ // 最後までマッチ
-		    addCandidate(dict[d].word, dict[d].pat, dict[d].outConnection, level, matchlen);
+		    addConnectedCandidate(dict[d].word, dict[d].pat, dict[d].outConnection, level, matchlen);
 		}
 		else if(matchlen == dict[d].pat.length() && dict[d].outConnection != 0){ // とりあえずその単語まではマッチ
 		    generateCand(dict[d].outConnection, 0, len+matchlen, dict[d].word, dict[d].pat, level+1);
@@ -204,7 +203,7 @@ public class Dict {
     }
 
     // static int addCandidate(String word, String pat, int connection, int n, int level, int matchlen){ // 候補追加
-    static void addCandidate(String word, String pat, int connection, int level, int matchlen){ // 候補追加
+    static void addConnectedCandidate(String word, String pat, int connection, int level, int matchlen){ // 候補追加
 	int i;
 	if(word == "") return; // 2011/11/3
 	if(word.charAt(0) == '*') return;
@@ -230,13 +229,18 @@ public class Dict {
 	//  if(level > 0 && totalinputlen <= p.length / 2){
 	//    return n;
 	//  }
+	addCandidate(w,p);
+    }
 
+    public static void addCandidate(String word, String pat){
+	int i;
+	if(ncands >= Slime.MAXCANDS) return;
 	for(i=0;i<ncands;i++){
-	    if(candWords[i].equals(w)) break;
+	    if(candWords[i].equals(word)) break;
 	}
 	if(i >= ncands){
-	    candPatterns[ncands] = p;
-	    candWords[ncands] = w;
+	    candPatterns[ncands] = pat;
+	    candWords[ncands] = word;
 	    //Log.v("Slime", "Add "+w+" to candidates");
 	    ncands++;
 	}

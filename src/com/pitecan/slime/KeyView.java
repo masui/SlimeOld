@@ -22,11 +22,13 @@ import android.util.Log;
 class CandButton {
     Rectangle rect;
     String text;
+    String pat;
     boolean visible;
 
     public CandButton() {
 	rect = new Rectangle(0,0,0,0);
 	text = "";
+	pat = "";
 	visible = false;
     }
 }
