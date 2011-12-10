@@ -28,6 +28,8 @@ public class Slime extends InputMethodService
     private KeyController keyController;
     private Dict dict;
 
+    private SQLDict sqlDict;
+
     static final int MAXCANDS = 20;
 
     /**
@@ -39,6 +41,7 @@ public class Slime extends InputMethodService
     {
         super.onCreate();
 	dict = new Dict(getResources().getAssets());
+	sqlDict = new SQLDict(this);
     }
 
     /**
@@ -76,6 +79,7 @@ public class Slime extends InputMethodService
 	keyController.keyView = keyView;
 	keyController.keys = keys;
 	keyController.dict = dict;
+	keyController.sqlDict = sqlDict;
 	keyController.slime = this;
 	keyController.reset();
         return keyView;

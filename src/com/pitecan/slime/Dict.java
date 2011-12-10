@@ -202,7 +202,6 @@ public class Dict {
 	}
     }
 
-    // static int addCandidate(String word, String pat, int connection, int n, int level, int matchlen){ // 候補追加
     static void addConnectedCandidate(String word, String pat, int connection, int level, int matchlen){ // 候補追加
 	int i;
 	if(word == "") return; // 2011/11/3
@@ -214,7 +213,6 @@ public class Dict {
 	String w = "";
 	for(i=0;i<level+1;i++) w += wordStack[i];
 	w += word;
-	//Log.v("Slime","addCandidate! word="+word);
 
 	w = w.replaceAll("\\*","");
 
@@ -234,6 +232,7 @@ public class Dict {
 
     public static void addCandidate(String word, String pat){
 	int i;
+	Log.v("Slime","addCandidate: word="+word+" pat="+pat+" ncands="+ncands);
 	if(ncands >= Slime.MAXCANDS) return;
 	for(i=0;i<ncands;i++){
 	    if(candWords[i].equals(word)) break;
@@ -241,12 +240,12 @@ public class Dict {
 	if(i >= ncands){
 	    candPatterns[ncands] = pat;
 	    candWords[ncands] = word;
-	    //Log.v("Slime", "Add "+w+" to candidates");
+	    Log.v("Slime", "Add "+word+" to candidates");
 	    ncands++;
 	}
     }
 
-    private static int patInd(String str){
+    public static int patInd(String str){
 	if(Pattern.matches("\\[?[aiueoAIUEO].*",str)) return 0;
 	if(Pattern.matches("\\[?[kg].*",str))         return 1;
 	if(Pattern.matches("\\[?[sz].*",str))         return 2;

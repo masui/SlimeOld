@@ -19,6 +19,7 @@ class KeyController {
     public KeyView keyView;
     public Keys keys;
     public Dict dict;
+    public SQLDict sqlDict;
     public Slime slime;
 
     private Key[] keypat;          // 現在のキー配列
@@ -279,17 +280,12 @@ class KeyController {
 	case STATE4:
 	    switch(e){
 	    case UP1:
-		Log.v("Slime","00000");
 		if(secondKey != null){ // 入力文字処理
 		    processKey(secondKey);
 		}
-		Log.v("Slime","1111");
 		keypat = keys.keypat0;
-		Log.v("Slime","22222");
 		keyView.draw(keypat, null, null, true);
-		Log.v("Slime","33333");
 		state = State.STATE0;
-		Log.v("Slime","44444");
 		break;
 	    case UP2:
 		if(selectedKey != null){ // 入力文字処理
@@ -424,6 +420,25 @@ class KeyController {
 	    dict.addCandidate(hira,pat);
 	    dict.addCandidate(h2k(hira),pat);
 	}
+
+	String[][] s;
+	s = sqlDict.match(inputPat(),false);
+	for(int k=0;k<s.length;k++){
+	    dict.addCandidate(s[k][0],s[k][1]);
+	}
+
+	/*
+	for(int k=0;nbuttons<keyView.candButtons.length && k <s.length;k++,nbuttons++){
+	    keyView.candButtons[nbuttons].text = s[k][0];
+	    keyView.candButtons[nbuttons].pat = s[k][1];
+	}
+	*/
+	/*
+	for(int k=0;k<s.length;k++){
+	    Log.v("Slime-SQLite","word="+s[k][0]);
+	}
+	*/
+
 	dict.search(inputPat());
 	if(dict.ncands > 0){
 	    for(;nbuttons<keyView.candButtons.length && i <dict.ncands;i++,nbuttons++){
@@ -431,6 +446,7 @@ class KeyController {
 		keyView.candButtons[nbuttons].pat = dict.candPatterns[i];
 	    }
 	}
+	/*
 	if(nbuttons < keyView.candButtons.length){ // まだ余裕あり
 	    googleSuggestTimeout = new Runnable(){
 		    public void run() {
@@ -449,6 +465,7 @@ class KeyController {
 		};
 	    googleSuggestHandler.postDelayed(googleSuggestTimeout,600); // 0.6秒放置するとGoogleSuggestを呼ぶ
 	}
+	*/
 	int j;
 	for(j = nbuttons;j<keyView.candButtons.length;j++){
 	    keyView.candButtons[j].text = "";
@@ -513,6 +530,7 @@ class KeyController {
     }
 
     public void fix(String s,String p){
+	sqlDict.add(s,p);
 	slime.input(s);
 	resetInput();
     }
