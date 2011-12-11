@@ -5,6 +5,20 @@
 // 仕様が色々面倒なのだがとりあえず...
 // (2011/12/10)
 //
+// 以下のようなページを参考にした。
+// AndroidのSQLiteの使い方
+// http://android.roof-balcony.com/shori/strage/select/
+// サンプル
+// http://codezine.jp/article/detail/4814?p=2
+// サンプル
+// http://ichitcltk.hustle.ne.jp/gudon/modules/pico_rd/index.php?content_id=74
+// Helper
+// http://android.roof-balcony.com/shori/strage/sqlite/
+// http://www.ipentec.com/document/document.aspx?page=android-use-sqlite-simple-app
+// Android SQLiteマニュアル
+// http://developer.android.com/intl/ja/reference/android/database/sqlite/SQLiteDatabase.html
+// http://developer.android.com/intl/ja/reference/android/database/Cursor.html
+
 package com.pitecan.slime;
 
 import java.util.regex.Pattern;
@@ -55,6 +69,8 @@ public class SQLDict
 	// 最初に全部消す
 	db.delete("history", "word = '"+word+"' AND pat = '"+pat+"'", null);
 	int patind = Dict.patInd(pat);
+	// SQLite3の日付処理
+	// http://www.tamandua-webtools.net/sqlite3-date.html
 	db.execSQL("insert into history(word,pat,patind,date) values ('"+word+"', '"+pat+"', "+patind+", datetime('now', 'localtime'));");
     }
 
