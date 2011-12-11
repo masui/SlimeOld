@@ -16,6 +16,10 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.client.DefaultHttpRequestRetryHandler;
 
+import org.apache.http.params.HttpParams;
+import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.HttpConnectionParams; 
+
 import org.apache.http.util.EntityUtils;
 
 class GoogleSuggest {
@@ -29,7 +33,19 @@ class GoogleSuggest {
 	String text = new String();
 
 	try {
-	    DefaultHttpClient httpClient = new DefaultHttpClient();
+	    // http://stackoverflow.com/questions/693997/how-to-set-httpresponse-timeout-for-android-in-java
+	    HttpParams httpParameters = new BasicHttpParams();
+	    // Set the timeout in milliseconds until a connection is established.
+	    int timeoutConnection = 2000;
+	    HttpConnectionParams.setConnectionTimeout(httpParameters, timeoutConnection);
+	    // Set the default socket timeout (SO_TIMEOUT) 
+	    // in milliseconds which is the timeout for waiting for data.
+	    int timeoutSocket = 2000;
+	    HttpConnectionParams.setSoTimeout(httpParameters, timeoutSocket);
+	    DefaultHttpClient httpClient = new DefaultHttpClient(httpParameters);
+
+	    //DefaultHttpClient httpClient = new DefaultHttpClient();
+
 	    httpClient.getParams().setParameter("http.protocol.content-charset", "UTF-8");
 
 	    HttpGet request = new HttpGet(urlstr);
