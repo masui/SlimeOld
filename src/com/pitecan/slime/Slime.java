@@ -109,7 +109,7 @@ public class Slime extends InputMethodService
 	    //Log.v("Slime","pat=" + keyController.inputPatArray.get(i));
 	    // 曖昧キーの場合 "[" と "]" で囲む
 	    if(keyController.inputPatArray.get(i).matches(".*\\[..*")){
-		composingText += "[" + keyController.inputCharArray.get(i) + "]";
+		composingText += "(" + keyController.inputCharArray.get(i) + ")";
 	    }
 	    else {
 		composingText += keyController.inputCharArray.get(i);
