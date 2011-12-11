@@ -60,7 +60,7 @@ public class SQLDict
 	    cursor.moveToPosition(max);
 	    word = cursor.getString(0);
 	    pat = cursor.getString(1);
-	    Log.v("SQLite","getString(0) = " + word);
+	    Log.v("SQLite","delete -> " + word);
 	    db.delete("history", "word = '"+word+"' AND pat = '"+pat+"'", null);
 	}
 	cursor.close();

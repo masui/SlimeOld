@@ -232,7 +232,7 @@ public class Dict {
 
     public static void addCandidate(String word, String pat){
 	int i;
-	Log.v("Slime","addCandidate: word="+word+" pat="+pat+" ncands="+ncands);
+	//Log.v("Slime","addCandidate: word="+word+" pat="+pat+" ncands="+ncands);
 	if(ncands >= Slime.MAXCANDS) return;
 	for(i=0;i<ncands;i++){
 	    if(candWords[i].equals(word)) break;
@@ -240,7 +240,7 @@ public class Dict {
 	if(i >= ncands){
 	    candPatterns[ncands] = pat;
 	    candWords[ncands] = word;
-	    Log.v("Slime", "Add "+word+" to candidates");
+	    //Log.v("Slime", "Add "+word+" to candidates");
 	    ncands++;
 	}
     }

@@ -416,8 +416,7 @@ class KeyController {
 	dict.ncands = 0;
 	if(Dict.exactMode){
 	    String hira = inputWord();
-	    // String pat = inputPat();
-	    String pat = keys.hira2pat(hira);
+	    String pat = keys.hira2pat(hira); // 無理矢理ひらがなをローマ字パタンに変換
 	    dict.addCandidate(hira,pat);
 	    dict.addCandidate(h2k(hira),pat);
 	}
@@ -437,6 +436,7 @@ class KeyController {
 	    }
 	}
 	// Google Suggest検索
+	// ここはdict.addCandidate()でやるべきでは?
 	if(nbuttons < keyView.candButtons.length){ // まだ余裕あり
 	    googleSuggestTimeout = new Runnable(){
 		    public void run() {
@@ -444,7 +444,8 @@ class KeyController {
 			String[] suggestions = GoogleSuggest.suggest(inputWord());
 			for(i=0;nbuttons < keyView.candButtons.length && suggestions[i] != "";i++,nbuttons++){
 			    keyView.candButtons[nbuttons].text = suggestions[i];
-			    keyView.candButtons[nbuttons].pat = inputPat();
+			    // keyView.candButtons[nbuttons].pat = inputPat();
+			    keyView.candButtons[nbuttons].pat = keys.hira2pat(inputWord());
 			}
 			for(;nbuttons<keyView.candButtons.length;nbuttons++){
 			    keyView.candButtons[nbuttons].text = "";
@@ -520,7 +521,7 @@ class KeyController {
 
     public void fix(String s,String p){
 	sqlDict.add(s,p);
-	// sqlDict.limit(1000); // 1000個以上になれば古いエントリを消す
+	sqlDict.limit(1000); // 1000個以上になれば古いエントリを消す
 	slime.input(s);
 	resetInput();
     }
