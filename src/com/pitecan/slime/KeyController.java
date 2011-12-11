@@ -475,7 +475,12 @@ class KeyController {
 	    else {
 		inputCharArray.remove(inputlen-1);
 		inputPatArray.remove(inputlen-1);
-		searchAndDispCand();
+		if(inputlen > 1){
+		    searchAndDispCand();
+		}
+		else {
+		    resetInput();
+		}
 		state = State.STATE0;
 		keyView.draw(keypat, null, null, false);
 		slime.showComposingText();
