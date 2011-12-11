@@ -416,7 +416,8 @@ class KeyController {
 	dict.ncands = 0;
 	if(Dict.exactMode){
 	    String hira = inputWord();
-	    String pat = inputPat();
+	    // String pat = inputPat();
+	    String pat = keys.hira2pat(hira);
 	    dict.addCandidate(hira,pat);
 	    dict.addCandidate(h2k(hira),pat);
 	}
@@ -435,8 +436,7 @@ class KeyController {
 		keyView.candButtons[nbuttons].pat = dict.candPatterns[i];
 	    }
 	}
-	/*
-	  // Google Suggest検索
+	// Google Suggest検索
 	if(nbuttons < keyView.candButtons.length){ // まだ余裕あり
 	    googleSuggestTimeout = new Runnable(){
 		    public void run() {
@@ -455,7 +455,6 @@ class KeyController {
 		};
 	    googleSuggestHandler.postDelayed(googleSuggestTimeout,600); // 0.6秒放置するとGoogleSuggestを呼ぶ
 	}
-	*/
 	int j;
 	for(j = nbuttons;j<keyView.candButtons.length;j++){
 	    keyView.candButtons[j].text = "";
@@ -521,6 +520,7 @@ class KeyController {
 
     public void fix(String s,String p){
 	sqlDict.add(s,p);
+	// sqlDict.limit(1000); // 1000個以上になれば古いエントリを消す
 	slime.input(s);
 	resetInput();
     }

@@ -478,6 +478,28 @@ class Keys {
 	new Key(267, 162, 53, 53, "↴", "", keypatsp),
     };
 
+    public final Key[][] keypats = {
+	keypat1, keypat2, keypat3, keypat4, keypat5,
+	keypat6, keypat7, keypat8, keypat9, keypat10,
+    };
+
+    public String hira2pat(String hira){
+	String p = "";
+	for(int i=0;i<hira.length();i++){
+	    char c = hira.charAt(i);
+	    for(int j=0;j<keypats.length;j++){
+		Key[] keypat = keypats[j];
+		for(int k=0;k<keypat.length;k++){
+		    if(keypat[k].str.charAt(0) == c){
+			p += keypat[k].pat;
+			break;
+		    }
+		}
+	    }
+	}
+	return p;
+    }
+
     public Keys(){
     }
 }
