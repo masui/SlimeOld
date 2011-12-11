@@ -28,6 +28,7 @@
 
 * GoogleSuggestを見に行って固まる
 * 単漢字変換でも学習単語が出る
+* [android.widget.PopupWindow でキー表示できるようにする](http://www.adamrocker.com/blog/256/simeji-for-android-flick-input.html)
 * 辞書の整備
 * 単語予測
 * 単語登録
