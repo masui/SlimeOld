@@ -36,7 +36,7 @@ import android.util.Log;
 
 class DBHelper extends SQLiteOpenHelper {
     public DBHelper(Context context) {
-	super(context, null, null, 1);
+	super(context, "learndict", null, 1);
     }
     
     @Override
@@ -45,6 +45,15 @@ class DBHelper extends SQLiteOpenHelper {
     
     @Override
 	public void onCreate(SQLiteDatabase db) {
+        // db = this.getWritableDatabase();
+	db.execSQL(
+		   "create table history("+
+		   "   word text not null,"+
+		   "   pat text not null,"+
+		   "   patind text not null,"+
+		   "   date text not null"+
+		   ");"
+		   );
     }
 }
 
@@ -55,6 +64,7 @@ public class SQLDict
     public SQLDict(Context context){
 	DBHelper helper = new DBHelper(context);
         db = helper.getWritableDatabase();
+	/*
 	db.execSQL(
 		   "create table history("+
 		   "   word text not null,"+
@@ -63,6 +73,7 @@ public class SQLDict
 		   "   date text not null"+
 		   ");"
 		   );
+	*/
     }
 	
     public void add(String word, String pat){ // エントリ追加
