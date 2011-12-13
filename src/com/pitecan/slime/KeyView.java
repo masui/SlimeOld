@@ -122,6 +122,10 @@ public class KeyView extends View {
 	invalidate();
     }
 
+    //
+    // 現在の版は1〜3行しか候補を表示しないが、1〜12行ぐらい用意しておいて
+    // 3行ずつ表示するように変更したい
+    //
     private void layoutCandButtons(){
 	float x, y, w, h;   // 候補ボタンの矩形
 	int buttonIndex = 0;
