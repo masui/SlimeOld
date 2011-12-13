@@ -29,6 +29,7 @@ class KeyController {
     private Key selectedKey = null;
     private Key secondKey = null;
     private int nbuttons; // 生成中の候補ボタン番号
+    public int candPage = 0;   // 候補の何ページ目か
 
     Thread thread;
 
@@ -67,7 +68,7 @@ class KeyController {
     }
 
     enum Event { UP1, UP2, DOWN1, DOWN2, MOVE, SHIFTTIMER, SHIFTLOCKTIMER }; // MOVE1, MOVE2の区別がつかないかも
-    enum State { STATE0, STATE1, STATE2, STATE3, STATE4, STATE5, STATE6, STATE7, STATEC };
+    enum State { STATE0, STATE1, STATE2, STATE3, STATE4, STATE5, STATE6, STATE7, STATEC, STATEFB };
     // STATE0 初期状態
     // STATE1 タップしたときの状態
     // STATE2 スライド後またはタイムアウト後
@@ -152,20 +153,39 @@ class KeyController {
 		downy = mousey;
 		downKey = findKey(keypat, (int)downx, (int)downy);
 		if(downKey != null){ // キーの上を押した
-		    keyView.draw(keypat, downKey, null, false);
-		    // タイマ設定
-		    shiftTimeout = new Runnable(){
-			    public void run() {
-				trans(Event.SHIFTTIMER);
-			    }
-			};
-		    shiftTimeoutHandler.postDelayed(shiftTimeout,300);
-		    googleSuggestHandler.removeCallbacks(googleSuggestTimeout); // GoogleSuggestをインヒビット
-		    state = State.STATE1;
+		    if(downKey.str == "次"){
+			candPage++;
+			keyView.draw(keypat, downKey, null, true);
+			state = State.STATEFB;
+		    }
+		    else if(downKey.str == "前"){
+			if(candPage > 0) candPage--;
+			keyView.draw(keypat, downKey, null, true);
+			state = State.STATEFB;
+		    }
+		    else {
+			keyView.draw(keypat, downKey, null, false);
+			// タイマ設定
+			shiftTimeout = new Runnable(){
+				public void run() {
+				    trans(Event.SHIFTTIMER);
+				}
+			    };
+			shiftTimeoutHandler.postDelayed(shiftTimeout,300);
+			googleSuggestHandler.removeCallbacks(googleSuggestTimeout); // GoogleSuggestをインヒビット
+			state = State.STATE1;
+		    }
 		}
 		else { // 候補の上かも
 		    state = State.STATEC;
 		}
+	    }
+	    break;
+	case STATEFB:
+	    switch(e){
+	    case UP1:
+		keyView.draw(keypat, null, null, true);
+		state = State.STATE0;
 	    }
 	    break;
 	case STATEC:
@@ -413,6 +433,7 @@ class KeyController {
     private void searchAndDispCand(){
 	int i=0;
 	nbuttons = 0;
+	candPage = 0;
 	dict.ncands = 0;
 	if(Dict.exactMode){
 	    String hira = inputWord();

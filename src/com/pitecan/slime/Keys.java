@@ -464,18 +464,20 @@ class Keys {
 	new Key(267, 162, 53,  53, "",  "", keypatsp_shift),
     };
     public final Key[] keypat0 = {
-	new Key(1,   109, 53, 53, "あ", "[aiueoAIUEO]", keypat1),
-	new Key(54,  109, 53, 53, "か", "[kg][aiueo]", keypat2),
-	new Key(107, 109, 53, 53, "さ", "[sz][aiueo]", keypat3),
-	new Key(160, 109, 53, 53, "た", "[tdT][aiueo]", keypat4),
-	new Key(213, 109, 53, 53, "な", "n[aiueo]", keypat5),
-	new Key(267, 109, 53, 53, "←",  "", keypatbs),
-	new Key(1,   162, 53, 53, "は", "[hbp][aiueo]", keypat6),
-	new Key(54,  162, 53, 53, "ま", "m[aiueo]", keypat7),
-	new Key(107, 162, 53, 53, "や", "[yY][auo]", keypat8),
-	new Key(160, 162, 53, 53, "ら", "r[aiueo]", keypat9),
-	new Key(213, 162, 53, 53, "ん", "[wWN]", keypat10),
-	new Key(267, 162, 53, 53, "↴", "", keypatsp),
+	new Key(1,   3,   24, 106, "前", "", keypat1),
+	new Key(295, 3,   24, 106, "次", "", keypat1),
+	new Key(1,   109, 53, 53,  "あ", "[aiueoAIUEO]", keypat1),
+	new Key(54,  109, 53, 53,  "か", "[kg][aiueo]", keypat2),
+	new Key(107, 109, 53, 53,  "さ", "[sz][aiueo]", keypat3),
+	new Key(160, 109, 53, 53,  "た", "[tdT][aiueo]", keypat4),
+	new Key(213, 109, 53, 53,  "な", "n[aiueo]", keypat5),
+	new Key(267, 109, 53, 53,  "←",  "", keypatbs),
+	new Key(1,   162, 53, 53,  "は", "[hbp][aiueo]", keypat6),
+	new Key(54,  162, 53, 53,  "ま", "m[aiueo]", keypat7),
+	new Key(107, 162, 53, 53,  "や", "[yY][auo]", keypat8),
+	new Key(160, 162, 53, 53,  "ら", "r[aiueo]", keypat9),
+	new Key(213, 162, 53, 53,  "ん", "[wWN]", keypat10),
+	new Key(267, 162, 53, 53,  "↴", "", keypatsp),
     };
 
     public final Key[][] keypats = {

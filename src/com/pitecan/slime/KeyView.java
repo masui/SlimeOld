@@ -24,12 +24,14 @@ class CandButton {
     String text;
     String pat;
     boolean visible;
+    int row;
 
     public CandButton() {
 	rect = new Rectangle(0,0,0,0);
 	text = "";
 	pat = "";
 	visible = false;
+	row = 0;
     }
 }
 
@@ -37,11 +39,13 @@ public class KeyView extends View {
     private Bitmap keybg32x53, keyfg32x53;
     private Bitmap keybg53x53, keyfg53x53;
     private Bitmap keybg53x106, keyfg53x106;
+    private Bitmap keybg24x106, keyfg24x106;
     private Bitmap keybg106x53, keyfg106x53;
     private Bitmap keybg106x106, keyfg106x106;
     private float mousex, mousey;
     private Paint keyPaint;
     private Paint smallKeyPaint;
+    private Paint tinyKeyPaint;
     private Paint buttonPaint;
     private Paint buttonTextPaint;
     private final int keyViewWidth =     320;
@@ -52,6 +56,7 @@ public class KeyView extends View {
     private final int buttonTextSize =   18;
     private final int largeKeyTextSize = 36;
     private final int smallKeyTextSize = 24;
+    private final int tinyKeyTextSize =  16;
 
     public Keys keys;
     public KeyController keyController = null;
@@ -73,6 +78,8 @@ public class KeyView extends View {
 	keyfg53x106 =  BitmapFactory.decodeResource(r,R.drawable.keyfg53x106);
 	keybg106x53 =  BitmapFactory.decodeResource(r,R.drawable.keybg106x53);
 	keyfg106x53 =  BitmapFactory.decodeResource(r,R.drawable.keyfg106x53);
+	keybg24x106 =  BitmapFactory.decodeResource(r,R.drawable.keybg24x106);
+	keyfg24x106 =  BitmapFactory.decodeResource(r,R.drawable.keyfg24x106);
 	keybg106x106 = BitmapFactory.decodeResource(r,R.drawable.keybg106x106);
 	keyfg106x106 = BitmapFactory.decodeResource(r,R.drawable.keyfg106x106);
 	keybg32x53 =   BitmapFactory.decodeResource(r,R.drawable.keybg32x53);
@@ -87,6 +94,10 @@ public class KeyView extends View {
 	smallKeyPaint.setAntiAlias(true);
 	smallKeyPaint.setTextSize(smallKeyTextSize);
         smallKeyPaint.setColor(0xff000000); // 黒
+	tinyKeyPaint = new Paint();
+	tinyKeyPaint.setAntiAlias(true);
+	tinyKeyPaint.setTextSize(tinyKeyTextSize);
+        tinyKeyPaint.setColor(0xff000000); // 黒
 
 	// 背景色
 	buttonPaint = new Paint();
@@ -129,6 +140,45 @@ public class KeyView extends View {
     private void layoutCandButtons(){
 	float x, y, w, h;   // 候補ボタンの矩形
 	int buttonIndex = 0;
+	int[] leftlimit = {0, 0, 0, 24, 24, 24, 24, 24, 24, 24, 24, 24};
+	int[] rightlimit = {296, 296, 296, 296, 296, 296, 296, 296, 296, 296, 296, 296}; 
+	int[] curright = new int[12];
+	for(int i=0;i<12;i++){
+	    curright[i] = leftlimit[i] + buttonMarginX;
+	}
+
+	for(;buttonIndex<candButtons.length;buttonIndex++){
+	    CandButton button = candButtons[buttonIndex];
+	    String s = button.text;
+	    if(s == "") break;
+	    float textWidth = buttonTextPaint.measureText(s);
+	    w = textWidth + ((float)buttonMarginX * 2); // ボタン幅
+	    h = buttonHeight;                           // ボタン高さ
+	    // 空いている候補領域に候補ボタンを詰める
+	    for(int i=0;i<12;i++){
+		if(curright[i] + w + buttonMarginX <= rightlimit[i]){
+		    x = curright[i];
+		    y = buttonMarginY + i * (buttonHeight+buttonMarginY);
+		    button.rect.pos.x = (int)x;
+		    button.rect.pos.y = (int)y;
+		    button.rect.size.w = (int)w;
+		    button.rect.size.h = (int)h;
+		    button.row = i;
+		    button.visible = true;
+		    curright[i] += (w + buttonMarginX);
+		    break;
+		}
+	    }
+	}
+	for(;buttonIndex<candButtons.length;buttonIndex++){
+	    CandButton button = candButtons[buttonIndex];
+	    button.visible = false;
+	}
+    }
+
+    private void layoutCandButtons_old(){
+	float x, y, w, h;   // 候補ボタンの矩形
+	int buttonIndex = 0;
 	int dispLine = 0;
 	x = buttonMarginX;
 	for(;buttonIndex<candButtons.length;buttonIndex++){
@@ -166,7 +216,7 @@ public class KeyView extends View {
 	canvas.drawColor(0xfff0f0f0);
 	for(int i=0;i<keypat.length;i++){
 	    Key key = keypat[i];
-	    Paint paint = (key.rect.size.w == 32 ? smallKeyPaint : keyPaint);
+	    Paint paint = (key.rect.size.w <= 24 ? tinyKeyPaint : key.rect.size.w <= 32 ? smallKeyPaint : keyPaint);
 	    FontMetrics fontMetrics = paint.getFontMetrics();
 	    float ascent = fontMetrics.ascent; // これはマイナス値
 	    float descent = fontMetrics.descent;
@@ -189,6 +239,13 @@ public class KeyView extends View {
 		       )
 		      )
 		     );
+	    if(key.rect.size.w == 24 && key.rect.size.h == 106){
+		if((selectedKey != null && key.str == selectedKey.str) ||
+		   (selectedKey2 != null && key.str == selectedKey2.str))
+		    image = keyfg24x106;
+		else
+		    image = keybg24x106;
+	    }
 	    canvas.drawBitmap(image,key.rect.pos.x,key.rect.pos.y,null);
 	    //
 	    // キー文字描画
@@ -205,15 +262,19 @@ public class KeyView extends View {
 	    layoutCandButtons();
 	    for(int i=0;i<candButtons.length && candButtons[i].visible;i++){
 		CandButton button = candButtons[i];
-		canvas.drawRect((float)button.rect.pos.x,
-				(float)button.rect.pos.y,
-				(float)(button.rect.pos.x+button.rect.size.w),
-				(float)(button.rect.pos.y+button.rect.size.h),
-				buttonPaint);
-		canvas.drawText(button.text,
-				button.rect.pos.x+buttonTextMargin,
-				button.rect.pos.y + (buttonHeight-(ascent+descent))/2,
-				buttonTextPaint);
+		if(keyController.candPage * 3 <= button.row &&
+		   button.row < (keyController.candPage+1) * 3){
+		    float y = buttonMarginY + (button.row % 3) * (buttonHeight+buttonMarginY);
+		    canvas.drawRect((float)button.rect.pos.x,
+				    y,
+				    (float)(button.rect.pos.x+button.rect.size.w),
+				    (float)(y+button.rect.size.h),
+				    buttonPaint);
+		    canvas.drawText(button.text,
+				    button.rect.pos.x+buttonTextMargin,
+				    y + (buttonHeight-(ascent+descent))/2,
+				    buttonTextPaint);
+		}
 	    }
 	}
     }
