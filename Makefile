@@ -8,12 +8,11 @@ debug:
 	adb logcat | grep Slime
 clean:
 	/bin/rm -r -f bin/classes
-update:
-	git update
 push:
 	git push pitecan.com:/home/masui/git/Slime.git
 	git push git@github.com:masui/Slime.git
 
+# 署名してアップロード
 publish: sign
 	scp bin/Slime.apk pitecan.com:/www/www.pitecan.com/tmp
 sign:
