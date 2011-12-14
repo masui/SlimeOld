@@ -13,11 +13,13 @@ update:
 push:
 	git push pitecan.com:/home/masui/git/Slime.git
 	git push git@github.com:masui/Slime.git
+
+publish: sign
+	scp bin/Slime.apk pitecan.com:/www/www.pitecan.com/tmp
 sign:
 	ant release
 	cp bin/Slime-unsigned.apk bin/Slime.apk
 	jarsigner -J-Dfile.encoding=UTF8 -keystore ~/.android/masui.keystore -verbose bin/Slime.apk pitecan
-	scp bin/Slime.apk pitecan.com:/www/www.pitecan.com/tmp
 
 # Gyazz.com/kdict から辞書を作成!
 #

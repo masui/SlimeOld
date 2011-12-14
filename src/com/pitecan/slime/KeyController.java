@@ -454,6 +454,7 @@ class KeyController {
 	}
 	// Google Suggest検索
 	// ここはdict.addCandidate()でやるべきでは?
+	// スレッドでやるべき
 	if(nbuttons < keyView.candButtons.length){ // まだ余裕あり
 	    googleSuggestTimeout = new Runnable(){
 		    public void run() {
