@@ -13,7 +13,12 @@ update:
 push:
 	git push pitecan.com:/home/masui/git/Slime.git
 	git push git@github.com:masui/Slime.git
-#
+sign:
+	ant release
+	cp bin/Slime-unsigned.apk bin/Slime.apk
+	jarsigner -J-Dfile.encoding=UTF8 -keystore ~/.android/masui.keystore -verbose bin/Slime.apk pitecan
+	scp bin/Slime.apk pitecan.com:/www/www.pitecan.com/tmp
+
 # Gyazz.com/kdict から辞書を作成!
 #
 dict:
@@ -21,3 +26,4 @@ dict:
 	/bin/rm -r -f assets
 	mkdir assets
 	ruby -I~/GyazzDict ~/GyazzDict/connection2txt /tmp/tmp > assets/dict.txt
+
