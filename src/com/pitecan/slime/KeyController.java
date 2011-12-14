@@ -445,24 +445,28 @@ class KeyController {
 	}
 
 	// 通常辞書を検索
-	dict.search(inputPat());
+	dict.search(inputPat());  // 中でaddCandidate()を呼んでいる
+
+	// 候補をボタンに
 	if(dict.ncands > 0){
 	    for(;nbuttons<keyView.candButtons.length && i <dict.ncands;i++,nbuttons++){
 		keyView.candButtons[nbuttons].text = dict.candWords[i];
 		keyView.candButtons[nbuttons].pat = dict.candPatterns[i];
 	    }
 	}
+
 	// Google Suggest検索
 	// ここはdict.addCandidate()でやるべきでは?
 	// スレッドでやるべき
 	if(nbuttons < keyView.candButtons.length){ // まだ余裕あり
+	    /*
 	    googleSuggestTimeout = new Runnable(){
 		    public void run() {
 			int i;
 			String[] suggestions = GoogleSuggest.suggest(inputWord());
 			for(i=0;nbuttons < keyView.candButtons.length && suggestions[i] != "";i++,nbuttons++){
+			    // dict.addCandidate(suggestions[i],keys.hira2pat(inputWord()));
 			    keyView.candButtons[nbuttons].text = suggestions[i];
-			    // keyView.candButtons[nbuttons].pat = inputPat();
 			    keyView.candButtons[nbuttons].pat = keys.hira2pat(inputWord());
 			}
 			for(;nbuttons<keyView.candButtons.length;nbuttons++){
@@ -473,14 +477,45 @@ class KeyController {
 		    }
 		};
 	    googleSuggestHandler.postDelayed(googleSuggestTimeout,600); // 0.6秒放置するとGoogleSuggestを呼ぶ
+	    */
+	    // http://www.adamrocker.com/blog/261/what-is-the-handler-in-android.html
+	    new Thread(new Runnable() {
+		    public void run() {
+			googleSuggestTimeout = new Runnable() {
+				public void run() {
+				    int i;
+				    String[] suggestions = GoogleSuggest.suggest(inputWord());
+				    for(i=0;nbuttons < keyView.candButtons.length && suggestions[i] != "";i++,nbuttons++){
+					keyView.candButtons[nbuttons].text = suggestions[i];
+					keyView.candButtons[nbuttons].pat = keys.hira2pat(inputWord());
+				    }
+				    for(;nbuttons<keyView.candButtons.length;nbuttons++){
+					keyView.candButtons[nbuttons].text = "";
+					keyView.candButtons[nbuttons].pat = "";
+				    }
+				    keyView.draw(keypat, null, null, candPage);
+				}
+			    };
+			googleSuggestHandler.postDelayed(googleSuggestTimeout,600);
+		    }
+		}).start();
 	}
+
+	// 候補をボタンに
+	if(dict.ncands > 0){
+	    for(;nbuttons<keyView.candButtons.length && i <dict.ncands;i++,nbuttons++){
+		keyView.candButtons[nbuttons].text = dict.candWords[i];
+		keyView.candButtons[nbuttons].pat = dict.candPatterns[i];
+	    }
+	}
+
 	int j;
 	for(j = nbuttons;j<keyView.candButtons.length;j++){
 	    keyView.candButtons[j].text = "";
 	    keyView.candButtons[j].pat = "";
 	}
     }
-    
+
     private void processKey(Key key){
 	String c = key.str;
 	String p = key.pat;
