@@ -23,6 +23,7 @@ class CandButton {
     Rectangle rect;
     String text;
     String pat;
+    boolean valid;
     boolean visible;
     int row;
 
@@ -30,6 +31,7 @@ class CandButton {
 	rect = new Rectangle(0,0,0,0);
 	text = "";
 	pat = "";
+	valid = false;
 	visible = false;
 	row = 0;
     }
@@ -63,7 +65,8 @@ public class KeyView extends View {
     private Key[] keypat = null;
     private Key selectedKey;
     private Key selectedKey2;
-    private boolean showCand = false;
+    // private boolean showCand = false;
+    private int candPage = 0;
 
     public CandButton[] candButtons;
 
@@ -125,11 +128,11 @@ public class KeyView extends View {
 	return true;
     }
 
-    public void draw(Key _keypat[], Key _selectedKey, Key _selectedKey2, boolean _showCand){
+    public void draw(Key _keypat[], Key _selectedKey, Key _selectedKey2, int _candPage){
 	keypat = _keypat;
 	selectedKey = _selectedKey;
 	selectedKey2 = _selectedKey2;
-	showCand = _showCand;
+	candPage = _candPage;
 	invalidate();
     }
 
@@ -164,7 +167,7 @@ public class KeyView extends View {
 		    button.rect.size.w = (int)w;
 		    button.rect.size.h = (int)h;
 		    button.row = i;
-		    button.visible = true;
+		    button.valid = true;
 		    curright[i] += (w + buttonMarginX);
 		    break;
 		}
@@ -172,37 +175,7 @@ public class KeyView extends View {
 	}
 	for(;buttonIndex<candButtons.length;buttonIndex++){
 	    CandButton button = candButtons[buttonIndex];
-	    button.visible = false;
-	}
-    }
-
-    private void layoutCandButtons_old(){
-	float x, y, w, h;   // 候補ボタンの矩形
-	int buttonIndex = 0;
-	int dispLine = 0;
-	x = buttonMarginX;
-	for(;buttonIndex<candButtons.length;buttonIndex++){
-	    CandButton button = candButtons[buttonIndex];
-	    String s = button.text;
-	    if(s == "") break;
-	    float textWidth = buttonTextPaint.measureText(s);
-	    h = buttonHeight;
-	    w = textWidth + ((float)buttonMarginX * 2); // ボタン幅
-	    if(x + w + buttonMarginX > keyViewWidth){
-		x = buttonMarginX;
-		if(++dispLine >= 3) break; // 候補は3行まで
-	    }
-	    y = buttonMarginY + dispLine * (buttonHeight+buttonMarginY);
-	    button.rect.pos.x = (int)x;
-	    button.rect.pos.y = (int)y;
-	    button.rect.size.w = (int)w;
-	    button.rect.size.h = (int)h;
-	    button.visible = true;
-	    x += (w + buttonMarginX);
-	}
-	for(;buttonIndex<candButtons.length;buttonIndex++){
-	    CandButton button = candButtons[buttonIndex];
-	    button.visible = false;
+	    button.valid = false;
 	}
     }
 
@@ -246,35 +219,41 @@ public class KeyView extends View {
 		else
 		    image = keybg24x106;
 	    }
-	    canvas.drawBitmap(image,key.rect.pos.x,key.rect.pos.y,null);
-	    //
-	    // キー文字描画
-	    //
-	    float textWidth = paint.measureText(key.str);
-	    float baseX = key.rect.pos.x + (key.rect.size.w-shadewidth - textWidth)/2;
-	    float baseY = key.rect.pos.y + (key.rect.size.h-shadewidth - (ascent+descent))/2;
-	    canvas.drawText(key.str,baseX,baseY,paint);
+	    if(! ((key.str == "前" && (candPage == 0 || candPage == 1)) ||
+		  (key.str == "次" && (candPage == 0 || candPage == 4)))){
+		canvas.drawBitmap(image,key.rect.pos.x,key.rect.pos.y,null);
+		//
+		// キー文字描画
+		//
+		float textWidth = paint.measureText(key.str);
+		float baseX = key.rect.pos.x + (key.rect.size.w-shadewidth - textWidth)/2;
+		float baseY = key.rect.pos.y + (key.rect.size.h-shadewidth - (ascent+descent))/2;
+		canvas.drawText(key.str,baseX,baseY,paint);
+	    }
 	}
-	if(showCand){
+	if(candPage > 0){
+	    CandButton button;
 	    FontMetrics fontMetrics = buttonTextPaint.getFontMetrics();
 	    float ascent = fontMetrics.ascent;
 	    float descent = fontMetrics.descent;
 	    layoutCandButtons();
-	    for(int i=0;i<candButtons.length && candButtons[i].visible;i++){
-		CandButton button = candButtons[i];
-		if(keyController.candPage * 3 <= button.row &&
-		   button.row < (keyController.candPage+1) * 3){
-		    float y = buttonMarginY + (button.row % 3) * (buttonHeight+buttonMarginY);
-		    canvas.drawRect((float)button.rect.pos.x,
-				    y,
-				    (float)(button.rect.pos.x+button.rect.size.w),
-				    (float)(y+button.rect.size.h),
-				    buttonPaint);
-		    canvas.drawText(button.text,
-				    button.rect.pos.x+buttonTextMargin,
-				    y + (buttonHeight-(ascent+descent))/2,
-				    buttonTextPaint);
-		}
+	    for(int i=0;i<candButtons.length;i++){
+		button = candButtons[i];
+		candButtons[i].visible = button.valid && ((candPage-1) * 3 <= button.row && button.row < candPage * 3);
+	    }
+	    for(int i=0;i<candButtons.length;i++){
+		button = candButtons[i];
+		if(! button.visible) continue;
+		float y = buttonMarginY + (button.row % 3) * (buttonHeight+buttonMarginY);
+		canvas.drawRect((float)button.rect.pos.x,
+				y,
+				(float)(button.rect.pos.x+button.rect.size.w),
+				(float)(y+button.rect.size.h),
+				buttonPaint);
+		canvas.drawText(button.text,
+				button.rect.pos.x+buttonTextMargin,
+				y + (buttonHeight-(ascent+descent))/2,
+				buttonTextPaint);
 	    }
 	}
     }

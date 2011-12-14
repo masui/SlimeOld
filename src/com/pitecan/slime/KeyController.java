@@ -29,7 +29,7 @@ class KeyController {
     private Key selectedKey = null;
     private Key secondKey = null;
     private int nbuttons; // 生成中の候補ボタン番号
-    public int candPage = 0;   // 候補の何ページ目か
+    public int candPage = 1;   // 候補の何ページ目か
 
     Thread thread;
 
@@ -155,16 +155,16 @@ class KeyController {
 		if(downKey != null){ // キーの上を押した
 		    if(downKey.str == "次"){
 			candPage++;
-			keyView.draw(keypat, downKey, null, true);
+			keyView.draw(keypat, downKey, null, candPage);
 			state = State.STATEFB;
 		    }
 		    else if(downKey.str == "前"){
-			if(candPage > 0) candPage--;
-			keyView.draw(keypat, downKey, null, true);
+			if(candPage > 1) candPage--;
+			keyView.draw(keypat, downKey, null, candPage);
 			state = State.STATEFB;
 		    }
 		    else {
-			keyView.draw(keypat, downKey, null, false);
+			keyView.draw(keypat, downKey, null, 0);
 			// タイマ設定
 			shiftTimeout = new Runnable(){
 				public void run() {
@@ -184,7 +184,7 @@ class KeyController {
 	case STATEFB:
 	    switch(e){
 	    case UP1:
-		keyView.draw(keypat, null, null, true);
+		keyView.draw(keypat, null, null, candPage);
 		state = State.STATE0;
 	    }
 	    break;
@@ -204,9 +204,9 @@ class KeyController {
 		Dict.exactMode = false;
 		keypat = keys.keypat0;
 		if(selectedCand >= 0)
-		    keyView.draw(keypat, null, null, false);
+		    keyView.draw(keypat, null, null, 0);
 		else
-		    keyView.draw(keypat, null, null, true);
+		    keyView.draw(keypat, null, null, candPage);
 		state = State.STATE0;
 		break;
 	    }
@@ -218,7 +218,7 @@ class KeyController {
 		    processKey(selectedKey);
 		}
 		keypat = keys.keypat0;
-		keyView.draw(keypat, null, null, true);
+		keyView.draw(keypat, null, null, candPage);
 		state = State.STATE0;
 		shiftTimeoutHandler.removeCallbacks(shiftTimeout);
 		break;
@@ -230,7 +230,7 @@ class KeyController {
 		    keypat = downKey.shiftKeypat; //!!!!!
 
 		    selectedKey = findKey(keypat, (int)mousex, (int)mousey);
-		    keyView.draw(keypat, selectedKey, null, false);
+		    keyView.draw(keypat, selectedKey, null, 0);
 		    state = State.STATE3;
 		    shiftTimeoutHandler.removeCallbacks(shiftTimeout);
 		}
@@ -240,14 +240,14 @@ class KeyController {
 		downKey = findKey(keypat, (int)downx, (int)downy);
 		selectedKey = findKey(keypat, (int)mousex, (int)mousey);
 		secondKey = selectedKey;
-		keyView.draw(keypat, downKey, selectedKey, false);
+		keyView.draw(keypat, downKey, selectedKey, 0);
 		state = State.STATE4;
 		shiftTimeoutHandler.removeCallbacks(shiftTimeout);
 		break;
 	    case SHIFTTIMER:
 		keypat = downKey.shiftKeypat;
 		downKey = findKey(keypat, (int)downx, (int)downy);
-		keyView.draw(keypat, downKey, null, false);
+		keyView.draw(keypat, downKey, null, 0);
 		state = State.STATE2;
 		shiftTimeoutHandler.removeCallbacks(shiftTimeout);
 		break;
@@ -260,11 +260,11 @@ class KeyController {
 		    processKey(selectedKey);
 		}
 		keypat = keys.keypat0;
-		keyView.draw(keypat, null, null, true);
+		keyView.draw(keypat, null, null, candPage);
 		state = State.STATE0;
 		break;
 	    case DOWN2:
-		keyView.draw(keypat, downKey, selectedKey, false);
+		keyView.draw(keypat, downKey, selectedKey, 0);
 		secondKey = selectedKey;
 		state = State.STATE4;
 		break;
@@ -274,10 +274,9 @@ class KeyController {
 		    keypat = downKey.shiftKeypat;
 
 		    selectedKey = findKey(keypat, (int)mousex, (int)mousey);
-		    keyView.draw(keypat, selectedKey, null, false);
+		    keyView.draw(keypat, selectedKey, null, 0);
 		    state = State.STATE3;
 		}
-		//keyView.draw(keypat, selectedKey, null, true);
 		break;
 	    }
 	    break;
@@ -289,11 +288,11 @@ class KeyController {
 		    processKey(selectedKey);
 		}
 		keypat = keys.keypat0;
-		keyView.draw(keypat, null, null, true);
+		keyView.draw(keypat, null, null, candPage);
 		state = State.STATE0;
 		break;
 	    case MOVE:
-		keyView.draw(keypat, selectedKey, null, false);
+		keyView.draw(keypat, selectedKey, null, 0);
 		break;
 	    }
 	    break;
@@ -304,18 +303,18 @@ class KeyController {
 		    processKey(secondKey);
 		}
 		keypat = keys.keypat0;
-		keyView.draw(keypat, null, null, true);
+		keyView.draw(keypat, null, null, candPage);
 		state = State.STATE0;
 		break;
 	    case UP2:
 		if(selectedKey != null){ // 入力文字処理
 		    processKey(selectedKey);
 		}
-		keyView.draw(keypat, downKey, null, false);
+		keyView.draw(keypat, downKey, null, 0);
 		state = State.STATE5;
 		break;
 	    case MOVE:
-		keyView.draw(keypat, downKey, selectedKey, false);
+		keyView.draw(keypat, downKey, selectedKey, 0);
 		secondKey = selectedKey;
 		break;
 	    }
@@ -324,18 +323,14 @@ class KeyController {
 	    switch(e){
 	    case UP1:
 		keypat = keys.keypat0;
-		keyView.draw(keypat, null, null, true);
+		keyView.draw(keypat, null, null, candPage);
 		state = State.STATE0;
 		break;
 	    case DOWN2:
-		keyView.draw(keypat, downKey, selectedKey, false);
+		keyView.draw(keypat, downKey, selectedKey, 0);
 		state = State.STATE6;
 		break;
 	    case MOVE:
-		/*
-		selectedKey = findKey(keypat, (int)down, (int)down);
-		keyView.draw(keypat, selectedKey, null, true);
-		*/
 		break;
 	    }
 	    break;
@@ -354,11 +349,11 @@ class KeyController {
 		    };
 		shiftLockTimeoutHandler.postDelayed(shiftLockTimeout,1200);
 
-		keyView.draw(keypat, downKey, null, false);
+		keyView.draw(keypat, downKey, null, 0);
 		state = State.STATE7;
 		break;
 	    case MOVE:
-		keyView.draw(keypat, downKey, selectedKey, false);
+		keyView.draw(keypat, downKey, selectedKey, 0);
 		secondKey = selectedKey;
 		break;
 	    }
@@ -368,13 +363,13 @@ class KeyController {
 	    case DOWN1:
 	    case DOWN2:
 		shiftLockTimeoutHandler.removeCallbacks(shiftLockTimeout);
-		keyView.draw(keypat, downKey, selectedKey, false);
+		keyView.draw(keypat, downKey, selectedKey, 0);
 		secondKey = selectedKey;
 		state = State.STATE6;
 		break;
 	    case SHIFTLOCKTIMER:
 		keypat = keys.keypat0;
-		keyView.draw(keypat, null, null, true);
+		keyView.draw(keypat, null, null, candPage);
 		state = State.STATE0;
 		break;
 	    }
@@ -393,12 +388,13 @@ class KeyController {
 	    keyView.candButtons[i].text = "";
 	    keyView.candButtons[i].visible = false;
 	}
+	candPage = 0;
     }
 
     public void reset(){
 	resetInput();
 	keypat = keys.keypat0;
-	keyView.draw(keypat, null, null, false);
+	keyView.draw(keypat, null, null, 0);
     }
 
     public String inputPat(){
@@ -433,7 +429,7 @@ class KeyController {
     private void searchAndDispCand(){
 	int i=0;
 	nbuttons = 0;
-	candPage = 0;
+	candPage = 1;
 	dict.ncands = 0;
 	if(Dict.exactMode){
 	    String hira = inputWord();
@@ -472,7 +468,7 @@ class KeyController {
 			    keyView.candButtons[nbuttons].text = "";
 			    keyView.candButtons[nbuttons].pat = "";
 			}
-			keyView.draw(keypat, null, null, true);
+			keyView.draw(keypat, null, null, candPage);
 		    }
 		};
 	    googleSuggestHandler.postDelayed(googleSuggestTimeout,600); // 0.6秒放置するとGoogleSuggestを呼ぶ
@@ -503,7 +499,7 @@ class KeyController {
 		    resetInput();
 		}
 		state = State.STATE0;
-		keyView.draw(keypat, null, null, false);
+		keyView.draw(keypat, null, null, 0);
 		slime.showComposingText();
 	    }
 	}
