@@ -52,7 +52,8 @@ public class Slime extends InputMethodService
 	dict = new Dict(getResources().getAssets());
 	sqlDict = new SQLDict(this);
 	cm = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
-	clipboardText = cm.getText().toString();
+	CharSequence seq = cm.getText();
+	clipboardText = (seq == null ? "" : seq.toString());
     }
 
     /**
@@ -137,11 +138,13 @@ public class Slime extends InputMethodService
     // 新規登録用にクリップボードの単語を返す
     //
     public void clearRegWord(){
-	clipboardText = cm.getText().toString();
+	CharSequence seq = cm.getText();
+	clipboardText = (seq == null ? "" : seq.toString());
     }
 
     public String getRegWord(){
-	String s = cm.getText().toString();
+	CharSequence seq = cm.getText();
+	String s = (seq == null ? "" : seq.toString());
 	if(s.equals(clipboardText)){
 	    return "";
 	}

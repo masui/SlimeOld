@@ -128,11 +128,11 @@ public class KeyView extends View {
 	return true;
     }
 
-    public void draw(Key _keypat[], Key _selectedKey, Key _selectedKey2, int _candPage){
-	keypat = _keypat;
-	selectedKey = _selectedKey;
-	selectedKey2 = _selectedKey2;
-	candPage = _candPage;
+    public void draw(Key keypat[], Key selectedKey, Key selectedKey2, int candPage){
+	this.keypat = keypat;
+	this.selectedKey = selectedKey;
+	this.selectedKey2 = selectedKey2;
+	this.candPage = candPage;
 	invalidate();
     }
 

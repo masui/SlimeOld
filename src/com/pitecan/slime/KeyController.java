@@ -141,6 +141,31 @@ class KeyController {
 	return true;
     }
 
+    class GoogleRunnable implements Runnable {
+	public void run() {
+	    googleSuggestTimeout = new Runnable() {
+		    public void run() {
+			int i;
+			String[] suggestions = GoogleSuggest.suggest(inputWord());
+			for(i=0;nbuttons < keyView.candButtons.length && suggestions[i] != "";i++,nbuttons++){
+			    keyView.candButtons[nbuttons].text = suggestions[i];
+			    keyView.candButtons[nbuttons].pat = keys.hira2pat(inputWord());
+			}
+			for(;nbuttons<keyView.candButtons.length;nbuttons++){
+			    keyView.candButtons[nbuttons].text = "";
+			    keyView.candButtons[nbuttons].pat = "";
+			}
+			keyView.draw(keypat, null, null, candPage);
+		    }
+		};
+	    googleSuggestHandler.postDelayed(googleSuggestTimeout,600);
+	}
+	public void disable(){
+	    googleSuggestHandler.removeCallbacks(googleSuggestTimeout); // GoogleSuggestを呼ぶのをやめる
+	}
+    }
+    GoogleRunnable googleRunnable;
+
     //
     // 状態遷移本体
     //
@@ -174,6 +199,10 @@ class KeyController {
 			    };
 			shiftTimeoutHandler.postDelayed(shiftTimeout,300);
 			googleSuggestHandler.removeCallbacks(googleSuggestTimeout); // GoogleSuggestをインヒビット
+			if(googleRunnable != null){
+			    googleRunnable.disable();
+			    googleRunnable = null;
+			}
 			state = State.STATE1;
 		    }
 		}
@@ -427,6 +456,7 @@ class KeyController {
 	return sb.toString();    
     }
 
+
     private void searchAndDispCand(){
 	int i=0;
 	nbuttons = 0;
@@ -491,7 +521,62 @@ class KeyController {
 	    */
 	    // http://www.adamrocker.com/blog/261/what-is-the-handler-in-android.html
 	    // を参考にしてスレッド化してみた。効果は不明。
-	    new Thread(new Runnable() {
+	    /*
+	    class GoogleRunnable implements Runnable {
+		public void run() {
+		    googleSuggestTimeout = new Runnable() {
+			    public void run() {
+				int i;
+				String[] suggestions = GoogleSuggest.suggest(inputWord());
+				for(i=0;nbuttons < keyView.candButtons.length && suggestions[i] != "";i++,nbuttons++){
+				    keyView.candButtons[nbuttons].text = suggestions[i];
+				    keyView.candButtons[nbuttons].pat = keys.hira2pat(inputWord());
+				}
+				for(;nbuttons<keyView.candButtons.length;nbuttons++){
+				    keyView.candButtons[nbuttons].text = "";
+				    keyView.candButtons[nbuttons].pat = "";
+				}
+				keyView.draw(keypat, null, null, candPage);
+			    }
+			};
+		    googleSuggestHandler.postDelayed(googleSuggestTimeout,600);
+		}
+		public void disxxx(){
+		    googleSuggestHandler.removeCallbacks(googleSuggestTimeout); // GoogleSuggestを呼ぶのをやめる
+		}
+	    }
+	    */
+	    googleRunnable = new GoogleRunnable();
+	    new Thread(googleRunnable).start();
+
+	    /*
+	    Runnable googleRunnable = new Runnable() {
+		    public void run() {
+			googleSuggestTimeout = new Runnable() {
+				public void run() {
+				    int i;
+				    String[] suggestions = GoogleSuggest.suggest(inputWord());
+				    for(i=0;nbuttons < keyView.candButtons.length && suggestions[i] != "";i++,nbuttons++){
+					keyView.candButtons[nbuttons].text = suggestions[i];
+					keyView.candButtons[nbuttons].pat = keys.hira2pat(inputWord());
+				    }
+				    for(;nbuttons<keyView.candButtons.length;nbuttons++){
+					keyView.candButtons[nbuttons].text = "";
+					keyView.candButtons[nbuttons].pat = "";
+				    }
+				    keyView.draw(keypat, null, null, candPage);
+				}
+			    };
+			googleSuggestHandler.postDelayed(googleSuggestTimeout,600);
+		    }
+		    public void disable(){
+			googleSuggestHandler.removeCallbacks(googleSuggestTimeout); // GoogleSuggestを呼ぶのをやめる
+		    }
+		};
+	    new Thread(googleRunnable).start();
+	    */
+	}
+	/*
 		    public void run() {
 			googleSuggestTimeout = new Runnable() {
 				public void run() {
@@ -511,7 +596,7 @@ class KeyController {
 			googleSuggestHandler.postDelayed(googleSuggestTimeout,600);
 		    }
 		}).start();
-	}
+	*/
 
 	// 候補をボタンに
 	if(dict.ncands > 0){
@@ -596,4 +681,31 @@ class KeyController {
 	resetInput();
 	slime.clearRegWord();
     }
+
 }
+
+/*
+class GoogleRunnable implements Runnable {
+    public void run() {
+	googleSuggestTimeout = new Runnable() {
+		public void run() {
+		    int i;
+		    String[] suggestions = GoogleSuggest.suggest(inputWord());
+		    for(i=0;nbuttons < keyView.candButtons.length && suggestions[i] != "";i++,nbuttons++){
+			keyView.candButtons[nbuttons].text = suggestions[i];
+			keyView.candButtons[nbuttons].pat = keys.hira2pat(inputWord());
+		    }
+		    for(;nbuttons<keyView.candButtons.length;nbuttons++){
+			keyView.candButtons[nbuttons].text = "";
+			keyView.candButtons[nbuttons].pat = "";
+		    }
+		    keyView.draw(keypat, null, null, candPage);
+		}
+	    };
+	googleSuggestHandler.postDelayed(googleSuggestTimeout,600);
+    }
+    public void disxxx(){
+	googleSuggestHandler.removeCallbacks(googleSuggestTimeout); // GoogleSuggestを呼ぶのをやめる
+    }
+}
+*/
