@@ -29,9 +29,8 @@ class KeyController {
     private Key selectedKey = null;
     private Key secondKey = null;
     private int nbuttons; // 生成中の候補ボタン番号
-    public int candPage = 1;   // 候補の何ページ目か
-
-    Thread thread;
+    private int candPage = 1;   // 候補の何ページ目か
+    private String clipboardText;
 
     public ArrayList<String> inputPatArray;
     public ArrayList<String> inputCharArray;
@@ -100,6 +99,8 @@ class KeyController {
 	// 2タッチでスライドがあれば全部2タッチ目のスライドとして扱うことにする
 
 	int pointerIndex = ev.findPointerIndex(pointerId);
+
+	// Log.v("Slime-clip-ontouchevent","retval="+slime.getRegWord());
 
 	// Log.v("Slime-ontouch","count="+pointerCount+", actionindex="+actionIndex+", pointerid="+pointerId+", action="+action);
 
@@ -431,11 +432,21 @@ class KeyController {
 	nbuttons = 0;
 	candPage = 1;
 	dict.ncands = 0;
+
+	// ひらがな/カタカナ
 	if(Dict.exactMode){
 	    String hira = inputWord();
 	    String pat = keys.hira2pat(hira); // 無理矢理ひらがなをローマ字パタンに変換
 	    dict.addCandidate(hira,pat);
 	    dict.addCandidate(h2k(hira),pat);
+	}
+
+	// コピーした単語を候補に出す (新規登録用)
+	if(!Dict.exactMode){
+	    String s = slime.getRegWord();
+	    if(s != ""){
+		dict.addCandidate(s,keys.hira2pat(inputWord()));
+	    }
 	}
 
 	// 学習辞書を検索
@@ -459,7 +470,7 @@ class KeyController {
 	// ここはdict.addCandidate()でやるべきでは?
 	// スレッドでやるべき
 	if(nbuttons < keyView.candButtons.length){ // まだ余裕あり
-	    /*
+	    /* スレッドじゃない版
 	    googleSuggestTimeout = new Runnable(){
 		    public void run() {
 			int i;
@@ -479,6 +490,7 @@ class KeyController {
 	    googleSuggestHandler.postDelayed(googleSuggestTimeout,600); // 0.6秒放置するとGoogleSuggestを呼ぶ
 	    */
 	    // http://www.adamrocker.com/blog/261/what-is-the-handler-in-android.html
+	    // を参考にしてスレッド化してみた。効果は不明。
 	    new Thread(new Runnable() {
 		    public void run() {
 			googleSuggestTimeout = new Runnable() {
@@ -582,5 +594,6 @@ class KeyController {
 	sqlDict.limit(1000); // 1000個以上になれば古いエントリを消す
 	slime.input(s);
 	resetInput();
+	slime.clearRegWord();
     }
 }

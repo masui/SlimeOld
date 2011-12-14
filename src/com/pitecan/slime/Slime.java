@@ -2,7 +2,7 @@
 //	Slime for Android
 //
 //	Toshiyuki Masui 2010/9/22 (Lexierra.Android)
-//      Slimeã¨ã—ã¦é ‘å¼µã‚‹ 2011/11/20
+//      Slime’¤È’¤·’¤Æ’´è’Ä¥’¤ë 2011/11/20
 //
 
 package com.pitecan.slime;
@@ -19,7 +19,14 @@ import android.view.KeyEvent;
 import android.widget.Button;
 import android.util.Log;
 
-import android.widget.AbsoluteLayout; // ã“ã‚ŒãŒã‚ã‚‹ã¨ã‚³ãƒ³ãƒ‘ã‚¤ãƒ©ã«æ–‡å¥ã‚’è¨€ã‚ã‚Œã‚‹
+import android.widget.AbsoluteLayout; // ’¤³’¤ì’¤¬’¤¢’¤ë’¤È’¥³’¥ó’¥Ñ’¥¤’¥é’¤Ë’Ê¸’¶ç’¤ò’¸À’¤ï’¤ì’¤ë
+
+import android.content.Context;
+import android.text.ClipboardManager;
+// Android3.0’°Ê’¾å’¤Î’¾ì’¹ç’¤³’¤Á’¤é
+// import android.content.ClipData;
+// import android.content.ClipboardManager;
+
 
 public class Slime extends InputMethodService 
 {
@@ -29,6 +36,8 @@ public class Slime extends InputMethodService
     private Dict dict;
 
     private SQLDict sqlDict;
+    private ClipboardManager cm;
+    private String clipboardText;
 
     static final int MAXCANDS = 20;
 
@@ -42,6 +51,8 @@ public class Slime extends InputMethodService
         super.onCreate();
 	dict = new Dict(getResources().getAssets());
 	sqlDict = new SQLDict(this);
+	cm = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
+	clipboardText = cm.getText().toString();
     }
 
     /**
@@ -71,7 +82,7 @@ public class Slime extends InputMethodService
      */
     @Override public View onCreateInputView() {
 	/*
-	  KeyControllerã‚¯ãƒ©ã‚¹ã‹ã‚‰ä»–ã«ã‚¢ã‚¯ã‚»ã‚¹ã§ãã‚‹ã‚ˆã†ã«ã‚»ãƒƒãƒˆã™ã‚‹
+	  KeyController’¥¯’¥é’¥¹’¤«’¤é’Â¾’¤Ë’¥¢’¥¯’¥»’¥¹’¤Ç’¤­’¤ë’¤è’¤¦’¤Ë’¥»’¥Ã’¥È’¤¹’¤ë
 	 */
         keyView = (KeyView) getLayoutInflater().inflate(R.layout.input, null);
 	keyView.keys = keys;
@@ -93,10 +104,10 @@ public class Slime extends InputMethodService
     }
 
     public void input(String s){
-	getCurrentInputConnection().commitText(s,1); // å…¥åŠ›è²¼ã‚Šä»˜ã‘
+	getCurrentInputConnection().commitText(s,1); // ’Æş’ÎÏ’Å½’¤ê’ÉÕ’¤±
     }
 
-    public void keyDownUp(int keyEventCode) { // ã‚­ãƒ¼å…¥åŠ›
+    public void keyDownUp(int keyEventCode) { // ’¥­’¡¼’Æş’ÎÏ
         getCurrentInputConnection().sendKeyEvent(
                 new KeyEvent(KeyEvent.ACTION_DOWN, keyEventCode));
         getCurrentInputConnection().sendKeyEvent(
@@ -107,7 +118,7 @@ public class Slime extends InputMethodService
 	String composingText = "";
 	for(int i=0;i<keyController.inputPatArray.size();i++){
 	    //Log.v("Slime","pat=" + keyController.inputPatArray.get(i));
-	    // æ›–æ˜§ã‚­ãƒ¼ã®å ´åˆ "[" ã¨ "]" ã§å›²ã‚€
+	    // ’Û£’Ëæ’¥­’¡¼’¤Î’¾ì’¹ç "[" ’¤È "]" ’¤Ç’°Ï’¤à
 	    if(keyController.inputPatArray.get(i).matches(".*\\[..*")){
 		composingText += "(" + keyController.inputCharArray.get(i) + ")";
 	    }
@@ -119,6 +130,23 @@ public class Slime extends InputMethodService
     }
 
     public void hide(){
-	requestHideSelf(0); // IMEã®Viewã‚’éš ã™
+	requestHideSelf(0); // IME’¤ÎView’¤ò’±£’¤¹
+    }
+
+    //
+    // ’¿·’µ¬’ÅĞ’Ï¿’ÍÑ’¤Ë’¥¯’¥ê’¥Ã’¥×’¥Ü’¡¼’¥É’¤Î’Ã±’¸ì’¤ò’ÊÖ’¤¹
+    //
+    public void clearRegWord(){
+	clipboardText = cm.getText().toString();
+    }
+
+    public String getRegWord(){
+	String s = cm.getText().toString();
+	if(s.equals(clipboardText)){
+	    return "";
+	}
+	else {
+	    return s;
+	}
     }
 }
