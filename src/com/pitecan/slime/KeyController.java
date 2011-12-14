@@ -439,7 +439,7 @@ class KeyController {
 	}
 
 	// 学習辞書を検索
-	String[][] s = sqlDict.match(inputPat(),false);
+	String[][] s = sqlDict.match(inputPat(),Dict.exactMode);
 	for(int k=0;k<s.length;k++){
 	    dict.addCandidate(s[k][0],s[k][1]);
 	}
