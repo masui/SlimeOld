@@ -93,6 +93,7 @@ class KeyController {
 	    googleSuggestTimeout = new Runnable() {
 		    public void run() {
 			int i;
+			Log.v("Slime","Call GoogleSuggest");
 			String[] suggestions = GoogleSuggest.suggest(inputWord());
 			for(i=0;nbuttons < keyView.candButtons.length && suggestions[i] != "";i++,nbuttons++){
 			    keyView.candButtons[nbuttons].text = suggestions[i];
@@ -105,7 +106,8 @@ class KeyController {
 			keyView.draw(keypat, null, null, candPage);
 		    }
 		};
-	    googleSuggestHandler.postDelayed(googleSuggestTimeout,1000); // 1秒待ってGoogle検索する
+	    googleSuggestHandler.post(googleSuggestTimeout);
+	    //googleSuggestHandler.postDelayed(googleSuggestTimeout,1000); // 1秒待ってGoogle検索する
 	}
 	public void disable(){
 	    googleSuggestHandler.removeCallbacks(googleSuggestTimeout); // GoogleSuggestを呼ぶのをやめる
@@ -113,6 +115,15 @@ class KeyController {
     }
     GoogleRunnable googleRunnable;
     Thread googleThread;
+
+    boolean googled = false;
+    private void askGoogle(){
+	if(googled) return;
+	googled = true;
+	googleRunnable = new GoogleRunnable();
+	googleThread = new Thread(googleRunnable);
+	googleThread.start();
+    }
 
     //
     // タッチイベント処理
@@ -191,8 +202,17 @@ class KeyController {
 		downKey = findKey(keypat, (int)downx, (int)downy);
 		if(downKey != null){ // キーの上を押した
 		    if(downKey.str == "次"){
-			candPage++;
-			keyView.draw(keypat, downKey, null, candPage);
+			if(!googled){
+			    if(keyView.candLines >= 3){
+				candPage++;
+				keyView.draw(keypat, downKey, null, candPage);
+			    }
+			    askGoogle();
+			}
+			else {
+			    candPage++;
+			    keyView.draw(keypat, downKey, null, candPage);
+			}
 			state = State.STATEFB;
 		    }
 		    else if(downKey.str == "前"){
@@ -426,6 +446,7 @@ class KeyController {
 	    keyView.candButtons[i].visible = false;
 	}
 	candPage = 0;
+	googled = false;
     }
 
     public void reset(){
@@ -506,34 +527,36 @@ class KeyController {
 	// Google Suggest検索
 	// ここはdict.addCandidate()でやるべきでは?
 	// スレッドでやるべき
-	if(nbuttons < keyView.candButtons.length){ // まだ余裕あり
-	    /* スレッドじゃない版
-	    googleSuggestTimeout = new Runnable(){
-		    public void run() {
-			int i;
-			String[] suggestions = GoogleSuggest.suggest(inputWord());
-			for(i=0;nbuttons < keyView.candButtons.length && suggestions[i] != "";i++,nbuttons++){
-			    // dict.addCandidate(suggestions[i],keys.hira2pat(inputWord()));
-			    keyView.candButtons[nbuttons].text = suggestions[i];
-			    keyView.candButtons[nbuttons].pat = keys.hira2pat(inputWord());
+	if(false){
+	    if(nbuttons < keyView.candButtons.length){ // まだ余裕あり
+		/* スレッドじゃない版
+		googleSuggestTimeout = new Runnable(){
+			public void run() {
+			    int i;
+			    String[] suggestions = GoogleSuggest.suggest(inputWord());
+			    for(i=0;nbuttons < keyView.candButtons.length && suggestions[i] != "";i++,nbuttons++){
+				// dict.addCandidate(suggestions[i],keys.hira2pat(inputWord()));
+				keyView.candButtons[nbuttons].text = suggestions[i];
+				keyView.candButtons[nbuttons].pat = keys.hira2pat(inputWord());
+			    }
+			    for(;nbuttons<keyView.candButtons.length;nbuttons++){
+				keyView.candButtons[nbuttons].text = "";
+				keyView.candButtons[nbuttons].pat = "";
+			    }
+			    keyView.draw(keypat, null, null, candPage);
 			}
-			for(;nbuttons<keyView.candButtons.length;nbuttons++){
-			    keyView.candButtons[nbuttons].text = "";
-			    keyView.candButtons[nbuttons].pat = "";
-			}
-			keyView.draw(keypat, null, null, candPage);
-		    }
-		};
-	    googleSuggestHandler.postDelayed(googleSuggestTimeout,600); // 0.6秒放置するとGoogleSuggestを呼ぶ
-	    */
-
-	    // http://www.adamrocker.com/blog/261/what-is-the-handler-in-android.html
-	    // を参考にしてスレッド化してみた。効果は不明。
-
-	    googleRunnable = new GoogleRunnable();
-	    googleThread = new Thread(googleRunnable);
-	    googleThread.start();
-	    // new Thread(googleRunnable).start();
+		    };
+		googleSuggestHandler.postDelayed(googleSuggestTimeout,600); // 0.6秒放置するとGoogleSuggestを呼ぶ
+		*/
+		
+		// http://www.adamrocker.com/blog/261/what-is-the-handler-in-android.html
+		// を参考にしてスレッド化してみた。効果は不明。
+		
+		googleRunnable = new GoogleRunnable();
+		googleThread = new Thread(googleRunnable);
+		googleThread.start();
+		// new Thread(googleRunnable).start();
+	    }
 	}
 	// 候補をボタンに
 	if(dict.ncands > 0){
@@ -618,5 +641,4 @@ class KeyController {
 	resetInput();
 	slime.clearRegWord();
     }
-
 }

@@ -62,6 +62,7 @@ public class KeyView extends View {
 
     public Keys keys;
     public KeyController keyController = null;
+    public int candLines;
     private Key[] keypat = null;
     private Key selectedKey;
     private Key selectedKey2;
@@ -172,6 +173,9 @@ public class KeyView extends View {
 		    break;
 		}
 	    }
+	}
+	for(candLines=0;candLines<12;candLines++){
+	    if(curright[candLines] == leftlimit[candLines] + buttonMarginX) break;
 	}
 	for(;buttonIndex<candButtons.length;buttonIndex++){
 	    CandButton button = candButtons[buttonIndex];

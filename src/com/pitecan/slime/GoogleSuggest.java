@@ -36,11 +36,11 @@ class GoogleSuggest {
 	    // http://stackoverflow.com/questions/693997/how-to-set-httpresponse-timeout-for-android-in-java
 	    HttpParams httpParameters = new BasicHttpParams();
 	    // Set the timeout in milliseconds until a connection is established.
-	    int timeoutConnection = 1000;
+	    int timeoutConnection = 1500;
 	    HttpConnectionParams.setConnectionTimeout(httpParameters, timeoutConnection);
 	    // Set the default socket timeout (SO_TIMEOUT) 
 	    // in milliseconds which is the timeout for waiting for data.
-	    int timeoutSocket = 1000;
+	    int timeoutSocket = 1500;
 	    HttpConnectionParams.setSoTimeout(httpParameters, timeoutSocket);
 	    DefaultHttpClient httpClient = new DefaultHttpClient(httpParameters);
 
@@ -51,9 +51,9 @@ class GoogleSuggest {
 	    HttpGet request = new HttpGet(urlstr);
 	    HttpResponse httpResponse = null;
 	    try {
-		Log.d("Slime", "Google Execute");
+		//Log.d("Slime", "Google Execute");
 		httpResponse = httpClient.execute(request);
-		Log.d("Slime", "Response get");
+		//Log.d("Slime", "Response get");
 	    } catch (Exception e) {
 		//Log.d("HttpSampleActivity", "Error Execute");
 	    }
