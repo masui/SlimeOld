@@ -113,6 +113,7 @@ public class Dict {
 	    keyLink[i] = -1;
 	}
 	for(int i=0;i<dict.length;i++){
+	    if(dict[i].word.startsWith("*")) continue;
 	    int ind = patInd(dict[i].pat);
 	    if(keyLink[ind] < 0){
 		cur[ind] = i;
@@ -205,7 +206,7 @@ public class Dict {
     static void addConnectedCandidate(String word, String pat, int connection, int level, int matchlen){ // 候補追加
 	int i;
 	if(word == "") return; // 2011/11/3
-	if(word.charAt(0) == '*') return;
+	//	if(word.charAt(0) == '*') return; ////???????
 
 	String p = "";
 	for(i=0;i<level+1;i++) p += patStack[i];
