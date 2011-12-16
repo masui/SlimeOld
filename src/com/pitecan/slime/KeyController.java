@@ -517,19 +517,12 @@ class KeyController {
 	}
 
 	// 通常辞書を検索
-	dict.search(inputPat());  // 中でaddCandidate()を呼んでいる
+	// search()の中でaddCandidate()を呼んでいる
+	// 辞書が大きいと時間がかかるのでスレッド化した方がいいかも
+	dict.search(inputPat());
 
-	// 候補をボタンに
-	if(dict.ncands > 0){
-	    for(;nbuttons<keyView.candButtons.length && i <dict.ncands;i++,nbuttons++){
-		keyView.candButtons[nbuttons].text = dict.candWords[i];
-		keyView.candButtons[nbuttons].pat = dict.candPatterns[i];
-	    }
-	}
-
-	// Google Suggest検索
+	// Google Suggest検索をここでやるかも?
 	// ここはdict.addCandidate()でやるべきでは?
-	// スレッドでやるべき
 	if(false){
 	    if(nbuttons < keyView.candButtons.length){ // まだ余裕あり
 		/* スレッドじゃない版
@@ -561,6 +554,7 @@ class KeyController {
 		// new Thread(googleRunnable).start();
 	    }
 	}
+
 	// 候補をボタンに
 	if(dict.ncands > 0){
 	    for(;nbuttons<keyView.candButtons.length && i <dict.ncands;i++,nbuttons++){

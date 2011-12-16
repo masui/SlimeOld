@@ -108,7 +108,6 @@ public class Dict {
 	// 先頭読みが同じ単語のリスト
 	//
 	int[] cur;
-	Log.v("Slime","initLink() start");
 	cur = new int[10];
 	for(int i=0;i<10;i++){
 	    keyLink[i] = -1;
@@ -125,7 +124,6 @@ public class Dict {
 	    }
 	    dict[i].keyLink = -1; // リンクの末尾
 	}
-	Log.v("Slime","initLink() .....");
 	//
 	// コネクションつながりのリスト
 	//
@@ -145,7 +143,6 @@ public class Dict {
 	    }
 	    dict[i].connectionLink = -1; // リンクの末尾
 	}
-	Log.v("Slime","initLink() end");
     }
 
     static String patInit(String pat, int level){
@@ -252,11 +249,6 @@ public class Dict {
     private static boolean patIndInitialized = false;
 
     public static int patInd(String str){
-	// Pattern re;
-	// Matcher m;
-	// re = Pattern.compile("^(\\[[^\\]]+\\])(.*)$");
-	// m = re.matcher(pat);
-	//   if(m.find()){
 	if(! patIndInitialized){
 	    patIndPattern[0] = Pattern.compile("\\[?[aiueoAIUEO].*");
 	    patIndPattern[1] = Pattern.compile("\\[?[kg].*");
@@ -274,17 +266,5 @@ public class Dict {
 	    if(matcher.find()) return i;
 	}
 	return 9;
-	/*
-	if(Pattern.matches("\\[?[aiueoAIUEO].*",str)) return 0;
-	if(Pattern.matches("\\[?[kg].*",str))         return 1;
-	if(Pattern.matches("\\[?[sz].*",str))         return 2;
-	if(Pattern.matches("\\[?[tdT].*",str))        return 3;
-	if(Pattern.matches("\\[?[n].*",str))          return 4;
-	if(Pattern.matches("\\[?[hbp].*",str))        return 5;
-	if(Pattern.matches("\\[?[m].*",str))          return 6;
-	if(Pattern.matches("\\[?[yY].*",str))         return 7;
-	if(Pattern.matches("\\[?[r].*",str))          return 8;
-	return 9;
-	*/
     }
 }

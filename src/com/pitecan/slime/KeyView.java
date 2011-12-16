@@ -162,7 +162,7 @@ public class KeyView extends View {
 	    for(int i=0;i<12;i++){
 		if(curright[i] + w + buttonMarginX <= rightlimit[i]){
 		    x = curright[i];
-		    y = buttonMarginY + i * (buttonHeight+buttonMarginY);
+		    y = buttonMarginY + (i % 3) * (buttonHeight+buttonMarginY);
 		    button.rect.pos.x = (int)x;
 		    button.rect.pos.y = (int)y;
 		    button.rect.size.w = (int)w;
@@ -250,13 +250,13 @@ public class KeyView extends View {
 		if(! button.visible) continue;
 		float y = buttonMarginY + (button.row % 3) * (buttonHeight+buttonMarginY);
 		canvas.drawRect((float)button.rect.pos.x,
-				y,
+				(float)button.rect.pos.y,
 				(float)(button.rect.pos.x+button.rect.size.w),
 				(float)(y+button.rect.size.h),
 				buttonPaint);
 		canvas.drawText(button.text,
-				button.rect.pos.x+buttonTextMargin,
-				y + (buttonHeight-(ascent+descent))/2,
+				button.rect.pos.x + buttonTextMargin,
+				button.rect.pos.y + (buttonHeight-(ascent+descent))/2,
 				buttonTextPaint);
 	    }
 	}
