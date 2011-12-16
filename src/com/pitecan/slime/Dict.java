@@ -108,6 +108,7 @@ public class Dict {
 	// 先頭読みが同じ単語のリスト
 	//
 	int[] cur;
+	Log.v("Slime","initLink() start");
 	cur = new int[10];
 	for(int i=0;i<10;i++){
 	    keyLink[i] = -1;
@@ -124,6 +125,7 @@ public class Dict {
 	    }
 	    dict[i].keyLink = -1; // リンクの末尾
 	}
+	Log.v("Slime","initLink() .....");
 	//
 	// コネクションつながりのリスト
 	//
@@ -143,6 +145,7 @@ public class Dict {
 	    }
 	    dict[i].connectionLink = -1; // リンクの末尾
 	}
+	Log.v("Slime","initLink() end");
     }
 
     static String patInit(String pat, int level){
@@ -245,7 +248,33 @@ public class Dict {
 	}
     }
 
+    private static Pattern[] patIndPattern = new Pattern[10];
+    private static boolean patIndInitialized = false;
+
     public static int patInd(String str){
+	// Pattern re;
+	// Matcher m;
+	// re = Pattern.compile("^(\\[[^\\]]+\\])(.*)$");
+	// m = re.matcher(pat);
+	//   if(m.find()){
+	if(! patIndInitialized){
+	    patIndPattern[0] = Pattern.compile("\\[?[aiueoAIUEO].*");
+	    patIndPattern[1] = Pattern.compile("\\[?[kg].*");
+	    patIndPattern[2] = Pattern.compile("\\[?[sz].*");
+	    patIndPattern[3] = Pattern.compile("\\[?[tdT].*");
+	    patIndPattern[4] = Pattern.compile("\\[?[n].*");
+	    patIndPattern[5] = Pattern.compile("\\[?[hbp].*");
+	    patIndPattern[6] = Pattern.compile("\\[?[m].*");
+	    patIndPattern[7] = Pattern.compile("\\[?[yY].*");
+	    patIndPattern[8] = Pattern.compile("\\[?[r].*");
+	    patIndInitialized = true;
+	}
+	for(int i=0;i<9;i++){
+	    Matcher matcher = patIndPattern[i].matcher(str);
+	    if(matcher.find()) return i;
+	}
+	return 9;
+	/*
 	if(Pattern.matches("\\[?[aiueoAIUEO].*",str)) return 0;
 	if(Pattern.matches("\\[?[kg].*",str))         return 1;
 	if(Pattern.matches("\\[?[sz].*",str))         return 2;
@@ -256,5 +285,6 @@ public class Dict {
 	if(Pattern.matches("\\[?[yY].*",str))         return 7;
 	if(Pattern.matches("\\[?[r].*",str))          return 8;
 	return 9;
+	*/
     }
 }

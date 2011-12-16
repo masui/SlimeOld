@@ -103,6 +103,7 @@ class KeyController {
 			    keyView.candButtons[nbuttons].text = "";
 			    keyView.candButtons[nbuttons].pat = "";
 			}
+			Log.v("Slime","Draw in googleSuggest-run");
 			keyView.draw(keypat, null, null, candPage);
 		    }
 		};
@@ -120,6 +121,7 @@ class KeyController {
     private void askGoogle(){
 	if(googled) return;
 	googled = true;
+	Log.v("Slime","askGoogle()");
 	googleRunnable = new GoogleRunnable();
 	googleThread = new Thread(googleRunnable);
 	googleThread.start();
@@ -157,7 +159,7 @@ class KeyController {
 	case MotionEvent.ACTION_DOWN:
 	case MotionEvent.ACTION_POINTER_DOWN:
 	    if(pointerId == 0){
-		Log.v("Slime","DOWN1 - "+mousex);
+		//Log.v("Slime","DOWN1 - "+mousex);
 		trans(Event.DOWN1);
 	    }
 	    else {
@@ -205,6 +207,7 @@ class KeyController {
 			if(!googled){
 			    if(keyView.candLines >= 3){
 				candPage++;
+				Log.v("Slime","Draw in trans");
 				keyView.draw(keypat, downKey, null, candPage);
 			    }
 			    askGoogle();
@@ -579,6 +582,7 @@ class KeyController {
 	int inputlen = inputCharArray.size();
 	boolean toExact = false;
 	if(c == "←"){
+	    googled = false;
 	    if(inputlen == 0){
                 slime.keyDownUp(KeyEvent.KEYCODE_DEL);
 	    }

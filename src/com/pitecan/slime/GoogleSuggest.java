@@ -51,9 +51,9 @@ class GoogleSuggest {
 	    HttpGet request = new HttpGet(urlstr);
 	    HttpResponse httpResponse = null;
 	    try {
-		//Log.d("Slime", "Google Execute");
+		Log.d("Slime", "Google Execute");
 		httpResponse = httpClient.execute(request);
-		//Log.d("Slime", "Response get");
+		Log.d("Slime", "Response get");
 	    } catch (Exception e) {
 		//Log.d("HttpSampleActivity", "Error Execute");
 	    }
