@@ -558,8 +558,10 @@ class KeyController {
 	// 候補をボタンに
 	if(dict.ncands > 0){
 	    for(;nbuttons<keyView.candButtons.length && i <dict.ncands;i++,nbuttons++){
-		keyView.candButtons[nbuttons].text = dict.candWords[i];
-		keyView.candButtons[nbuttons].pat = dict.candPatterns[i];
+		//keyView.candButtons[nbuttons].text = dict.candWords[i];
+		//keyView.candButtons[nbuttons].pat = dict.candPatterns[i];
+		keyView.candButtons[nbuttons].text = dict.candidates[i].word;
+		keyView.candButtons[nbuttons].pat = dict.candidates[i].pat;
 	    }
 	}
 

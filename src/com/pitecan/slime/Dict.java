@@ -32,14 +32,23 @@ class DictEntry {
     }
 }
 
+class Candidate {
+    String pat, word;
+    int weight;
+
+    public Candidate(String p, String w, int weight){
+    }
+}
+
 public class Dict {
     static DictEntry[] dict;
     static int[] keyLink = new int[10];
     static int[] connectionLink = new int[2000];
 
-    public static String[] candWords = new String[Slime.MAXCANDS];      // 候補単語リスト
-    public static String[] candPatterns = new String[Slime.MAXCANDS];   // その読み
-    public static int[] candWeight = new int[Slime.MAXCANDS];
+    //public static String[] candWords = new String[Slime.MAXCANDS];      // 候補単語リスト
+    //public static String[] candPatterns = new String[Slime.MAXCANDS];   // その読み
+    //public static int[] candWeight = new int[Slime.MAXCANDS];
+    public static Candidate[] candidates = new Candidate[Slime.MAXCANDS];  // 候補単語リスト
     public static int ncands = 0;
 
     static Pattern[] regexp = new Pattern[50];       // パタンの部分文字列にマッチするRegExp
@@ -54,6 +63,10 @@ public class Dict {
     // assetsディレクトリの中のdict.txtを使用
     //
     public Dict(AssetManager as){
+	for(int i=0;i<Slime.MAXCANDS;i++){
+	    candidates[i] = new Candidate("","",0);
+	}
+
 	try {
 	    InputStream is;
 	    InputStreamReader in;
@@ -241,15 +254,19 @@ public class Dict {
 
     private static void addCandidateWithLevel(String word, String pat, int level){
 	int i;
-	//Log.v("Slime","addCandidate: word="+word+" pat="+pat+" ncands="+ncands);
+	Log.v("Slime","addCandidate: word="+word+" pat="+pat+" ncands="+ncands);
 	if(ncands >= Slime.MAXCANDS) return;
 	for(i=0;i<ncands;i++){
-	    if(candWords[i].equals(word)) break;
+	    //if(candWords[i].equals(word)) break;
+	    if(candidates[i].word.equals(word)) break;
 	}
 	if(i >= ncands){
-	    candPatterns[ncands] = pat;
-	    candWords[ncands] = word;
-	    candWeight[ncands] = level;
+	    //candPatterns[ncands] = pat;
+	    //candWords[ncands] = word;
+	    //candWeight[ncands] = level;
+	    candidates[ncands].pat = pat;
+	    candidates[ncands].word = word;
+	    candidates[ncands].weight = level;
 	    //Log.v("Slime", "Add "+word+" to candidates");
 	    ncands++;
 	}
