@@ -249,9 +249,9 @@ public class Dict {
 	addCandidateWithLevel(word,pat,0);
     }
 
-    private static void addCandidateWithLevel(String word, String pat, int level){
+    public static void addCandidateWithLevel(String word, String pat, int level){
 	int i;
-	Log.v("Slime","addCandidate: word="+word+" pat="+pat+" ncands="+ncands+" level="+level);
+	// Log.v("Slime","addCandidate: word="+word+" pat="+pat+" ncands="+ncands+" level="+level);
 	if(ncands >= Slime.MAXCANDS) return;
 	for(i=0;i<ncands;i++){
 	    if(candidates[i].word.equals(word)) break;

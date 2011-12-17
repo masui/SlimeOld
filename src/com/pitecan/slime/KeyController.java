@@ -10,14 +10,19 @@ import android.view.KeyEvent;
 import android.content.res.Resources;
 import android.util.Log;
 
-//import java.util.ArrayList;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 import android.os.Handler;
 
-class DataComparator implements java.util.Comparator {
+class CandidateComparator implements java.util.Comparator {
     public int compare(Object o1, Object o2){
-	return ((Candidate)o1).weight - ((Candidate)o2).weight;
+	int w1 = ((Candidate)o1).weight;
+	int w2 = ((Candidate)o2).weight;
+	int l1 = ((Candidate)o1).word.length();
+	int l2 = ((Candidate)o2).word.length();
+	if(w1 != w2) return w1 - w2;
+	return l1 - l2;
     }
 }
 
@@ -505,8 +510,8 @@ class KeyController {
 	if(Dict.exactMode){
 	    String hira = inputWord();
 	    String pat = keys.hira2pat(hira); // 無理矢理ひらがなをローマ字パタンに変換
-	    dict.addCandidate(hira,pat);
-	    dict.addCandidate(h2k(hira),pat);
+	    dict.addCandidateWithLevel(hira,pat,-100);
+	    dict.addCandidateWithLevel(h2k(hira),pat,-99);
 	}
 
 	// コピーした単語を候補に出す (新規登録用)
@@ -520,7 +525,7 @@ class KeyController {
 	// 学習辞書を検索
 	String[][] s = sqlDict.match(inputPat(),Dict.exactMode);
 	for(int k=0;k<s.length;k++){
-	    dict.addCandidate(s[k][0],s[k][1]);
+	    dict.addCandidateWithLevel(s[k][0],s[k][1],-50+k);
 	}
 
 	// 通常辞書を検索
@@ -566,7 +571,7 @@ class KeyController {
 	for(int j=dict.ncands;j<Slime.MAXCANDS;j++){
 	    dict.candidates[j].weight = 100;
 	}
-	Arrays.sort(dict.candidates, new DataComparator());
+	Arrays.sort(dict.candidates, new CandidateComparator());
 
 	// 候補をボタンに
 	if(dict.ncands > 0){
