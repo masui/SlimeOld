@@ -45,9 +45,6 @@ public class Dict {
     static int[] keyLink = new int[10];
     static int[] connectionLink = new int[2000];
 
-    //public static String[] candWords = new String[Slime.MAXCANDS];      // 候補単語リスト
-    //public static String[] candPatterns = new String[Slime.MAXCANDS];   // その読み
-    //public static int[] candWeight = new int[Slime.MAXCANDS];
     public static Candidate[] candidates = new Candidate[Slime.MAXCANDS];  // 候補単語リスト
     public static int ncands = 0;
 
@@ -254,16 +251,12 @@ public class Dict {
 
     private static void addCandidateWithLevel(String word, String pat, int level){
 	int i;
-	Log.v("Slime","addCandidate: word="+word+" pat="+pat+" ncands="+ncands);
+	Log.v("Slime","addCandidate: word="+word+" pat="+pat+" ncands="+ncands+" level="+level);
 	if(ncands >= Slime.MAXCANDS) return;
 	for(i=0;i<ncands;i++){
-	    //if(candWords[i].equals(word)) break;
 	    if(candidates[i].word.equals(word)) break;
 	}
 	if(i >= ncands){
-	    //candPatterns[ncands] = pat;
-	    //candWords[ncands] = word;
-	    //candWeight[ncands] = level;
 	    candidates[ncands].pat = pat;
 	    candidates[ncands].word = word;
 	    candidates[ncands].weight = level;

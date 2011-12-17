@@ -562,17 +562,15 @@ class KeyController {
 	    }
 	}
 
-	for(int j=0;j<dict.ncands;j++){
+	// 優先度に従って候補を並べなおし
+	for(int j=dict.ncands;j<Slime.MAXCANDS;j++){
 	    dict.candidates[j].weight = 100;
 	}
-	Arrays.sort(dict.candidates, new DataComparator()); // DataComparatorで順序関係を指定
-
+	Arrays.sort(dict.candidates, new DataComparator());
 
 	// 候補をボタンに
 	if(dict.ncands > 0){
 	    for(;nbuttons<keyView.candButtons.length && i <dict.ncands;i++,nbuttons++){
-		//keyView.candButtons[nbuttons].text = dict.candWords[i];
-		//keyView.candButtons[nbuttons].pat = dict.candPatterns[i];
 		keyView.candButtons[nbuttons].text = dict.candidates[i].word;
 		keyView.candButtons[nbuttons].pat = dict.candidates[i].pat;
 	    }
