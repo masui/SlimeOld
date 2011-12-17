@@ -39,6 +39,7 @@ public class Dict {
 
     public static String[] candWords = new String[Slime.MAXCANDS];      // 候補単語リスト
     public static String[] candPatterns = new String[Slime.MAXCANDS];   // その読み
+    public static int[] candWeight = new int[Slime.MAXCANDS];
     public static int ncands = 0;
 
     static Pattern[] regexp = new Pattern[50];       // パタンの部分文字列にマッチするRegExp
@@ -114,6 +115,7 @@ public class Dict {
 	}
 	for(int i=0;i<dict.length;i++){
 	    if(dict[i].word.startsWith("*")) continue;
+	    if(dict[i].inConnection < 1000) continue; // 活用の接続の場合
 	    int ind = patInd(dict[i].pat);
 	    if(keyLink[ind] < 0){
 		cur[ind] = i;
@@ -206,7 +208,7 @@ public class Dict {
     static void addConnectedCandidate(String word, String pat, int connection, int level, int matchlen){ // 候補追加
 	int i;
 	if(word == "") return; // 2011/11/3
-	//	if(word.charAt(0) == '*') return; ////???????
+	if(word.charAt(0) == '*') return; // 単語活用の途中
 
 	String p = "";
 	for(i=0;i<level+1;i++) p += patStack[i];
@@ -228,10 +230,16 @@ public class Dict {
 	//  if(level > 0 && totalinputlen <= p.length / 2){
 	//    return n;
 	//  }
-	addCandidate(w,p);
+
+	//addCandidate(w,p);
+	addCandidateWithLevel(w,p,level);
     }
 
     public static void addCandidate(String word, String pat){
+	addCandidateWithLevel(word,pat,0);
+    }
+
+    private static void addCandidateWithLevel(String word, String pat, int level){
 	int i;
 	//Log.v("Slime","addCandidate: word="+word+" pat="+pat+" ncands="+ncands);
 	if(ncands >= Slime.MAXCANDS) return;
@@ -241,6 +249,7 @@ public class Dict {
 	if(i >= ncands){
 	    candPatterns[ncands] = pat;
 	    candWords[ncands] = word;
+	    candWeight[ncands] = level;
 	    //Log.v("Slime", "Add "+word+" to candidates");
 	    ncands++;
 	}
