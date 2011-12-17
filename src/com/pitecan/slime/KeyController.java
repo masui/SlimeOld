@@ -134,6 +134,7 @@ class KeyController {
 	if(googled) return;
 	googled = true;
 	Log.v("Slime","askGoogle()");
+	keyView.draw2(keypat, null, null, candPage);
 	googleRunnable = new GoogleRunnable();
 	googleThread = new Thread(googleRunnable);
 	googleThread.start();

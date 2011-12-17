@@ -129,11 +129,23 @@ public class KeyView extends View {
 	return true;
     }
 
+    private int bgcolor;
+
+    public void draw2(Key keypat[], Key selectedKey, Key selectedKey2, int candPage){
+	this.keypat = keypat;
+	this.selectedKey = selectedKey;
+	this.selectedKey2 = selectedKey2;
+	this.candPage = candPage;
+	bgcolor = 0xffd0d0d0;
+	invalidate();
+    }
+
     public void draw(Key keypat[], Key selectedKey, Key selectedKey2, int candPage){
 	this.keypat = keypat;
 	this.selectedKey = selectedKey;
 	this.selectedKey2 = selectedKey2;
 	this.candPage = candPage;
+	bgcolor = 0xfff0f0f0;
 	invalidate();
     }
 
@@ -190,7 +202,8 @@ public class KeyView extends View {
 
 	//Log.v("Slime","onDraw - length="+keypat.length);
 
-	canvas.drawColor(0xfff0f0f0);
+	//canvas.drawColor(0xfff0f0f0);
+	canvas.drawColor(bgcolor);
 	for(int i=0;i<keypat.length;i++){
 	    Key key = keypat[i];
 	    Paint paint = (key.rect.size.w <= 24 ? tinyKeyPaint : key.rect.size.w <= 32 ? smallKeyPaint : keyPaint);
