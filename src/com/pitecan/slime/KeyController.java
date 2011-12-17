@@ -517,7 +517,7 @@ class KeyController {
 	// コピーした単語を候補に出す (新規登録用)
 	if(!Dict.exactMode){
 	    String s = slime.getRegWord();
-	    if(s != ""){
+	    if(s != "" && s.length() < 10){ // コピー文字列が短い場合だけ候補にする
 		dict.addCandidate(s,keys.hira2pat(inputWord()));
 	    }
 	}
