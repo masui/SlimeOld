@@ -10,9 +10,16 @@ import android.view.KeyEvent;
 import android.content.res.Resources;
 import android.util.Log;
 
-import java.util.ArrayList;
+//import java.util.ArrayList;
+import java.util.*;
 
 import android.os.Handler;
+
+class DataComparator implements java.util.Comparator {
+    public int compare(Object o1, Object o2){
+	return ((Candidate)o1).weight - ((Candidate)o2).weight;
+    }
+}
 
 class KeyController {
     // これらはSlime.onCreateInputView()でセットされる
@@ -554,6 +561,12 @@ class KeyController {
 		// new Thread(googleRunnable).start();
 	    }
 	}
+
+	for(int j=0;j<dict.ncands;j++){
+	    dict.candidates[j].weight = 100;
+	}
+	Arrays.sort(dict.candidates, new DataComparator()); // DataComparatorで順序関係を指定
+
 
 	// 候補をボタンに
 	if(dict.ncands > 0){
