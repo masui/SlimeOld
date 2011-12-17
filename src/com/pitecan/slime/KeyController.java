@@ -453,7 +453,7 @@ class KeyController {
     // 文字が入力されたときの処理
     // 独立させたいものだが
     //
-    private void resetInput(){
+    public void resetInput(){
 	inputPatArray = new ArrayList<String>();
 	inputCharArray = new ArrayList<String>();
 	for(int i=0;i<keyView.candButtons.length;i++){

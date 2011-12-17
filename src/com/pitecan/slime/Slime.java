@@ -98,6 +98,8 @@ public class Slime extends InputMethodService
     }
 
     @Override public void onStartInputView(EditorInfo info, boolean restarting) {
+	// 別アプリに切り替わったときなど初期化する
+	keyController.resetInput();
     }
 
     @Override public void onFinishInput() {
