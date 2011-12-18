@@ -26,12 +26,12 @@
 
 ## TODO / バグ
 
-* GoogleSuggestを見に行って固まる
-* 単漢字変換でも学習単語が出る
 * [android.widget.PopupWindow でキー表示できるようにする](http://www.adamrocker.com/blog/256/simeji-for-android-flick-input.html)
 * 辞書の整備
 * 単語予測
 * 単語登録
+* 辞書が大きくなると検索が遅い
+  * 全く異なる変換方式にすることも考える必要あり
 
 <!--
 コメント
