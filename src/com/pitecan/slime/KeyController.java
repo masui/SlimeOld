@@ -32,6 +32,7 @@ class KeyController {
     public Keys keys;
     public LocalDict dict;
     public SQLDict sqlDict;
+    public Search search;
     public Slime slime;
 
     private Key[] keypat;          // 現在のキー配列
@@ -505,80 +506,46 @@ class KeyController {
 	int i=0;
 	nbuttons = 0;
 	candPage = 1;
-	dict.ncands = 0;
+	search.ncands = 0;
 
 	// ひらがな/カタカナ
 	if(LocalDict.exactMode){
 	    String hira = inputWord();
 	    String pat = keys.hira2pat(hira); // 無理矢理ひらがなをローマ字パタンに変換
-	    dict.addCandidateWithLevel(hira,pat,-100);
-	    dict.addCandidateWithLevel(h2k(hira),pat,-99);
+	    search.addCandidateWithLevel(hira,pat,-100);
+	    search.addCandidateWithLevel(h2k(hira),pat,-99);
 	}
 
 	// コピーした単語を候補に出す (新規登録用)
 	if(!LocalDict.exactMode){
 	    String s = slime.getRegWord();
 	    if(s != "" && s.length() < 10){ // コピー文字列が短い場合だけ候補にする
-		dict.addCandidate(s,keys.hira2pat(inputWord()));
+		search.addCandidate(s,keys.hira2pat(inputWord()));
 	    }
 	}
 
 	// 学習辞書を検索
 	String[][] s = sqlDict.match(inputPat(),LocalDict.exactMode);
 	for(int k=0;k<s.length;k++){
-	    dict.addCandidateWithLevel(s[k][0],s[k][1],-50+k);
+	    search.addCandidateWithLevel(s[k][0],s[k][1],-50+k);
 	}
 
 	// 通常辞書を検索
 	// search()の中でaddCandidate()を呼んでいる
 	// 辞書が大きいと時間がかかるのでスレッド化した方がいいかも
-	dict.search(inputPat());
-
-	// Google Suggest検索をここでやるかも?
-	// ここはdict.addCandidate()でやるべきでは?
-	if(false){
-	    if(nbuttons < keyView.candButtons.length){ // まだ余裕あり
-		/* スレッドじゃない版
-		googleSuggestTimeout = new Runnable(){
-			public void run() {
-			    int i;
-			    String[] suggestions = GoogleSuggest.suggest(inputWord());
-			    for(i=0;nbuttons < keyView.candButtons.length && suggestions[i] != "";i++,nbuttons++){
-				// dict.addCandidate(suggestions[i],keys.hira2pat(inputWord()));
-				keyView.candButtons[nbuttons].text = suggestions[i];
-				keyView.candButtons[nbuttons].pat = keys.hira2pat(inputWord());
-			    }
-			    for(;nbuttons<keyView.candButtons.length;nbuttons++){
-				keyView.candButtons[nbuttons].text = "";
-				keyView.candButtons[nbuttons].pat = "";
-			    }
-			    keyView.draw(keypat, null, null, candPage);
-			}
-		    };
-		googleSuggestHandler.postDelayed(googleSuggestTimeout,600); // 0.6秒放置するとGoogleSuggestを呼ぶ
-		*/
-		
-		// http://www.adamrocker.com/blog/261/what-is-the-handler-in-android.html
-		// を参考にしてスレッド化してみた。効果は不明。
-		
-		googleRunnable = new GoogleRunnable();
-		googleThread = new Thread(googleRunnable);
-		googleThread.start();
-		// new Thread(googleRunnable).start();
-	    }
-	}
+	search.search(inputPat());
 
 	// 優先度に従って候補を並べなおし
-	for(int j=dict.ncands;j<Slime.MAXCANDS;j++){
-	    dict.candidates[j].weight = 100;
+	for(int j=search.ncands;j<Slime.MAXCANDS;j++){
+	    search.candidates[j].weight = 100;
 	}
-	Arrays.sort(dict.candidates, new CandidateComparator());
+	Arrays.sort(search.candidates, new CandidateComparator());
 
 	// 候補をボタンに
-	if(dict.ncands > 0){
-	    for(;nbuttons<keyView.candButtons.length && i <dict.ncands;i++,nbuttons++){
-		keyView.candButtons[nbuttons].text = dict.candidates[i].word;
-		keyView.candButtons[nbuttons].pat = dict.candidates[i].pat;
+	if(search.ncands > 0){
+	    for(;nbuttons<keyView.candButtons.length && i <search.ncands;i++,nbuttons++){
+		keyView.candButtons[nbuttons].text = search.candidates[i].word;
+		keyView.candButtons[nbuttons].pat = search.candidates[i].pat;
 	    }
 	}
 

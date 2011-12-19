@@ -32,6 +32,7 @@ class DictEntry {
     }
 }
 
+/*
 class Candidate {
     String pat, word;
     int weight;
@@ -39,14 +40,17 @@ class Candidate {
     public Candidate(String p, String w, int weight){
     }
 }
+*/
 
 public class LocalDict {
     static DictEntry[] dict;
     static int[] keyLink = new int[10];
     static int[] connectionLink = new int[2000];
 
+    /*
     public static Candidate[] candidates = new Candidate[Slime.MAXCANDS];  // 候補単語リスト
     public static int ncands = 0;
+    */
 
     static Pattern[] regexp = new Pattern[50];       // パタンの部分文字列にマッチするRegExp
     static int[] cslength = new int[50];             // regexp[n]に完全マッチするパタンの長さ
@@ -60,9 +64,11 @@ public class LocalDict {
     // assetsディレクトリの中のdict.txtを使用
     //
     public LocalDict(AssetManager as){
+	/*
 	for(int i=0;i<Slime.MAXCANDS;i++){
 	    candidates[i] = new Candidate("","",0);
 	}
+	*/
 
 	try {
 	    InputStream is;
@@ -201,7 +207,7 @@ public class LocalDict {
     
 	int patlen = cslength[len];
 	int d = (connection != 0 ? connectionLink[connection] : keyLink[keylink]);
-	for(;d >= 0 && ncands < Slime.MAXCANDS;d = (connection != 0 ? dict[d].connectionLink : dict[d].keyLink)){
+	for(;d >= 0 && Search.ncands < Slime.MAXCANDS;d = (connection != 0 ? dict[d].connectionLink : dict[d].keyLink)){
 	    Matcher m = regexp[len].matcher(dict[d].pat);
 	    if(m.find()){
 		int matchlen = m.group(1).length();
@@ -228,23 +234,10 @@ public class LocalDict {
 	w += word;
 
 	w = w.replaceAll("\\*","");
-
-	////  if(w[0] == '*') return n;
-	// w = w.replace(/\*/g,''); // 全ての'*'を消すのはまずいはず。後で修正必要。
-	//  w = w.replace(/\-/g,'');
-
-	//  //
-	//  // "ode"入力で「おディズニーランド」が候補にならないように、接続辞書で生成された候補の長さが入力文字列を大幅に上回るものははじくようにする!
-	//  //
-	//  var totalinputlen = patStack.slice(0,level+1).join('').length + matchlen;
-	//  if(level > 0 && totalinputlen <= p.length / 2){
-	//    return n;
-	//  }
-
-	//addCandidate(w,p);
-	addCandidateWithLevel(w,p,level);
+	Search.addCandidateWithLevel(w,p,level);
     }
 
+    /*
     public static void addCandidate(String word, String pat){
 	addCandidateWithLevel(word,pat,0);
     }
@@ -264,6 +257,7 @@ public class LocalDict {
 	    ncands++;
 	}
     }
+    */
 
     private static Pattern[] patIndPattern = new Pattern[10];
     private static boolean patIndInitialized = false;

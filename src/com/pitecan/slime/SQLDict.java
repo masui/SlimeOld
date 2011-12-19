@@ -98,7 +98,7 @@ public class SQLDict
 	//Log.v("Slime","pattern="+pattern);
 
 	Cursor cursor = db.query("history", new String[] { "word", "pat", "date" },
-				 "patind = " + Dict.patInd(pat), null, null, null, "date desc");
+				 "patind = " + LocalDict.patInd(pat), null, null, null, "date desc");
         boolean isEof = cursor.moveToFirst();
         while (isEof) {
 	    String word = cursor.getString(0);
