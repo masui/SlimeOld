@@ -40,7 +40,7 @@ class Candidate {
     }
 }
 
-public class Dict {
+public class LocalDict {
     static DictEntry[] dict;
     static int[] keyLink = new int[10];
     static int[] connectionLink = new int[2000];
@@ -59,7 +59,7 @@ public class Dict {
     //
     // assetsディレクトリの中のdict.txtを使用
     //
-    public Dict(AssetManager as){
+    public LocalDict(AssetManager as){
 	for(int i=0;i<Slime.MAXCANDS;i++){
 	    candidates[i] = new Candidate("","",0);
 	}

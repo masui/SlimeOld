@@ -33,8 +33,7 @@ public class Slime extends InputMethodService
     private Keys keys;
     private KeyView keyView;
     private KeyController keyController;
-    private Dict dict;
-
+    private LocalDict dict;
     private SQLDict sqlDict;
     private ClipboardManager cm;
     private String clipboardText;
@@ -49,7 +48,7 @@ public class Slime extends InputMethodService
     public void onCreate()
     {
         super.onCreate();
-	dict = new Dict(getResources().getAssets());
+	dict = new LocalDict(getResources().getAssets());
 	sqlDict = new SQLDict(this);
 	cm = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
 	CharSequence seq = cm.getText();

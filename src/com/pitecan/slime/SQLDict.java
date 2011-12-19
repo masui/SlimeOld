@@ -69,7 +69,7 @@ public class SQLDict
     public void add(String word, String pat){ // エントリ追加
 	// 最初に全部消す
 	db.delete("history", "word = '"+word+"' AND pat = '"+pat+"'", null);
-	int patind = Dict.patInd(pat);
+	int patind = LocalDict.patInd(pat);
 	// SQLite3の日付処理
 	// http://www.tamandua-webtools.net/sqlite3-date.html
 	db.execSQL("insert into history(word,pat,patind,date) values ('"+word+"', '"+pat+"', "+patind+", datetime('now', 'localtime'));");

@@ -30,7 +30,7 @@ class KeyController {
     // これらはSlime.onCreateInputView()でセットされる
     public KeyView keyView;
     public Keys keys;
-    public Dict dict;
+    public LocalDict dict;
     public SQLDict sqlDict;
     public Slime slime;
 
@@ -274,7 +274,7 @@ class KeyController {
 			slime.hide();
 		    }
 		}
-		Dict.exactMode = false;
+		LocalDict.exactMode = false;
 		keypat = keys.keypat0;
 		if(selectedCand >= 0)
 		    keyView.draw(keypat, null, null, 0);
@@ -508,7 +508,7 @@ class KeyController {
 	dict.ncands = 0;
 
 	// ひらがな/カタカナ
-	if(Dict.exactMode){
+	if(LocalDict.exactMode){
 	    String hira = inputWord();
 	    String pat = keys.hira2pat(hira); // 無理矢理ひらがなをローマ字パタンに変換
 	    dict.addCandidateWithLevel(hira,pat,-100);
@@ -516,7 +516,7 @@ class KeyController {
 	}
 
 	// コピーした単語を候補に出す (新規登録用)
-	if(!Dict.exactMode){
+	if(!LocalDict.exactMode){
 	    String s = slime.getRegWord();
 	    if(s != "" && s.length() < 10){ // コピー文字列が短い場合だけ候補にする
 		dict.addCandidate(s,keys.hira2pat(inputWord()));
@@ -524,7 +524,7 @@ class KeyController {
 	}
 
 	// 学習辞書を検索
-	String[][] s = sqlDict.match(inputPat(),Dict.exactMode);
+	String[][] s = sqlDict.match(inputPat(),LocalDict.exactMode);
 	for(int k=0;k<s.length;k++){
 	    dict.addCandidateWithLevel(s[k][0],s[k][1],-50+k);
 	}
@@ -619,13 +619,13 @@ class KeyController {
 		resetInput();
 	    }
 	    else {
-		if(Dict.exactMode){
+		if(LocalDict.exactMode){
 		    fix(inputWord(),inputPat());
 		    resetInput();
 		}
 		else {
 		    toExact = true;
-		    Dict.exactMode = true;
+		    LocalDict.exactMode = true;
 		    searchAndDispCand();
 		}
 	    }
@@ -638,8 +638,8 @@ class KeyController {
 	    resetInput();
 	}
 	else { // 普通の文字入力
-	    if(Dict.exactMode){
-		Dict.exactMode = false;
+	    if(LocalDict.exactMode){
+		LocalDict.exactMode = false;
 		fix(inputWord(),inputPat());
 		resetInput();
 	    }
@@ -648,7 +648,7 @@ class KeyController {
 	    searchAndDispCand();
 	    slime.showComposingText();
 	}
-	Dict.exactMode = toExact;
+	LocalDict.exactMode = toExact;
     }
 
     public void fix(String s,String p){
