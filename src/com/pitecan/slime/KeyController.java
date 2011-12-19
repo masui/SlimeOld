@@ -35,15 +35,17 @@ class KeyController {
     public Search search;
     public Slime slime;
 
-    private Key[] keypat;          // 現在のキー配列
+    public static Key[] keypat;          // 現在のキー配列
     private boolean keyPressed = false;
     private int selectedCand = -1;
     private Key downKey = null;
     private Key selectedKey = null;
     private Key secondKey = null;
     private int nbuttons; // 生成中の候補ボタン番号
-    private int candPage = 1;   // 候補の何ページ目か
+    public static int candPage = 1;   // 候補の何ページ目か
     private String clipboardText;
+
+    private SearchTask searchTask = null;
 
     public ArrayList<String> inputPatArray;
     public ArrayList<String> inputCharArray;
@@ -93,53 +95,11 @@ class KeyController {
     Handler shiftTimeoutHandler = new Handler();
     Runnable shiftTimeout;
 
-    Handler googleSuggestHandler = new Handler();
-    Runnable googleSuggestTimeout;
-
     Handler shiftLockTimeoutHandler = new Handler();
     Runnable shiftLockTimeout;
-
-    // GoogleSuggestをバックグラウンドで動かすための工夫
-    // 何がなんだかよくわからないのだが...
-    class GoogleRunnable implements Runnable {
-	public void run() {
-	    googleSuggestTimeout = new Runnable() {
-		    public void run() {
-			int i;
-			Log.v("Slime","Call GoogleSuggest");
-			String[] suggestions = GoogleSuggest.suggest(inputWord());
-			for(i=0;nbuttons < keyView.candButtons.length && suggestions[i] != "";i++,nbuttons++){
-			    keyView.candButtons[nbuttons].text = suggestions[i];
-			    keyView.candButtons[nbuttons].pat = keys.hira2pat(inputWord());
-			}
-			for(;nbuttons<keyView.candButtons.length;nbuttons++){
-			    keyView.candButtons[nbuttons].text = "";
-			    keyView.candButtons[nbuttons].pat = "";
-			}
-			Log.v("Slime","Draw in googleSuggest-run");
-			keyView.draw(keypat, null, null, candPage);
-		    }
-		};
-	    googleSuggestHandler.post(googleSuggestTimeout);
-	    //googleSuggestHandler.postDelayed(googleSuggestTimeout,1000); // 1秒待ってGoogle検索する
-	}
-	public void disable(){
-	    googleSuggestHandler.removeCallbacks(googleSuggestTimeout); // GoogleSuggestを呼ぶのをやめる
-	}
-    }
-    GoogleRunnable googleRunnable;
-    Thread googleThread;
-
+    
     boolean googled = false;
-    private void askGoogle(){
-	if(googled) return;
-	googled = true;
-	Log.v("Slime","askGoogle()");
-	keyView.draw2(keypat, null, null, candPage);
-	googleRunnable = new GoogleRunnable();
-	googleThread = new Thread(googleRunnable);
-	googleThread.start();
-    }
+
 
     //
     // タッチイベント処理
@@ -156,16 +116,11 @@ class KeyController {
 	int pointerIndex = ev.findPointerIndex(pointerId);
 	// Log.v("Slime-ontouch","count="+pointerCount+", actionindex="+actionIndex+", pointerid="+pointerId+", action="+action);
 
-	if(googleRunnable != null){
-	    googleRunnable.disable();
-	    googleRunnable = null;
+	if(searchTask != null){
+	    boolean cancelres =
+	    searchTask.cancel(true);
+	    Log.v("Slime","onTouchEvent - cancel res="+cancelres);
 	}
-	/*
-	if(googleThread != null){
-	    googleThread.stop();
-	    googleThread = null;
-	}
-	*/
 
 	mousex = ev.getX(pointerIndex);
 	mousey = ev.getY(pointerIndex);
@@ -224,7 +179,7 @@ class KeyController {
 				Log.v("Slime","Draw in trans");
 				keyView.draw(keypat, downKey, null, candPage);
 			    }
-			    askGoogle();
+			    // askGoogle();
 			}
 			else {
 			    candPage++;
@@ -238,7 +193,7 @@ class KeyController {
 			state = State.STATEFB;
 		    }
 		    else {
-			keyView.draw(keypat, downKey, null, 0);
+			//////keyView.draw(keypat, downKey, null, 0);
 			// タイマ設定
 			shiftTimeout = new Runnable(){
 				public void run() {
@@ -246,7 +201,6 @@ class KeyController {
 				}
 			    };
 			shiftTimeoutHandler.postDelayed(shiftTimeout,300);
-			//googleSuggestHandler.removeCallbacks(googleSuggestTimeout); // GoogleSuggestをインヒビット
 			state = State.STATE1;
 		    }
 		}
@@ -488,72 +442,9 @@ class KeyController {
 	return s;
     }
 
-    // ひらがな ⇒カタカナ
-    // http://www7a.biglobe.ne.jp/~java-master/samples/string/ZenkakuHiraganaToZenkakuKatakana.html
-    private String h2k(String s){
-	StringBuffer sb = new StringBuffer(s);
-	for (int i = 0; i < sb.length(); i++) {
-	    char c = sb.charAt(i);
-	    if (c >= 'ぁ' && c <= 'ん') {
-		sb.setCharAt(i, (char)(c - 'ぁ' + 'ァ'));
-	    }
-	}
-	return sb.toString();    
-    }
-
-
     private void searchAndDispCand(){
-	int i=0;
-	nbuttons = 0;
-	candPage = 1;
-	search.ncands = 0;
-
-	// ひらがな/カタカナ
-	if(LocalDict.exactMode){
-	    String hira = inputWord();
-	    String pat = keys.hira2pat(hira); // 無理矢理ひらがなをローマ字パタンに変換
-	    search.addCandidateWithLevel(hira,pat,-100);
-	    search.addCandidateWithLevel(h2k(hira),pat,-99);
-	}
-
-	// コピーした単語を候補に出す (新規登録用)
-	if(!LocalDict.exactMode){
-	    String s = slime.getRegWord();
-	    if(s != "" && s.length() < 10){ // コピー文字列が短い場合だけ候補にする
-		search.addCandidate(s,keys.hira2pat(inputWord()));
-	    }
-	}
-
-	// 学習辞書を検索
-	String[][] s = sqlDict.match(inputPat(),LocalDict.exactMode);
-	for(int k=0;k<s.length;k++){
-	    search.addCandidateWithLevel(s[k][0],s[k][1],-50+k);
-	}
-
-	// 通常辞書を検索
-	// search()の中でaddCandidate()を呼んでいる
-	// 辞書が大きいと時間がかかるのでスレッド化した方がいいかも
-	search.search(inputPat());
-
-	// 優先度に従って候補を並べなおし
-	for(int j=search.ncands;j<Slime.MAXCANDS;j++){
-	    search.candidates[j].weight = 100;
-	}
-	Arrays.sort(search.candidates, new CandidateComparator());
-
-	// 候補をボタンに
-	if(search.ncands > 0){
-	    for(;nbuttons<keyView.candButtons.length && i <search.ncands;i++,nbuttons++){
-		keyView.candButtons[nbuttons].text = search.candidates[i].word;
-		keyView.candButtons[nbuttons].pat = search.candidates[i].pat;
-	    }
-	}
-
-	int j;
-	for(j = nbuttons;j<keyView.candButtons.length;j++){
-	    keyView.candButtons[j].text = "";
-	    keyView.candButtons[j].pat = "";
-	}
+	searchTask = new SearchTask(keyView);
+	searchTask.execute(inputPat(),inputWord());
     }
 
     private void processKey(Key key){
@@ -574,9 +465,9 @@ class KeyController {
 		}
 		else {
 		    resetInput();
+		    keyView.draw(keypat, null, null, 0);
 		}
 		state = State.STATE0;
-		keyView.draw(keypat, null, null, 0);
 		slime.showComposingText();
 	    }
 	}

@@ -16,7 +16,7 @@ class Key {
 }
 
 class Keys {
-    public final Key[] keypat11 =  {
+    public static final Key[] keypat11 =  {
 	new Key(1,   56,  53, 53,  "ぁ", "A", null),
 	new Key(54,  56,  53, 53,  "ぃ", "I", null),
 	new Key(107, 56,  53, 53,  "ぅ", "U", null),
@@ -28,7 +28,7 @@ class Keys {
 	new Key(160, 109, 53, 53,  "え", "e", null),
 	new Key(213, 109, 53, 53,  "お", "o", null),
     };
-    public final Key[] keypat1 =  {
+    public static final Key[] keypat1 =  {
 	new Key(1,   56,  53, 53,  "ぁ", "A", keypat11),
 	new Key(54,  56,  53, 53,  "ぃ", "I", keypat11),
 	new Key(107, 56,  53, 53,  "ぅ", "U", keypat11),
@@ -40,7 +40,7 @@ class Keys {
 	new Key(160, 109, 53, 53,  "え", "e", keypat11),
 	new Key(213, 109, 53, 53,  "お", "o", keypat11),
     };
-    public final Key[] keypat12 =  {
+    public static final Key[] keypat12 =  {
 	new Key(1,   56,  53, 53,  "が", "ga", null),
 	new Key(54,  56,  53, 53,  "ぎ", "gi", null),
 	new Key(107, 56,  53, 53,  "ぐ", "gu", null),
@@ -52,7 +52,7 @@ class Keys {
 	new Key(160, 109, 53, 53,  "け", "ke", null),
 	new Key(213, 109, 53, 53,  "こ", "ko", null),
     };
-    public final Key[] keypat2 =  {
+    public static final Key[] keypat2 =  {
 	new Key(1,   56,  53, 53,  "が", "ga", keypat12),
 	new Key(54,  56,  53, 53,  "ぎ", "gi", keypat12),
 	new Key(107, 56,  53, 53,  "ぐ", "gu", keypat12),
@@ -64,7 +64,7 @@ class Keys {
 	new Key(160, 109, 53, 53,  "け", "ke", keypat12),
 	new Key(213, 109, 53, 53,  "こ", "ko", keypat12),
     };
-    public final Key[] keypat13 =  {
+    public static final Key[] keypat13 =  {
 	new Key(1,   56,  53, 53,  "ざ", "za", null),
 	new Key(54,  56,  53, 53,  "じ", "zi", null),
 	new Key(107, 56,  53, 53,  "ず", "zu", null),
@@ -76,7 +76,7 @@ class Keys {
 	new Key(160, 109, 53, 53,  "せ", "se", null),
 	new Key(213, 109, 53, 53,  "そ", "so", null),
     };
-    public final Key[] keypat3 =  {
+    public static final Key[] keypat3 =  {
 	new Key(1,   56,  53, 53,  "ざ", "za", keypat13),
 	new Key(54,  56,  53, 53,  "じ", "zi", keypat13),
 	new Key(107, 56,  53, 53,  "ず", "zu", keypat13),
@@ -88,7 +88,7 @@ class Keys {
 	new Key(160, 109, 53, 53,  "せ", "se", keypat13),
 	new Key(213, 109, 53, 53,  "そ", "so", keypat13),
     };
-    public final Key[] keypat14 =  {
+    public static final Key[] keypat14 =  {
 	new Key(1,   56,  53, 53,  "だ", "da", null),
 	new Key(54,  56,  53, 53,  "ぢ", "di", null),
 	new Key(107, 56,  53, 53,  "づ", "du", null),
@@ -101,7 +101,7 @@ class Keys {
 	new Key(213, 109, 53, 53,  "と", "to", null),
 	new Key(160, 162, 53, 53,  "っ", "Tu", null),
     };
-    public final Key[] keypat4 =  {
+    public static final Key[] keypat4 =  {
 	new Key(1,   56,  53, 53,  "だ", "da", keypat14),
 	new Key(54,  56,  53, 53,  "ぢ", "di", keypat14),
 	new Key(107, 56,  53, 53,  "づ", "du", keypat14),
@@ -114,7 +114,7 @@ class Keys {
 	new Key(213, 109, 53, 53,  "と", "to", keypat14),
 	new Key(160, 162, 53, 53,  "っ", "Tu", keypat14),
     };
-    public final Key[] keypat15 =  {
+    public static final Key[] keypat15 =  {
 	new Key(1,   109, 53, 53,  "な", "na", null),
 	new Key(54,  109, 53, 53,  "に", "ni", null),
 	new Key(107, 109, 53, 53,  "ぬ", "nu", null),
@@ -126,7 +126,7 @@ class Keys {
 	new Key(213, 162, 53, 53,  "。",  "",  null),
 	new Key(267, 162, 53, 53,  "、",  "",  null),
     };
-    public final Key[] keypat5 =  {
+    public static final Key[] keypat5 =  {
 	new Key(1,   109, 53, 53,  "な", "na", keypat15),
 	new Key(54,  109, 53, 53,  "に", "ni", keypat15),
 	new Key(107, 109, 53, 53,  "ぬ", "nu", keypat15),
@@ -138,7 +138,7 @@ class Keys {
 	new Key(213, 162, 53, 53,  "。",  "",  keypat15),
 	new Key(267, 162, 53, 53,  "、",  "",  keypat15),
     };
-    public final Key[] keypat16 =  {
+    public static final Key[] keypat16 =  {
 	new Key(1,   56,  53, 53,  "ぱ", "pa", null),
 	new Key(54,  56,  53, 53,  "ぴ", "pi", null),
 	new Key(107, 56,  53, 53,  "ぷ", "pu", null),
@@ -155,7 +155,7 @@ class Keys {
 	new Key(160, 162, 53, 53,  "へ", "he", null),
 	new Key(213, 162, 53, 53,  "ほ", "ho", null),
     };
-    public final Key[] keypat6 =  {
+    public static final Key[] keypat6 =  {
 	new Key(1,   56,  53, 53,  "ぱ", "pa", keypat16),
 	new Key(54,  56,  53, 53,  "ぴ", "pi", keypat16),
 	new Key(107, 56,  53, 53,  "ぷ", "pu", keypat16),
@@ -172,7 +172,7 @@ class Keys {
 	new Key(160, 162, 53, 53,  "へ", "he", keypat16),
 	new Key(213, 162, 53, 53,  "ほ", "ho", keypat16),
     };
-    public final Key[] keypat17 =  {
+    public static final Key[] keypat17 =  {
 	new Key(1,   3,   53, 53,  "0",  "",   null),
 	new Key(54,  3,   53, 53,  "1",  "",   null),
 	new Key(107, 3,   53, 53,  "2",  "",   null),
@@ -194,7 +194,7 @@ class Keys {
 	new Key(267, 109, 53, 53,  "+",  "",   null),
 	new Key(267, 162, 53, 53,  "-",  "",   null),
     };
-    public final Key[] keypat7 =  {
+    public static final Key[] keypat7 =  {
 	new Key(1,   3,   53, 53,  "0",  "",   keypat17),
 	new Key(54,  3,   53, 53,  "1",  "",   keypat17),
 	new Key(107, 3,   53, 53,  "2",  "",   keypat17),
@@ -215,7 +215,7 @@ class Keys {
 	new Key(267, 109, 53, 53,  "+",  "",   keypat17),
 	new Key(267, 162, 53, 53,  "-",  "",   keypat17),
     };
-    public final Key[] keypat18 =  {
+    public static final Key[] keypat18 =  {
 	new Key(1,   109, 106, 53,  "ゃ", "Ya", null),
 	new Key(107, 109, 53,  53,  "ゅ", "Yu", null),
 	new Key(160, 109, 106, 53,  "ょ", "Yo", null),
@@ -223,7 +223,7 @@ class Keys {
 	new Key(107, 162, 53,  53,  "ゆ", "yu", null),
 	new Key(160, 162, 106, 53,  "よ", "yo", null),
     };
-    public final Key[] keypat8 =  {
+    public static final Key[] keypat8 =  {
 	new Key(1,   109, 106, 53,  "ゃ", "Ya", keypat18),
 	new Key(107, 109, 53,  53,  "ゅ", "Yu", keypat18),
 	new Key(160, 109, 106, 53,  "ょ", "Yo", keypat18),
@@ -231,7 +231,7 @@ class Keys {
 	new Key(107, 162, 53,  53,  "ゆ", "yu", keypat18),
 	new Key(160, 162, 106, 53,  "よ", "yo", keypat18),
     };
-    public final Key[] keypat19 =  {
+    public static final Key[] keypat19 =  {
 	new Key(1,   3,   53, 53,  "'",  "",   null),
 	new Key(54,  3,   53, 53,  "\"", "",   null),
 	new Key(107, 3,   53, 53,  "^",  "",   null),
@@ -252,7 +252,7 @@ class Keys {
 	new Key(160, 162, 53, 53, "れ",  "re", null),
 	new Key(213, 162, 53, 53, "ろ",  "ro", null),
     };
-    public final Key[] keypat9 =  {
+    public static final Key[] keypat9 =  {
 	new Key(1,   3,   53, 53, "'",   "",   keypat19),
 	new Key(54,  3,   53, 53, "\"",  "",   keypat19),
 	new Key(107, 3,   53, 53, "^",   "",   keypat19),
@@ -273,7 +273,7 @@ class Keys {
 	new Key(160, 162, 53, 53, "れ",  "re", keypat19),
 	new Key(213, 162, 53, 53, "ろ",  "ro", keypat19),
     };
-    public final Key[] keypat20 = {
+    public static final Key[] keypat20 = {
 	new Key(1,   3,   53, 53,  ":",  "",  null),
 	new Key(54,  3,   53, 53,  ";",  "",  null),
 	new Key(107, 3,   53, 53,  "#",  "",  null),
@@ -298,7 +298,7 @@ class Keys {
 	new Key(107, 162, 53, 53,  "わ", "w", null),
 	new Key(160, 162, 53, 53,  "を", "W", null),
     };
-    public final Key[] keypat10 = {
+    public static final Key[] keypat10 = {
 	new Key(1,   3,   53, 53,  ":",  "",  keypat20),
 	new Key(54,  3,   53, 53,  ";",  "",  keypat20),
 	new Key(107, 3,   53, 53,  "#",  "",  keypat20),
@@ -323,7 +323,7 @@ class Keys {
 	new Key(107, 162, 53, 53,  "わ", "w", keypat20),
 	new Key(160, 162, 53, 53,  "を", "W", keypat20),
     };
-    public final Key[] keypatbs_shift = {
+    public static final Key[] keypatbs_shift = {
 	new Key(0,   3,   32,  53, "Q", "", null),
 	new Key(32,  3,   32,  53, "W", "", null),
 	new Key(64,  3,   32,  53, "E", "", null),
@@ -358,7 +358,7 @@ class Keys {
 	new Key(181, 162, 53,  53, "←", "", null),
 	new Key(267, 109, 53,  53, "",  "", null),
     };
-    public final Key[] keypatbs = {
+    public static final Key[] keypatbs = {
 	new Key(0,   3,   32,  53, "Q", "", keypatbs_shift),
 	new Key(32,  3,   32,  53, "W", "", keypatbs_shift),
 	new Key(64,  3,   32,  53, "E", "", keypatbs_shift),
@@ -393,7 +393,7 @@ class Keys {
 	new Key(181, 162, 53,  53, "←", "", keypatbs_shift),
 	new Key(267, 109, 53,  53, "",  "", keypatbs_shift),
     };
-    public final Key[] keypatsp_shift = {
+    public static final Key[] keypatsp_shift = {
 	new Key(0,   3,   32,  53, "q", "", null),
 	new Key(32,  3,   32,  53, "w", "", null),
 	new Key(64,  3,   32,  53, "e", "", null),
@@ -428,7 +428,7 @@ class Keys {
 	new Key(181, 162, 53,  53, "←", "", null),
 	new Key(267, 162, 53,  53, "",  "", null),
     };
-    public final Key[] keypatsp = {
+    public static final Key[] keypatsp = {
 	new Key(0,   3,   32,  53, "q", "", keypatsp_shift),
 	new Key(32,  3,   32,  53, "w", "", keypatsp_shift),
 	new Key(64,  3,   32,  53, "e", "", keypatsp_shift),
@@ -463,7 +463,7 @@ class Keys {
 	new Key(181, 162, 53,  53, "←", "", keypatsp_shift),
 	new Key(267, 162, 53,  53, "",  "", keypatsp_shift),
     };
-    public final Key[] keypat0 = {
+    public static final Key[] keypat0 = {
 	new Key(1,   3,   24, 106, "前", "", keypat1),
 	new Key(295, 3,   24, 106, "次", "", keypat1),
 	new Key(1,   109, 53, 53,  "あ", "[aiueoAIUEO]", keypat1),
@@ -480,12 +480,12 @@ class Keys {
 	new Key(267, 162, 53, 53,  "↴", "", keypatsp),
     };
 
-    public final Key[][] keypats = {
+    public final static Key[][] keypats = {
 	keypat1, keypat2, keypat3, keypat4, keypat5,
 	keypat6, keypat7, keypat8, keypat9, keypat10,
     };
 
-    public String hira2pat(String hira){
+    public static String hira2pat(String hira){
 	String p = "";
 	for(int i=0;i<hira.length();i++){
 	    char c = hira.charAt(i);

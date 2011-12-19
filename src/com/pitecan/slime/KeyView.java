@@ -69,7 +69,7 @@ public class KeyView extends View {
     // private boolean showCand = false;
     private int candPage = 0;
 
-    public CandButton[] candButtons;
+    public static CandButton[] candButtons;
 
     public KeyView(Context context, AttributeSet attrs) {
 	super(context,attrs);
@@ -145,6 +145,15 @@ public class KeyView extends View {
 	this.selectedKey = selectedKey;
 	this.selectedKey2 = selectedKey2;
 	this.candPage = candPage;
+	bgcolor = 0xfff0f0f0;
+	invalidate();
+    }
+
+    public void drawDefault(){
+	this.keypat = keys.keypat0;
+	this.selectedKey = null;
+	this.selectedKey2 = null;
+	this.candPage = 1;
 	bgcolor = 0xfff0f0f0;
 	invalidate();
     }

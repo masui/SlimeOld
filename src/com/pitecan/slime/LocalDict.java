@@ -32,25 +32,10 @@ class DictEntry {
     }
 }
 
-/*
-class Candidate {
-    String pat, word;
-    int weight;
-
-    public Candidate(String p, String w, int weight){
-    }
-}
-*/
-
 public class LocalDict {
     static DictEntry[] dict;
     static int[] keyLink = new int[10];
     static int[] connectionLink = new int[2000];
-
-    /*
-    public static Candidate[] candidates = new Candidate[Slime.MAXCANDS];  // 候補単語リスト
-    public static int ncands = 0;
-    */
 
     static Pattern[] regexp = new Pattern[50];       // パタンの部分文字列にマッチするRegExp
     static int[] cslength = new int[50];             // regexp[n]に完全マッチするパタンの長さ
@@ -64,12 +49,6 @@ public class LocalDict {
     // assetsディレクトリの中のdict.txtを使用
     //
     public LocalDict(AssetManager as){
-	/*
-	for(int i=0;i<Slime.MAXCANDS;i++){
-	    candidates[i] = new Candidate("","",0);
-	}
-	*/
-
 	try {
 	    InputStream is;
 	    InputStreamReader in;
@@ -193,14 +172,15 @@ public class LocalDict {
 	return top;
     }
 
-    static void search(String pat){
+    // ローカル辞書の接続検索
+    static void search(String pat,SearchTask searchTask){
 	patInit(pat,0);
-	generateCand(0, patInd(pat), 0, "", "", 0); // 接続辞書を使って候補を生成
+	generateCand(0, patInd(pat), 0, "", "", 0, searchTask); // 接続辞書を使って候補を生成
     }
 
     // パタンのlen文字目からのマッチを調べる
     // 接続リンクを深さ優先検索してマッチするものを候補に加えていく
-    static void generateCand(int connection, int keylink, int len, String word, String pat, int level){
+    static void generateCand(int connection, int keylink, int len, String word, String pat, int level, SearchTask searchTask){
 	//Log.v("Slime","GenerateCand("+word+","+pat+","+level+")");
 	wordStack[level] = word;
 	patStack[level] = pat;
@@ -208,6 +188,7 @@ public class LocalDict {
 	int patlen = cslength[len];
 	int d = (connection != 0 ? connectionLink[connection] : keyLink[keylink]);
 	for(;d >= 0 && Search.ncands < Slime.MAXCANDS;d = (connection != 0 ? dict[d].connectionLink : dict[d].keyLink)){
+	    if(searchTask.isCancelled()) break;
 	    Matcher m = regexp[len].matcher(dict[d].pat);
 	    if(m.find()){
 		int matchlen = m.group(1).length();
@@ -215,7 +196,7 @@ public class LocalDict {
 		    addConnectedCandidate(dict[d].word, dict[d].pat, dict[d].outConnection, level, matchlen);
 		}
 		else if(matchlen == dict[d].pat.length() && dict[d].outConnection != 0){ // とりあえずその単語まではマッチ
-		    generateCand(dict[d].outConnection, 0, len+matchlen, dict[d].word, dict[d].pat, level+1);
+		    generateCand(dict[d].outConnection, 0, len+matchlen, dict[d].word, dict[d].pat, level+1, searchTask);
 		}
 	    }
 	}
@@ -236,28 +217,6 @@ public class LocalDict {
 	w = w.replaceAll("\\*","");
 	Search.addCandidateWithLevel(w,p,level);
     }
-
-    /*
-    public static void addCandidate(String word, String pat){
-	addCandidateWithLevel(word,pat,0);
-    }
-
-    public static void addCandidateWithLevel(String word, String pat, int level){
-	int i;
-	// Log.v("Slime","addCandidate: word="+word+" pat="+pat+" ncands="+ncands+" level="+level);
-	if(ncands >= Slime.MAXCANDS) return;
-	for(i=0;i<ncands;i++){
-	    if(candidates[i].word.equals(word)) break;
-	}
-	if(i >= ncands){
-	    candidates[ncands].pat = pat;
-	    candidates[ncands].word = word;
-	    candidates[ncands].weight = level;
-	    //Log.v("Slime", "Add "+word+" to candidates");
-	    ncands++;
-	}
-    }
-    */
 
     private static Pattern[] patIndPattern = new Pattern[10];
     private static boolean patIndInitialized = false;

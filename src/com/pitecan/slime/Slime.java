@@ -52,7 +52,7 @@ public class Slime extends InputMethodService
         super.onCreate();
 	dict = new LocalDict(getResources().getAssets());
 	sqlDict = new SQLDict(this);
-	search = new Search(dict,sqlDict);
+	search = new Search(dict,sqlDict,this);
 	cm = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
 	CharSequence seq = cm.getText();
 	clipboardText = (seq == null ? "" : seq.toString());
@@ -144,7 +144,7 @@ public class Slime extends InputMethodService
     //
     public void clearRegWord(){
 	CharSequence seq = cm.getText();
-	clipboardText = (seq == null ? "" : seq.toString());
+o	clipboardText = (seq == null ? "" : seq.toString());
     }
 
     public String getRegWord(){
