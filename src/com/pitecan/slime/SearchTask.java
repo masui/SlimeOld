@@ -29,7 +29,7 @@ public class SearchTask extends AsyncTask<String, Integer, Candidate[]> {
 
     @Override
     protected void onPostExecute(Candidate[] candidates) { // Result の型の値が引数に入る doInBackgroundの返り値
-	Log.v("Slime","onPostExecute");
+	// Log.v("Slime","onPostExecute");
 	// ここで候補を表示する
 	int i = 0;
 	int nbuttons = 0;
@@ -48,6 +48,6 @@ public class SearchTask extends AsyncTask<String, Integer, Candidate[]> {
     }
 
     protected void onCancelled(Candidate[] candidates){
-	Log.v("Slime","onCancelled");
+	// Log.v("Slime","onCancelled");
     }
 }

@@ -38,7 +38,7 @@ public class Search {
     // いろんな辞書を使った検索!
     //
     public static Candidate[] search(String pat, String word, boolean useGoogle, SearchTask searchTask){
-	Log.v("Slime","Search - pat="+pat+", word="+word);
+	// Log.v("Slime","Search - pat="+pat+", word="+word);
 	ncands = 0;
 	KeyController.candPage = 1;
 
@@ -71,7 +71,7 @@ public class Search {
 	if(useGoogle){
 	    String[] suggestions = GoogleSuggest.suggest(word);
 	    for(int i=0;suggestions[i] != "";i++){
-		Log.v("Slime","Use Google ... suggestions = "+suggestions[i]);
+		// Log.v("Slime","Use Google ... suggestions = "+suggestions[i]);
 		addCandidateWithLevel(suggestions[i],Keys.hira2pat(word),50);
 	    }
 	}
@@ -91,7 +91,7 @@ public class Search {
 
     public static void addCandidateWithLevel(String word, String pat, int level){
 	int i;
-	Log.v("Slime","addCandidate: word="+word+" pat="+pat+" ncands="+ncands+" level="+level);
+	// Log.v("Slime","addCandidate: word="+word+" pat="+pat+" ncands="+ncands+" level="+level);
 	if(ncands >= Slime.MAXCANDS) return;
 	for(i=0;i<ncands;i++){
 	    if(candidates[i].word.equals(word)) break;
@@ -100,7 +100,7 @@ public class Search {
 	    candidates[ncands].pat = pat;
 	    candidates[ncands].word = word;
 	    candidates[ncands].weight = level;
-	    Log.v("Slime", "Add "+word+" to candidates");
+	    // Log.v("Slime", "Add "+word+" to candidates");
 	    ncands++;
 	}
     }

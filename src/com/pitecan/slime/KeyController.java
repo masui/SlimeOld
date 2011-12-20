@@ -60,6 +60,7 @@ class KeyController {
     //
     private Key findKey(Key[] keypat, int x, int y){
 	for(int i=0;i<keypat.length;i++){
+	    if(keypat == Keys.keypat0 && candPage <= 1 && i == 0) continue; // 「前」ボタンを無視するひどいハック
 	    if(keypat[i].rect.in(x,y)){
 		return keypat[i];
 	    }
@@ -71,10 +72,32 @@ class KeyController {
     // 座標から候補ボタン番号を計算
     //
     private int findCand(int x, int y){
+	// Log.v("Slime","findCand("+x+","+y+")");
 	for(int i=0;i<keyView.candButtons.length;i++){
 	    if(! keyView.candButtons[i].visible) continue;
 	    Rectangle rect = keyView.candButtons[i].rect;
-	    Rectangle extendedRect = new Rectangle(rect.pos.x-2,rect.pos.y-2,rect.size.w+4,rect.size.h+4);
+	    int xx = rect.pos.x;
+	    int yy = rect.pos.y;
+	    int ww = rect.size.w;
+	    int hh = rect.size.h;
+	    if(xx <= 5){
+		xx -= 5;
+		ww += (5+3);
+	    }
+	    else {
+		xx -= 2;
+		ww += (2+3);
+	    }
+	    if(yy <= 6){
+		yy -= 6;
+		hh += (6+3);
+	    }
+	    else {
+		yy -= 3;
+		hh += (3+3);
+	    }
+	    Rectangle extendedRect = new Rectangle(xx,yy,ww,hh);
+	    // Log.v("Slime","extendedrect = "+extendedRect.pos.x+", "+extendedRect.pos.y+", "+extendedRect.size.w+", "+extendedRect.size.h);
 	    if(extendedRect.in(x,y)) return i;
 	    // if(keyView.candButtons[i].rect.in(x,y)) return i;
 	}
@@ -116,21 +139,15 @@ class KeyController {
 	int pointerIndex = ev.findPointerIndex(pointerId);
 	// Log.v("Slime-ontouch","count="+pointerCount+", actionindex="+actionIndex+", pointerid="+pointerId+", action="+action);
 
-	/*
-	if(searchTask != null){
-	    boolean cancelres =
-	    searchTask.cancel(true);
-	    Log.v("Slime","onTouchEvent - cancel res="+cancelres);
-	}
-	*/
-
 	mousex = ev.getX(pointerIndex);
 	mousey = ev.getY(pointerIndex);
+	// Log.v("Slime","mousex="+mousex+", mousey="+mousey);
+	
 	switch (action & MotionEvent.ACTION_MASK) {
 	case MotionEvent.ACTION_DOWN:
 	case MotionEvent.ACTION_POINTER_DOWN:
 	    if(pointerId == 0){
-		//Log.v("Slime","DOWN1 - "+mousex);
+		// Log.v("Slime","DOWN1 - "+mousex);
 		trans(Event.DOWN1);
 	    }
 	    else {
@@ -173,18 +190,21 @@ class KeyController {
 		downx = mousex;
 		downy = mousey;
 		downKey = findKey(keypat, (int)downx, (int)downy);
+		// Log.v("Slime","downKey... downkey="+downKey);
 		if(downKey != null){ // キーの上を押した
 		    if(downKey.str == "次"){
+			// 候補が1面しか無くて「次」が押されたときだけGoogleSuggestを呼ぶようにする
 			if(!useGoogle){
 			    useGoogle = true;
 
 			    if(keyView.candLines >= 3){
 				candPage++;
-				Log.v("Slime","Draw in trans");
+				//Log.v("Slime","Draw in trans");
 				keyView.draw(keypat, downKey, null, candPage);
 			    }
-			    searchAndDispCand();
-			    // askGoogle();
+			    else {
+				searchAndDispCand();
+			    }
 			}
 			else {
 			    candPage++;
@@ -457,7 +477,7 @@ class KeyController {
 	if(searchTask != null){
 	    boolean cancelres =
 	    searchTask.cancel(true);
-	    Log.v("Slime","onTouchEvent - cancel res="+cancelres);
+	    //Log.v("Slime","onTouchEvent - cancel res="+cancelres);
 	}
 
 	String c = key.str;
