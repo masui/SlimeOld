@@ -144,7 +144,7 @@ public class Slime extends InputMethodService
     //
     public void clearRegWord(){
 	CharSequence seq = cm.getText();
-o	clipboardText = (seq == null ? "" : seq.toString());
+	clipboardText = (seq == null ? "" : seq.toString());
     }
 
     public String getRegWord(){

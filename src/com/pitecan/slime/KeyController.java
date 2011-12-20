@@ -99,7 +99,7 @@ class KeyController {
     Runnable shiftLockTimeout;
     
     boolean googled = false;
-
+    boolean useGoogle = false;
 
     //
     // タッチイベント処理
@@ -116,11 +116,13 @@ class KeyController {
 	int pointerIndex = ev.findPointerIndex(pointerId);
 	// Log.v("Slime-ontouch","count="+pointerCount+", actionindex="+actionIndex+", pointerid="+pointerId+", action="+action);
 
+	/*
 	if(searchTask != null){
 	    boolean cancelres =
 	    searchTask.cancel(true);
 	    Log.v("Slime","onTouchEvent - cancel res="+cancelres);
 	}
+	*/
 
 	mousex = ev.getX(pointerIndex);
 	mousey = ev.getY(pointerIndex);
@@ -173,12 +175,15 @@ class KeyController {
 		downKey = findKey(keypat, (int)downx, (int)downy);
 		if(downKey != null){ // キーの上を押した
 		    if(downKey.str == "次"){
-			if(!googled){
+			if(!useGoogle){
+			    useGoogle = true;
+
 			    if(keyView.candLines >= 3){
 				candPage++;
 				Log.v("Slime","Draw in trans");
 				keyView.draw(keypat, downKey, null, candPage);
 			    }
+			    searchAndDispCand();
 			    // askGoogle();
 			}
 			else {
@@ -418,6 +423,7 @@ class KeyController {
 	}
 	candPage = 0;
 	googled = false;
+	useGoogle = false;
     }
 
     public void reset(){
@@ -443,11 +449,17 @@ class KeyController {
     }
 
     private void searchAndDispCand(){
-	searchTask = new SearchTask(keyView);
+	searchTask = new SearchTask(keyView,useGoogle);
 	searchTask.execute(inputPat(),inputWord());
     }
 
     private void processKey(Key key){
+	if(searchTask != null){
+	    boolean cancelres =
+	    searchTask.cancel(true);
+	    Log.v("Slime","onTouchEvent - cancel res="+cancelres);
+	}
+
 	String c = key.str;
 	String p = key.pat;
 	int inputlen = inputCharArray.size();

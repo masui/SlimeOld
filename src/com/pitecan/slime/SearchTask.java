@@ -7,16 +7,18 @@ import android.util.Log;
 public class SearchTask extends AsyncTask<String, Integer, Candidate[]> {
 
     private KeyView keyView;
+    private boolean useGoogle;
 
-    public SearchTask(KeyView keyView){
+    public SearchTask(KeyView keyView, boolean useGoogle){
 	this.keyView = keyView;
+	this.useGoogle = useGoogle;
     }
 
     protected Candidate[] doInBackground(String... searchParams){ // Result の型を返す 引数はParamsの型
 	Candidate[] res;
 	String pat = searchParams[0];
 	String word = searchParams[1];
-	res = Search.search(pat,word,this); // this.cancel()が呼ばれるとthis.isCancelled()がtrueになる
+	res = Search.search(pat,word,useGoogle,this); // this.cancel()が呼ばれるとthis.isCancelled()がtrueになる
 	// Log.v("Slime","doInBackground end");
 	return res;
     }
