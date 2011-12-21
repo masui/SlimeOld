@@ -219,7 +219,7 @@ class KeyController {
 			state = State.STATEFB;
 		    }
 		    else {
-			//////keyView.draw(keypat, downKey, null, 0);
+			keyView.draw(keypat, downKey, null, 0);
 			// タイマ設定
 			shiftTimeout = new Runnable(){
 				public void run() {
@@ -487,6 +487,7 @@ class KeyController {
 	boolean toExact = false;
 	if(c == "←"){
 	    googleDisplayed = false;
+	    useGoogle = false;
 	    if(inputlen == 0){
                 slime.keyDownUp(KeyEvent.KEYCODE_DEL);
 	    }

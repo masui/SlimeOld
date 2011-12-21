@@ -13,12 +13,15 @@ push:
 	git push git@github.com:masui/Slime.git
 
 # 署名してアップロード
-publish: sign
-	scp bin/Slime.apk pitecan.com:/www/www.pitecan.com/tmp
-sign:
+VERSIONCODE=9
+VERSION=1.1.3
+publish:
+	sed -e "s/VERSIONCODE/${VERSIONCODE}/" AndroidManifest.template | sed -e "s/VERSION/${VERSION}/" > AndroidManifest.xml
 	ant release
 	cp bin/Slime-unsigned.apk bin/Slime.apk
 	jarsigner -J-Dfile.encoding=UTF8 -keystore ~/.android/masui.keystore -verbose bin/Slime.apk pitecan
+	scp bin/Slime.apk pitecan.com:/www/www.pitecan.com/Slime
+	scp bin/Slime.apk pitecan.com:/www/www.pitecan.com/Slime/Slime-${VERSION}.apk
 
 # Gyazz.com/kdict から辞書を作成!
 #
