@@ -178,8 +178,10 @@ public class KeyView extends View {
     private void layoutCandButtons(){
 	float x, y, w, h;   // 候補ボタンの矩形
 	int buttonIndex = 0;
-	int[] leftlimit = {0, 0, 0, 24, 24, 24, 24, 24, 24, 24, 24, 24};
-	int[] rightlimit = {296, 296, 296, 296, 296, 296, 296, 296, 296, 296, 296, 296}; 
+	//int[] leftlimit = {0, 0, 0, 24, 24, 24, 24, 24, 24, 24, 24, 24};
+	int[] leftlimit = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+	//int[] rightlimit = {296, 296, 296, 296, 296, 296, 296, 296, 296, 296, 296, 296}; 
+	int[] rightlimit = {320, 268, 268, 320, 268, 268, 320, 268, 268, 320, 268, 268};
 	int[] curright = new int[12];
 	for(int i=0;i<12;i++){
 	    curright[i] = leftlimit[i] + buttonMarginX;
@@ -258,8 +260,9 @@ public class KeyView extends View {
 		else
 		    image = keybg24x106;
 	    }
-	    if(! ((key.str == "前" && (candPage == 0 || candPage == 1)) ||
-		  (key.str == "次" && (candPage == 0 || candPage == 4)))){
+	    //	    if(! ((key.str == "前" && (candPage == 0 || candPage == 1)) ||
+	    //		  (key.str == "→" && (candPage == 0 || candPage == 4)))){
+	    if(! (key.str == "→" && (candPage == 0 || candPage == 4))){
 		canvas.drawBitmap(image,key.rect.pos.x,key.rect.pos.y,null);
 		//
 		// キー文字描画

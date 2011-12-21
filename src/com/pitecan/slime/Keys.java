@@ -464,8 +464,9 @@ class Keys {
 	new Key(267, 162, 53,  53, "",  "", keypatsp_shift),
     };
     public static final Key[] keypat0 = {
-	new Key(1,   3,   24, 106, "前", "", keypat1),
-	new Key(295, 3,   24, 106, "次", "", keypat1),
+	// new Key(1,   3,   24, 106, "前", "", keypat1),
+	// new Key(295, 3,   24, 106, "次", "", keypat1),
+	new Key(267, 56,  53, 53,  "→", "", keypat1),
 	new Key(1,   109, 53, 53,  "あ", "[aiueoAIUEO]", keypat1),
 	new Key(54,  109, 53, 53,  "か", "[kg][aiueo]", keypat2),
 	new Key(107, 109, 53, 53,  "さ", "[sz][aiueo]", keypat3),
