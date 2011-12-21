@@ -146,6 +146,10 @@ public class KeyView extends View {
 	this.selectedKey2 = selectedKey2;
 	this.candPage = candPage;
 	bgcolor = 0xfff0f0f0;
+	if(keyController.useGoogle && !keyController.googleDisplayed){
+	    bgcolor = 0xffd0d0d0;
+	    keyController.googleDisplayed = true;
+	}
 	invalidate();
     }
 
@@ -155,6 +159,15 @@ public class KeyView extends View {
 	this.selectedKey2 = null;
 	this.candPage = 1;
 	bgcolor = 0xfff0f0f0;
+	invalidate();
+    }
+
+    public void drawDefault2(){
+	this.keypat = keys.keypat0;
+	this.selectedKey = null;
+	this.selectedKey2 = null;
+	this.candPage = 1;
+	bgcolor = 0xffd0d0d0;
 	invalidate();
     }
 

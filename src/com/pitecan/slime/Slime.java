@@ -40,7 +40,7 @@ public class Slime extends InputMethodService
     private ClipboardManager cm;
     private String clipboardText;
 
-    static final int MAXCANDS = 20;
+    static final int MAXCANDS = 50;
 
     /**
      * Main initialization of the input method component.  Be sure to call

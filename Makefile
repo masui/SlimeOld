@@ -32,3 +32,7 @@ dict-old:
 	mkdir assets
 	ruby -I~/GyazzDict ~/GyazzDict/connection2txt /tmp/tmp > assets/dict.txt
 
+#VERSION=1.1.1
+#test:
+#	echo "define(VERSION,${VERSION})" > /tmp/tmp
+#	cat /tmp/tmp junk | m4 > 

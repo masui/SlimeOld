@@ -121,8 +121,8 @@ class KeyController {
     Handler shiftLockTimeoutHandler = new Handler();
     Runnable shiftLockTimeout;
     
-    boolean googled = false;
-    boolean useGoogle = false;
+    public boolean googleDisplayed = false; // Google検索中を示す表示
+    public boolean useGoogle = false;       // GoogleSuggestを呼ぶかどうか
 
     //
     // タッチイベント処理
@@ -194,7 +194,7 @@ class KeyController {
 		if(downKey != null){ // キーの上を押した
 		    if(downKey.str == "次"){
 			// 候補が1面しか無くて「次」が押されたときだけGoogleSuggestを呼ぶようにする
-			if(!useGoogle){
+			if(!useGoogle && !googleDisplayed){
 			    useGoogle = true;
 
 			    if(keyView.candLines >= 3){
@@ -203,6 +203,7 @@ class KeyController {
 				keyView.draw(keypat, downKey, null, candPage);
 			    }
 			    else {
+				keyView.draw2(keypat, downKey, null, candPage);
 				searchAndDispCand();
 			    }
 			}
@@ -442,7 +443,7 @@ class KeyController {
 	    keyView.candButtons[i].visible = false;
 	}
 	candPage = 0;
-	googled = false;
+	googleDisplayed = false;
 	useGoogle = false;
     }
 
@@ -485,7 +486,7 @@ class KeyController {
 	int inputlen = inputCharArray.size();
 	boolean toExact = false;
 	if(c == "←"){
-	    googled = false;
+	    googleDisplayed = false;
 	    if(inputlen == 0){
                 slime.keyDownUp(KeyEvent.KEYCODE_DEL);
 	    }
