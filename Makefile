@@ -1,4 +1,5 @@
 all:
+	sed -e "s/VERSIONCODE/${VERSIONCODE}/" AndroidManifest.template | sed -e "s/VERSION/${VERSION}/" > AndroidManifest.xml
 	ant debug
 install:
 	adb install -r bin/Slime-debug.apk
@@ -18,8 +19,10 @@ VERSION=1.1.7
 publish:
 	sed -e "s/VERSIONCODE/${VERSIONCODE}/" AndroidManifest.template | sed -e "s/VERSION/${VERSION}/" > AndroidManifest.xml
 	ant release
-	cp bin/Slime-unsigned.apk bin/Slime.apk
+	/bin/cp bin/Slime-unsigned.apk bin/Slime.apk
 	jarsigner -J-Dfile.encoding=UTF8 -keystore ~/.android/masui.keystore -verbose bin/Slime.apk pitecan
+	/bin/rm bin/Slime-aligned.apk
+	zipalign -v 4 bin/Slime.apk bin/Slime-aligned.apk
 	scp bin/Slime.apk pitecan.com:/www/www.pitecan.com/Slime
 	scp bin/Slime.apk pitecan.com:/www/www.pitecan.com/Slime/Slime-${VERSION}.apk
 
