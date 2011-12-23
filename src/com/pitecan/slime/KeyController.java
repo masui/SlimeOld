@@ -13,6 +13,8 @@ import android.util.Log;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import java.util.regex.Pattern;
+
 import android.os.Handler;
 
 class CandidateComparator implements java.util.Comparator {
@@ -268,6 +270,7 @@ class KeyController {
 	    }
 	    break;
 	case STATE1:
+	    Log.v("Slime","STATE1 e="+e);
 	    switch(e){
 	    case UP1:
 		if(selectedKey != null){ // 入力文字処理
@@ -297,8 +300,17 @@ class KeyController {
 		selectedKey = findKey(keypat, (int)mousex, (int)mousey);
 		secondKey = selectedKey;
 		keyView.draw(keypat, downKey, selectedKey, 0);
+		/*
+		Log.v("Slime","key="+secondKey.str);
+		if(Pattern.matches("[a-zA-Z0-9]",secondKey.str)){
+		    state = State.STATE6;
+		}
+		else {
+		    state = State.STATE4;
+		    shiftTimeoutHandler.removeCallbacks(shiftTimeout);
+		}
+		*/
 		state = State.STATE4;
-		shiftTimeoutHandler.removeCallbacks(shiftTimeout);
 		break;
 	    case SHIFTTIMER:
 		keypat = downKey.shiftKeypat;
@@ -322,7 +334,14 @@ class KeyController {
 	    case DOWN2:
 		keyView.draw(keypat, downKey, selectedKey, 0);
 		secondKey = selectedKey;
-		state = State.STATE4;
+
+		if(secondKey != null && Pattern.matches("[a-zA-Z0-9]",secondKey.str)){
+		    state = State.STATE6;
+		}
+		else {
+		    state = State.STATE4;
+		}
+		//		state = State.STATE4;
 		break;
 	    case MOVE:
 		if(Math.hypot(mousex-downx, mousey-downy) >= 30.0){

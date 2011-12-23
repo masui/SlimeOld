@@ -13,8 +13,8 @@ push:
 	git push git@github.com:masui/Slime.git
 
 # 署名してアップロード
-VERSIONCODE=9
-VERSION=1.1.3
+VERSIONCODE=12
+VERSION=1.1.6
 publish:
 	sed -e "s/VERSIONCODE/${VERSIONCODE}/" AndroidManifest.template | sed -e "s/VERSION/${VERSION}/" > AndroidManifest.xml
 	ant release
@@ -34,8 +34,3 @@ dict-old:
 	/bin/rm -r -f assets
 	mkdir assets
 	ruby -I~/GyazzDict ~/GyazzDict/connection2txt /tmp/tmp > assets/dict.txt
-
-#VERSION=1.1.1
-#test:
-#	echo "define(VERSION,${VERSION})" > /tmp/tmp
-#	cat /tmp/tmp junk | m4 > 
