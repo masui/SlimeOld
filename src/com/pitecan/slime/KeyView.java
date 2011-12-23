@@ -311,7 +311,21 @@ public class KeyView extends View {
 
     // よくわからないがこれを設定するとViewの大きさを決められるようだ...
     @Override protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-	super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+	//	super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+	//Log.v("Slime","onMeasure = width = "+widthMeasureSpec+" height="+heightMeasureSpec);
+	//int specMode = MeasureSpec.getMode(widthMeasureSpec);
+	//int specSize = MeasureSpec.getSize(widthMeasureSpec);
+	//Log.v("Slime","modeandsize = "+specMode+", "+specSize);
+
+	// Android.manifestで以下のような記述をしておけば勝手にスケールしてくれる
+	// http://y-anz-m.blogspot.com/2010/02/andro
+	// SDK version 4以降でこれが必要らしい
+	//    <supports-screens  
+	//       android:smallScreens="true"  
+	//       android:normalScreens="true"  
+	//       android:largeScreens="true"  
+	//       android:anyDensity="false" />  
+	//
         setMeasuredDimension(320,216);
     }
 }

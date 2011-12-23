@@ -13,5 +13,10 @@
         </service>
     </application>
     <uses-permission android:name="android.permission.INTERNET"></uses-permission> 
-    <uses-sdk android:minSdkVersion="3" />
+    <uses-sdk android:minSdkVersion="5" />
+    <supports-screens  
+       android:smallScreens="true"  
+       android:normalScreens="true"  
+       android:largeScreens="true"  
+       android:anyDensity="false" />  
 </manifest> 
