@@ -311,6 +311,7 @@ public class KeyView extends View {
 
     // よくわからないがこれを設定するとViewの大きさを決められるようだ...
     @Override protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+	super.onMeasure(widthMeasureSpec, heightMeasureSpec);
         setMeasuredDimension(320,216);
     }
 }

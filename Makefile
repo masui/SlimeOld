@@ -14,8 +14,8 @@ push:
 	git push git@github.com:masui/Slime.git
 
 # 署名してアップロード
-VERSIONCODE=13
-VERSION=1.1.7
+VERSIONCODE=14
+VERSION=1.1.8
 publish:
 	sed -e "s/VERSIONCODE/${VERSIONCODE}/" AndroidManifest.template | sed -e "s/VERSION/${VERSION}/" > AndroidManifest.xml
 	ant release
