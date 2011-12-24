@@ -60,7 +60,8 @@ public class KeyView extends View {
     private final int smallKeyTextSize = 24;
     private final int tinyKeyTextSize =  16;
 
-    public int inputWidth = 320; // IMEの幅
+    // public int inputWidth = 320; // IMEの幅
+    public float expand = (float)1.0; // 拡大率
 
     public Keys keys;
     public KeyController keyController = null;
@@ -91,40 +92,38 @@ public class KeyView extends View {
 	keybg32x53 =   BitmapFactory.decodeResource(r,R.drawable.keybg32x53);
 	keyfg32x53 =   BitmapFactory.decodeResource(r,R.drawable.keyfg32x53);
 
-	/*
-	// キートップ色
-	keyPaint = new Paint();
-	keyPaint.setAntiAlias(true);
-        keyPaint.setTextSize(largeKeyTextSize);
-        keyPaint.setColor(0xff000000); // argb 黒
-	smallKeyPaint = new Paint();
-	smallKeyPaint.setAntiAlias(true);
-	smallKeyPaint.setTextSize(smallKeyTextSize);
-        smallKeyPaint.setColor(0xff000000); // 黒
-	tinyKeyPaint = new Paint();
-	tinyKeyPaint.setAntiAlias(true);
-	tinyKeyPaint.setTextSize(tinyKeyTextSize);
-        tinyKeyPaint.setColor(0xff000000); // 黒
-	*/
-
-	// 背景色
-	buttonPaint = new Paint();
-        buttonPaint.setColor(0xffc0c0c0);
-	
-	/*
-	// 候補ボタンのテキスト色
-	buttonTextPaint = new Paint();
-	buttonTextPaint.setAntiAlias(true);
-        buttonTextPaint.setTextSize(buttonTextSize);
-        buttonTextPaint.setColor(0xff000000); // 黒
-	*/
-
 	// 候補「ボタン」の初期化
 	candButtons = new CandButton[Slime.MAXCANDS];
 	for(int i=0;i<candButtons.length;i++){
 	    CandButton button = new CandButton();
 	    candButtons[i] = button;
 	}
+    }
+
+    private void initGraphics(){
+	// キートップ色
+	keyPaint = new Paint();
+	keyPaint.setAntiAlias(true);
+        keyPaint.setTextSize(largeKeyTextSize * expand);
+        keyPaint.setColor(0xff000000); // argb 黒
+	smallKeyPaint = new Paint();
+	smallKeyPaint.setAntiAlias(true);
+	smallKeyPaint.setTextSize(smallKeyTextSize * expand);
+        smallKeyPaint.setColor(0xff000000); // 黒
+	tinyKeyPaint = new Paint();
+	tinyKeyPaint.setAntiAlias(true);
+	tinyKeyPaint.setTextSize(tinyKeyTextSize * expand);
+        tinyKeyPaint.setColor(0xff000000); // 黒
+
+	// 背景色
+	buttonPaint = new Paint();
+        buttonPaint.setColor(0xffc0c0c0);
+	
+	// 候補ボタンのテキスト色
+	buttonTextPaint = new Paint();
+	buttonTextPaint.setAntiAlias(true);
+        buttonTextPaint.setTextSize(buttonTextSize * expand);
+        buttonTextPaint.setColor(0xff000000); // 黒
     }
 
     // イベント処理はkeyControllerに丸投げする
@@ -197,7 +196,7 @@ public class KeyView extends View {
 	    CandButton button = candButtons[buttonIndex];
 	    String s = button.text;
 	    if(s == "") break;
-	    float textWidth = buttonTextPaint.measureText(s) * 320 / inputWidth;
+	    float textWidth = buttonTextPaint.measureText(s) / expand;
 	    w = textWidth + ((float)buttonMarginX * 2); // ボタン幅
 	    h = buttonHeight;                           // ボタン高さ
 	    // 空いている候補領域に候補ボタンを詰める
@@ -268,26 +267,26 @@ public class KeyView extends View {
 		      )
 		     );
 	    if(! (key.str == "→" && (candPage == 0 || candPage == 4))){
-		int left = key.rect.left * inputWidth / 320;
-		int top = key.rect.top * inputWidth / 320;
-		int right = key.rect.right * inputWidth / 320;
-		int bottom = key.rect.bottom * inputWidth / 320;
+		int left = (int)(key.rect.left * expand);
+		int top = (int)(key.rect.top * expand);
+		int right = (int)(key.rect.right * expand);
+		int bottom = (int)(key.rect.bottom * expand);
 		Rect dst = new Rect(left,top,right,bottom);
 		canvas.drawBitmap(image,null,dst,null); // 何故か第2引数がkey.rectだとうまくいかない
 		//
 		// キー文字描画
 		//
 		float textWidth = paint.measureText(key.str);
-		float baseX = left + (right-left-(shadewidth*inputWidth/320) - textWidth)/2;
-		float baseY = top + (bottom-top-(shadewidth*inputWidth/320) - (ascent+descent))/2;
+		float baseX = left + (right-left-(shadewidth*expand) - textWidth)/2;
+		float baseY = top + (bottom-top-(shadewidth*expand) - (ascent+descent))/2;
 		canvas.drawText(key.str,baseX,baseY,paint);
 	    }
 	}
 	if(candPage > 0){
 	    CandButton button;
 	    FontMetrics fontMetrics = buttonTextPaint.getFontMetrics();
-	    float ascent = fontMetrics.ascent * 320 / inputWidth;
-	    float descent = fontMetrics.descent * 320 / inputWidth;
+	    float ascent = fontMetrics.ascent / expand;
+	    float descent = fontMetrics.descent / expand;
 	    layoutCandButtons();
 	    for(int i=0;i<candButtons.length;i++){
 		button = candButtons[i];
@@ -297,14 +296,14 @@ public class KeyView extends View {
 		button = candButtons[i];
 		if(! button.visible) continue;
 		float y = buttonMarginY + (button.row % 3) * (buttonHeight+buttonMarginY);
-		canvas.drawRect((float)button.rect.left * inputWidth / 320,
-				(float)button.rect.top * inputWidth / 320,
-				(float)button.rect.right * inputWidth / 320,
-				(float)(y+button.rect.bottom-button.rect.top) * inputWidth / 320,
+		canvas.drawRect((float)button.rect.left * expand,
+				(float)button.rect.top * expand,
+				(float)button.rect.right * expand,
+				(float)(y+button.rect.bottom-button.rect.top) * expand,
 				buttonPaint);
 		canvas.drawText(button.text,
-				(button.rect.left + buttonTextMargin) * inputWidth / 320,
-				(button.rect.top + (buttonHeight-(ascent+descent))/2) * inputWidth / 320,
+				(button.rect.left + buttonTextMargin) * expand,
+				(button.rect.top + (buttonHeight-(ascent+descent))/2) * expand,
 				buttonTextPaint);
 	    }
 	}
@@ -322,13 +321,16 @@ public class KeyView extends View {
     // よくわからないがこれを設定するとViewの大きさを決められるようだ...
     @Override protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
 	super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-	Log.v("Slime","onMeasure = width = "+widthMeasureSpec+" height="+heightMeasureSpec);
-	int specMode = MeasureSpec.getMode(widthMeasureSpec);
-	int specSize = MeasureSpec.getSize(widthMeasureSpec);
-	Log.v("Slime","modeandsize = "+specMode+", "+specSize);
-	specMode = MeasureSpec.getMode(heightMeasureSpec);
-	specSize = MeasureSpec.getSize(heightMeasureSpec);
-	Log.v("Slime","modeandsize = "+specMode+", "+specSize);
+	int width = MeasureSpec.getSize(widthMeasureSpec);
+	int height = MeasureSpec.getSize(heightMeasureSpec);
+
+	//Log.v("Slime","onMeasure = width = "+widthMeasureSpec+" height="+heightMeasureSpec);
+	//int specMode = MeasureSpec.getMode(widthMeasureSpec);
+	//int specSize = MeasureSpec.getSize(widthMeasureSpec);
+	//Log.v("Slime","modeandsize = "+specMode+", "+specSize);
+	//specMode = MeasureSpec.getMode(heightMeasureSpec);
+	//specSize = MeasureSpec.getSize(heightMeasureSpec);
+	//Log.v("Slime","modeandsize = "+specMode+", "+specSize);
 
 	// Android.manifestで以下のような記述をしておけば勝手にスケールしてくれる
 	// http://y-anz-m.blogspot.com/2010/02/andro
@@ -338,29 +340,14 @@ public class KeyView extends View {
 	//       android:normalScreens="true"  
 	//       android:largeScreens="true"  
 	//       android:anyDensity="false" />  
-	//
-	
-	inputWidth = MeasureSpec.getSize(widthMeasureSpec);
-        setMeasuredDimension(320 * inputWidth / 320,216 * inputWidth / 320);
+	// ... と思ったがうまくスケールしてくれないのできちんと倍率を計算して処理する
 
-	// キートップ色
-	keyPaint = new Paint();
-	keyPaint.setAntiAlias(true);
-        keyPaint.setTextSize(largeKeyTextSize * inputWidth / 320);
-        keyPaint.setColor(0xff000000); // argb 黒
-	smallKeyPaint = new Paint();
-	smallKeyPaint.setAntiAlias(true);
-	smallKeyPaint.setTextSize(smallKeyTextSize * inputWidth / 320);
-        smallKeyPaint.setColor(0xff000000); // 黒
-	tinyKeyPaint = new Paint();
-	tinyKeyPaint.setAntiAlias(true);
-	tinyKeyPaint.setTextSize(tinyKeyTextSize * inputWidth / 320);
-        tinyKeyPaint.setColor(0xff000000); // 黒
+	int imeWidth = width;
+	if(width > height) imeWidth = height;
+	expand = (float)imeWidth / (float)320.0;
+        setMeasuredDimension((int)(320 * expand),(int)(216 * expand));
 
-	buttonTextPaint = new Paint();
-	buttonTextPaint.setAntiAlias(true);
-        buttonTextPaint.setTextSize(buttonTextSize * inputWidth / 320);
-        buttonTextPaint.setColor(0xff000000); // 黒
+	initGraphics();
    }
 }
 
