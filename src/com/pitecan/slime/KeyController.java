@@ -143,9 +143,9 @@ class KeyController {
 	int pointerIndex = ev.findPointerIndex(pointerId);
 	// Log.v("Slime-ontouch","count="+pointerCount+", actionindex="+actionIndex+", pointerid="+pointerId+", action="+action);
 
-	mousex = ev.getX(pointerIndex);
-	mousey = ev.getY(pointerIndex);
-	// Log.v("Slime","mousex="+mousex+", mousey="+mousey);
+	mousex = ev.getX(pointerIndex) * 320 / keyView.inputWidth;
+	mousey = ev.getY(pointerIndex) * 320 / keyView.inputWidth;
+	Log.v("Slime","mousex="+mousex+", mousey="+mousey);
 	
 	switch (action & MotionEvent.ACTION_MASK) {
 	case MotionEvent.ACTION_DOWN:
