@@ -4,8 +4,9 @@
 package com.pitecan.slime;
 
 import android.view.MotionEvent;
-import android.graphics.Canvas;
 import android.view.KeyEvent;
+import android.graphics.Canvas;
+import android.graphics.Rect;
 
 import android.content.res.Resources;
 import android.util.Log;
@@ -63,7 +64,7 @@ class KeyController {
     private Key findKey(Key[] keypat, int x, int y){
 	for(int i=0;i<keypat.length;i++){
 	    // if(keypat == Keys.keypat0 && candPage <= 1 && i == 0) continue; // 「前」ボタンを無視するひどいハック !!!!
-	    if(keypat[i].rect.in(x,y)){
+	    if(keypat[i].rect.contains(x,y)){
 		return keypat[i];
 	    }
 	}
@@ -77,11 +78,11 @@ class KeyController {
 	// Log.v("Slime","findCand("+x+","+y+")");
 	for(int i=0;i<keyView.candButtons.length;i++){
 	    if(! keyView.candButtons[i].visible) continue;
-	    Rectangle rect = keyView.candButtons[i].rect;
-	    int xx = rect.pos.x;
-	    int yy = rect.pos.y;
-	    int ww = rect.size.w;
-	    int hh = rect.size.h;
+	    Rect rect = keyView.candButtons[i].rect;
+	    int xx = rect.left;
+	    int yy = rect.top;
+	    int ww = rect.right - rect.left;
+	    int hh = rect.bottom - rect.top;
 	    if(xx <= 5){
 		xx -= 5;
 		ww += (5+3);
@@ -98,9 +99,10 @@ class KeyController {
 		yy -= 3;
 		hh += (3+3);
 	    }
-	    Rectangle extendedRect = new Rectangle(xx,yy,ww,hh);
+	    Rect extendedRect = new Rect(xx,yy,xx+ww,yy+hh);
 	    // Log.v("Slime","extendedrect = "+extendedRect.pos.x+", "+extendedRect.pos.y+", "+extendedRect.size.w+", "+extendedRect.size.h);
-	    if(extendedRect.in(x,y)) return i;
+	    //if(extendedRect.in(x,y)) return i;
+	    if(extendedRect.contains(x,y)) return i;
 	    // if(keyView.candButtons[i].rect.in(x,y)) return i;
 	}
 	return -1;

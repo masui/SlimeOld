@@ -11,6 +11,7 @@ import android.view.MotionEvent;
 import android.graphics.Color;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.Rect;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Paint.FontMetrics;
@@ -20,7 +21,8 @@ import android.util.AttributeSet;
 import android.util.Log;
 
 class CandButton {
-    Rectangle rect;
+    // Rectangle rect;
+    Rect rect;
     String text;
     String pat;
     boolean valid;
@@ -28,7 +30,8 @@ class CandButton {
     int row;
 
     public CandButton() {
-	rect = new Rectangle(0,0,0,0);
+	//rect = new Rectangle(0,0,0,0);
+	rect = new Rect(0,0,0,0);
 	text = "";
 	pat = "";
 	valid = false;
@@ -199,10 +202,16 @@ public class KeyView extends View {
 		if(curright[i] + w + buttonMarginX <= rightlimit[i]){
 		    x = curright[i];
 		    y = buttonMarginY + (i % 3) * (buttonHeight+buttonMarginY);
+		    /*
 		    button.rect.pos.x = (int)x;
 		    button.rect.pos.y = (int)y;
 		    button.rect.size.w = (int)w;
 		    button.rect.size.h = (int)h;
+		    */
+		    button.rect.left = (int)x;
+		    button.rect.top = (int)y;
+		    button.rect.right = (int)(x+w);
+		    button.rect.bottom = (int)(y+h);
 		    button.row = i;
 		    button.valid = true;
 		    curright[i] += (w + buttonMarginX);
@@ -230,7 +239,9 @@ public class KeyView extends View {
 	canvas.drawColor(bgcolor);
 	for(int i=0;i<keypat.length;i++){
 	    Key key = keypat[i];
-	    Paint paint = (key.rect.size.w <= 24 ? tinyKeyPaint : key.rect.size.w <= 32 ? smallKeyPaint : keyPaint);
+	    int width = key.rect.right - key.rect.left;
+	    int height = key.rect.bottom - key.rect.top;
+	    Paint paint = (width <= 24 ? tinyKeyPaint : width <= 32 ? smallKeyPaint : keyPaint);
 	    FontMetrics fontMetrics = paint.getFontMetrics();
 	    float ascent = fontMetrics.ascent; // これはマイナス値
 	    float descent = fontMetrics.descent;
@@ -239,20 +250,21 @@ public class KeyView extends View {
 	    image = ((selectedKey != null && key.str == selectedKey.str) ||
 		     (selectedKey2 != null && key.str == selectedKey2.str)
 		     ?
-		     (key.rect.size.w == 32 ? keyfg32x53 :
-		      (key.rect.size.h == 106 ?
-		       (key.rect.size.w == 106 ? keyfg106x106 : keyfg53x106) :
-		       (key.rect.size.w == 106 ? keyfg106x53 : keyfg53x53)
+		     (width == 32 ? keyfg32x53 :
+		      (height == 106 ?
+		       (width == 106 ? keyfg106x106 : keyfg53x106) :
+		       (width == 106 ? keyfg106x53 : keyfg53x53)
 		       )
 		      )
 		     :
-		     (key.rect.size.w == 32 ? keybg32x53 :
-		      (key.rect.size.h == 106 ?
-		       (key.rect.size.w == 106 ? keybg106x106 : keybg53x106) :
-		       (key.rect.size.w == 106 ? keybg106x53 : keybg53x53)
+		     (width == 32 ? keybg32x53 :
+		      (height == 106 ?
+		       (width == 106 ? keybg106x106 : keybg53x106) :
+		       (width == 106 ? keybg106x53 : keybg53x53)
 		       )
 		      )
 		     );
+	    /*
 	    if(key.rect.size.w == 24 && key.rect.size.h == 106){
 		if((selectedKey != null && key.str == selectedKey.str) ||
 		   (selectedKey2 != null && key.str == selectedKey2.str))
@@ -260,16 +272,17 @@ public class KeyView extends View {
 		else
 		    image = keybg24x106;
 	    }
+	    */
 	    //	    if(! ((key.str == "前" && (candPage == 0 || candPage == 1)) ||
 	    //		  (key.str == "→" && (candPage == 0 || candPage == 4)))){
 	    if(! (key.str == "→" && (candPage == 0 || candPage == 4))){
-		canvas.drawBitmap(image,key.rect.pos.x,key.rect.pos.y,null);
+		canvas.drawBitmap(image,key.rect.left,key.rect.top,null);
 		//
 		// キー文字描画
 		//
 		float textWidth = paint.measureText(key.str);
-		float baseX = key.rect.pos.x + (key.rect.size.w-shadewidth - textWidth)/2;
-		float baseY = key.rect.pos.y + (key.rect.size.h-shadewidth - (ascent+descent))/2;
+		float baseX = key.rect.left + (key.rect.right-key.rect.left-shadewidth - textWidth)/2;
+		float baseY = key.rect.top + (key.rect.bottom-key.rect.top-shadewidth - (ascent+descent))/2;
 		canvas.drawText(key.str,baseX,baseY,paint);
 	    }
 	}
@@ -287,14 +300,14 @@ public class KeyView extends View {
 		button = candButtons[i];
 		if(! button.visible) continue;
 		float y = buttonMarginY + (button.row % 3) * (buttonHeight+buttonMarginY);
-		canvas.drawRect((float)button.rect.pos.x,
-				(float)button.rect.pos.y,
-				(float)(button.rect.pos.x+button.rect.size.w),
-				(float)(y+button.rect.size.h),
+		canvas.drawRect((float)button.rect.left,
+				(float)button.rect.top,
+				(float)button.rect.right,
+				(float)(y+button.rect.bottom-button.rect.top),
 				buttonPaint);
 		canvas.drawText(button.text,
-				button.rect.pos.x + buttonTextMargin,
-				button.rect.pos.y + (buttonHeight-(ascent+descent))/2,
+				button.rect.left + buttonTextMargin,
+				button.rect.top + (buttonHeight-(ascent+descent))/2,
 				buttonTextPaint);
 	    }
 	}
