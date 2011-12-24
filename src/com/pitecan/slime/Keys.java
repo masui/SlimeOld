@@ -5,13 +5,10 @@ import android.graphics.Rect;
 
 class Key {
     Rect rect;
-    // Rectangle rect;
     String str;
     String pat;
     Key[] shiftKeypat;
     public Key(int x,int y,int w,int h,String str,String pat,Key[] shiftKeypat){
-	// rect = new Rectangle(x,y,w,h);
-	// public Rect (int left, int top, int right, int bottom)
 	rect = new Rect(x,y,x+w,y+h);
 	this.str = str;
 	this.pat = pat;

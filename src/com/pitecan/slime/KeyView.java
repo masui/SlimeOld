@@ -21,7 +21,6 @@ import android.util.AttributeSet;
 import android.util.Log;
 
 class CandButton {
-    // Rectangle rect;
     Rect rect;
     String text;
     String pat;
@@ -30,7 +29,6 @@ class CandButton {
     int row;
 
     public CandButton() {
-	//rect = new Rectangle(0,0,0,0);
 	rect = new Rect(0,0,0,0);
 	text = "";
 	pat = "";
