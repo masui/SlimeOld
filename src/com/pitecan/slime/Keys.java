@@ -7,11 +7,11 @@ class Key {
     String str;
     String pat;
     Key[] shiftKeypat;
-    public Key(int _x,int _y,int _w,int _h,String _str,String _pat,Key[] _shiftKeypat){
-	rect = new Rectangle(_x,_y,_w,_h);
-	str = _str;
-	pat = _pat;
-	shiftKeypat = _shiftKeypat;
+    public Key(int x,int y,int w,int h,String str,String pat,Key[] shiftKeypat){
+	rect = new Rectangle(x,y,w,h);
+	this.str = str;
+	this.pat = pat;
+	this.shiftKeypat = shiftKeypat;
     }
 }
 

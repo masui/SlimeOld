@@ -226,7 +226,7 @@ public class KeyView extends View {
 
 	//Log.v("Slime","onDraw - length="+keypat.length);
 
-	//canvas.drawColor(0xfff0f0f0);
+	//canvas.drawColor(0x80f0f0f0); 背景を透明にしたい場合 - ブラウザしか有効じゃないみたいだけど
 	canvas.drawColor(bgcolor);
 	for(int i=0;i<keypat.length;i++){
 	    Key key = keypat[i];
@@ -316,6 +316,9 @@ public class KeyView extends View {
 	int specMode = MeasureSpec.getMode(widthMeasureSpec);
 	int specSize = MeasureSpec.getSize(widthMeasureSpec);
 	Log.v("Slime","modeandsize = "+specMode+", "+specSize);
+	specMode = MeasureSpec.getMode(heightMeasureSpec);
+	specSize = MeasureSpec.getSize(heightMeasureSpec);
+	Log.v("Slime","modeandsize = "+specMode+", "+specSize);
 
 	// Android.manifestで以下のような記述をしておけば勝手にスケールしてくれる
 	// http://y-anz-m.blogspot.com/2010/02/andro
@@ -326,8 +329,7 @@ public class KeyView extends View {
 	//       android:largeScreens="true"  
 	//       android:anyDensity="false" />  
 	//
-        //setMeasuredDimension(320,216);
-        setMeasuredDimension(360,240);
-    }
+        setMeasuredDimension(320,216);
+   }
 }
 
