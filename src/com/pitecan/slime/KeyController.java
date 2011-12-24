@@ -187,8 +187,10 @@ class KeyController {
     //
     private void trans(Event e){
 	selectedKey = findKey(keypat, (int)mousex, (int)mousey);
+	//Log.v("Slime","trans - selectedKey = "+selectedKey);
 	switch(state){
 	case STATE0:
+	    //Log.v("Slime","STATE0 e="+e);
 	    switch(e){
 	    case DOWN1:
 		downx = mousex;
@@ -275,6 +277,7 @@ class KeyController {
 	    //Log.v("Slime","STATE1 e="+e);
 	    switch(e){
 	    case UP1:
+		//Log.v("Slime","STATE1-UP1");
 		if(selectedKey != null){ // 入力文字処理
 		    processKey(selectedKey);
 		}
@@ -284,6 +287,7 @@ class KeyController {
 		shiftTimeoutHandler.removeCallbacks(shiftTimeout);
 		break;
 	    case MOVE:
+		//Log.v("Slime","STATE1-MOVE");
 		if(Math.hypot(mousex-downx, mousey-downy) >= 30.0){
 		    keypat = downKey.shiftKeypat;
 
@@ -297,14 +301,18 @@ class KeyController {
 		}
 		break;
 	    case DOWN2:
+		//Log.v("Slime","STATE1-DOWN2");
 		keypat = downKey.shiftKeypat;
 		downKey = findKey(keypat, (int)downx, (int)downy);
 		selectedKey = findKey(keypat, (int)mousex, (int)mousey);
 		secondKey = selectedKey;
+		//Log.v("Slime","STATE1-DOWN2-secondkey="+secondKey);
 		keyView.draw(keypat, downKey, selectedKey, 0);
 		state = State.STATE4;
+		shiftTimeoutHandler.removeCallbacks(shiftTimeout);
 		break;
 	    case SHIFTTIMER:
+		//Log.v("Slime","STATE1-TIMER");
 		keypat = downKey.shiftKeypat;
 		downKey = findKey(keypat, (int)downx, (int)downy);
 		keyView.draw(keypat, downKey, null, 0);
@@ -364,8 +372,12 @@ class KeyController {
 	    }
 	    break;
 	case STATE4:
+	    //Log.v("Slime","STATE4 e="+e);
+	    //Log.v("Slime","STATE4 secondKey="+secondKey);
 	    switch(e){
 	    case UP1:
+		//Log.v("Slime","STATE4 UP1 e="+e);
+		//Log.v("Slime","STATE4 UP1 secondKey="+secondKey);
 		if(secondKey != null){ // 入力文字処理
 		    processKey(secondKey);
 		}
@@ -382,7 +394,7 @@ class KeyController {
 		break;
 	    case MOVE:
 		keyView.draw(keypat, downKey, selectedKey, 0);
-		secondKey = selectedKey;
+		// secondKey = selectedKey; !!!!!!!
 		break;
 	    }
 	    break;
@@ -488,6 +500,7 @@ class KeyController {
     }
 
     private void processKey(Key key){
+	//Log.v("Slime","ProcessKey");
 	if(searchTask != null){
 	    boolean cancelres =
 	    searchTask.cancel(true);

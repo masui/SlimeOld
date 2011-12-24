@@ -60,7 +60,6 @@ public class KeyView extends View {
     private final int smallKeyTextSize = 24;
     private final int tinyKeyTextSize =  16;
 
-    // public int inputWidth = 320; // IMEの幅
     public float expand = (float)1.0; // 拡大率
 
     public Keys keys;
