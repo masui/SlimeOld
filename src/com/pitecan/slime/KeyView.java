@@ -185,7 +185,7 @@ public class KeyView extends View {
 	//int[] leftlimit = {0, 0, 0, 24, 24, 24, 24, 24, 24, 24, 24, 24};
 	int[] leftlimit = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 	//int[] rightlimit = {296, 296, 296, 296, 296, 296, 296, 296, 296, 296, 296, 296}; 
-	int[] rightlimit = {320, 268, 268, 320, 268, 268, 320, 268, 268, 320, 268, 268};
+	int[] rightlimit = {320, 268, 268, 320, 268, 268, 320, 268, 268, 320, 320, 320};
 	int[] curright = new int[12];
 	for(int i=0;i<12;i++){
 	    curright[i] = leftlimit[i] + buttonMarginX;
@@ -199,16 +199,11 @@ public class KeyView extends View {
 	    w = textWidth + ((float)buttonMarginX * 2); // ボタン幅
 	    h = buttonHeight;                           // ボタン高さ
 	    // 空いている候補領域に候補ボタンを詰める
-	    for(int i=0;i<12;i++){
+	    int i;
+	    for(i=0;i<12;i++){
 		if(curright[i] + w + buttonMarginX <= rightlimit[i]){
 		    x = curright[i];
 		    y = buttonMarginY + (i % 3) * (buttonHeight+buttonMarginY);
-		    /*
-		    button.rect.pos.x = (int)x;
-		    button.rect.pos.y = (int)y;
-		    button.rect.size.w = (int)w;
-		    button.rect.size.h = (int)h;
-		    */
 		    button.rect.left = (int)x;
 		    button.rect.top = (int)y;
 		    button.rect.right = (int)(x+w);
@@ -219,6 +214,14 @@ public class KeyView extends View {
 		    break;
 		}
 	    }
+	    if(i >= 12){
+		break;
+	    }
+	}
+	for(;buttonIndex<candButtons.length;buttonIndex++){
+	    CandButton button = candButtons[buttonIndex];
+	    button.valid = false;
+	    button.visible = false;
 	}
 	for(candLines=0;candLines<12;candLines++){
 	    if(curright[candLines] == leftlimit[candLines] + buttonMarginX) break;
