@@ -14,14 +14,14 @@ push:
 	git push git@github.com:masui/Slime.git
 
 # 署名してアップロード
-VERSIONCODE=17
-VERSION=1.2.2
-publish:
+VERSIONCODE=19
+VERSION=1.2.4
+publish: clean
 	sed -e "s/VERSIONCODE/${VERSIONCODE}/" AndroidManifest.template | sed -e "s/VERSION/${VERSION}/" > AndroidManifest.xml
 	ant release
-	/bin/cp bin/Slime-unsigned.apk bin/Slime.apk
+	/bin/cp bin/Slime-release-unsigned.apk bin/Slime.apk
 	jarsigner -J-Dfile.encoding=UTF8 -keystore ~/.android/masui.keystore -verbose bin/Slime.apk pitecan
-	/bin/rm bin/Slime-aligned.apk
+	-/bin/rm bin/Slime-aligned.apk
 	zipalign -v 4 bin/Slime.apk bin/Slime-aligned.apk
 	scp bin/Slime.apk pitecan.com:/www/www.pitecan.com/Slime
 	scp bin/Slime.apk pitecan.com:/www/www.pitecan.com/Slime/Slime-${VERSION}.apk
