@@ -12,7 +12,9 @@ class Candidate {
     String pat, word;
     int weight;
 
-    public Candidate(String p, String w, int weight){
+    public Candidate(String pat, String word, int weight){
+	this.pat = pat;
+	this.word = word;
     }
 }
 

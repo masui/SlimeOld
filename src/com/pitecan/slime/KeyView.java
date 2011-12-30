@@ -42,9 +42,7 @@ public class KeyView extends View {
     private Bitmap keybg32x53, keyfg32x53;
     private Bitmap keybg53x53, keyfg53x53;
     private Bitmap keybg53x106, keyfg53x106;
-    private Bitmap keybg24x106, keyfg24x106;
     private Bitmap keybg106x53, keyfg106x53;
-    private Bitmap keybg106x106, keyfg106x106;
     private Paint keyPaint;
     private Paint smallKeyPaint;
     private Paint tinyKeyPaint;
@@ -84,10 +82,6 @@ public class KeyView extends View {
 	keyfg53x106 =  BitmapFactory.decodeResource(r,R.drawable.keyfg53x106);
 	keybg106x53 =  BitmapFactory.decodeResource(r,R.drawable.keybg106x53);
 	keyfg106x53 =  BitmapFactory.decodeResource(r,R.drawable.keyfg106x53);
-	keybg24x106 =  BitmapFactory.decodeResource(r,R.drawable.keybg24x106);
-	keyfg24x106 =  BitmapFactory.decodeResource(r,R.drawable.keyfg24x106);
-	keybg106x106 = BitmapFactory.decodeResource(r,R.drawable.keybg106x106);
-	keyfg106x106 = BitmapFactory.decodeResource(r,R.drawable.keyfg106x106);
 	keybg32x53 =   BitmapFactory.decodeResource(r,R.drawable.keybg32x53);
 	keyfg32x53 =   BitmapFactory.decodeResource(r,R.drawable.keyfg32x53);
 
@@ -176,8 +170,7 @@ public class KeyView extends View {
     }
 
     //
-    // 現在の版は1〜3行しか候補を表示しないが、1〜12行ぐらい用意しておいて
-    // 3行ずつ表示するように変更したい
+    // 候補バッファを12行ぶん用意しておいて3行ずつ表示する
     //
     private void layoutCandButtons(){
 	float x, y, w, h;   // 候補ボタンの矩形
@@ -252,21 +245,9 @@ public class KeyView extends View {
 	    float shadewidth = 6;
 
 	    image = ((selectedKey != null && key.str == selectedKey.str) ||
-		     (selectedKey2 != null && key.str == selectedKey2.str)
-		     ?
-		     (width == 32 ? keyfg32x53 :
-		      (height == 106 ?
-		       (width == 106 ? keyfg106x106 : keyfg53x106) :
-		       (width == 106 ? keyfg106x53 : keyfg53x53)
-		       )
-		      )
-		     :
-		     (width == 32 ? keybg32x53 :
-		      (height == 106 ?
-		       (width == 106 ? keybg106x106 : keybg53x106) :
-		       (width == 106 ? keybg106x53 : keybg53x53)
-		       )
-		      )
+		     (selectedKey2 != null && key.str == selectedKey2.str) ?
+		     (width == 32 ? keyfg32x53 : (height == 106 ? keyfg53x106 : keyfg53x53)) :
+		     (width == 32 ? keybg32x53 : (height == 106 ? keybg53x106 : keybg53x53))
 		     );
 	    if(! (key.str == "→" && (candPage == 0 || candPage == 4))){
 		int left = (int)(key.rect.left * expand);
@@ -310,15 +291,6 @@ public class KeyView extends View {
 	    }
 	}
     }
-
-    ///////////////////////////////////////////////////////////////////////////////////////
-
-    //public void setButton(String word, int index){
-    //	CandButton button = candButtons[index];
-    //	button.text = word;
-    //}
-
-    ///////////////////////////////////////////////////////////////////////////////////////
 
     // よくわからないがこれを設定するとViewの大きさを決められるようだ...
     @Override protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {

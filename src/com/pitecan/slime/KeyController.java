@@ -18,6 +18,7 @@ import java.util.regex.Pattern;
 
 import android.os.Handler;
 
+// 候補に重みづけするための比較ルーチン
 class CandidateComparator implements java.util.Comparator {
     public int compare(Object o1, Object o2){
 	int w1 = ((Candidate)o1).weight;
@@ -63,7 +64,6 @@ class KeyController {
     //
     private Key findKey(Key[] keypat, int x, int y){
 	for(int i=0;i<keypat.length;i++){
-	    // if(keypat == Keys.keypat0 && candPage <= 1 && i == 0) continue; // 「前」ボタンを無視するひどいハック !!!!
 	    if(keypat[i].rect.contains(x,y)){
 		return keypat[i];
 	    }
@@ -101,9 +101,7 @@ class KeyController {
 	    }
 	    Rect extendedRect = new Rect(xx,yy,xx+ww,yy+hh);
 	    // Log.v("Slime","extendedrect = "+extendedRect.pos.x+", "+extendedRect.pos.y+", "+extendedRect.size.w+", "+extendedRect.size.h);
-	    //if(extendedRect.in(x,y)) return i;
 	    if(extendedRect.contains(x,y)) return i;
-	    // if(keyView.candButtons[i].rect.in(x,y)) return i;
 	}
 	return -1;
     }
@@ -171,6 +169,7 @@ class KeyController {
 	    }
 	    break;
 	case MotionEvent.ACTION_MOVE:
+	    // このあたり微妙に機種依存してるかも
 	    if(pointerCount == 2){ // 2本指でタッチしているときは2本目の座標を取得
 		mousex = ev.getX(1);
 		mousey = ev.getY(1);
@@ -198,9 +197,8 @@ class KeyController {
 		downKey = findKey(keypat, (int)downx, (int)downy);
 		// Log.v("Slime","downKey... downkey="+downKey);
 		if(downKey != null){ // キーの上を押した
-		    // if(downKey.str == "次"){
 		    if(downKey.str == "→"){
-			// 候補が1面しか無くて「次」が押されたときだけGoogleSuggestを呼ぶようにする
+			// 候補が1面しか無くて「→」が押されたときだけGoogleSuggestを呼ぶようにする
 			if(!useGoogle && !googleDisplayed){
 			    useGoogle = true;
 
@@ -220,7 +218,6 @@ class KeyController {
 			}
 			state = State.STATEFB;
 		    }
-		    // else if(downKey.str == "前"){
 		    else if(downKey.str == "←" && candPage > 1){
 			if(candPage > 1) candPage--;
 			keyView.draw(keypat, downKey, null, candPage);

@@ -24,11 +24,11 @@ class DictEntry {
     int keyLink;
     int connectionLink;
 
-    public DictEntry(String p, String w, int o, int i){
+    public DictEntry(String p, String w, int i, int o){
 	pat = p;
 	word = w;
-	outConnection = o;
 	inConnection = i;
+	outConnection = o;
     }
 }
 
@@ -84,6 +84,7 @@ public class LocalDict {
 		int c = line.charAt(0);
 		if(c == '#' || c == ' ' || c == '\t') continue; // コメント行
 		String[] a = TextUtils.split(line,"\t");
+		if(a[3] == null || a[3] == "") a[3] = "0";
 		dict[i++] = new DictEntry(a[0],a[1],Integer.valueOf(a[2]),Integer.valueOf(a[3]));
             }
             br.close();
@@ -110,7 +111,7 @@ public class LocalDict {
 	}
 	for(int i=0;i<dict.length;i++){
 	    if(dict[i].word.startsWith("*")) continue;
-	    if(dict[i].inConnection < 1000) continue; // 活用の接続の場合
+	    // if(dict[i].inConnection < 1000) continue; // 活用の接続の場合
 	    int ind = patInd(dict[i].pat);
 	    if(keyLink[ind] < 0){
 		cur[ind] = i;
@@ -205,7 +206,8 @@ public class LocalDict {
     static void addConnectedCandidate(String word, String pat, int connection, int level, int matchlen){ // 候補追加
 	int i;
 	if(word == "") return; // 2011/11/3
-	if(word.charAt(0) == '*') return; // 単語活用の途中
+	//if(word.charAt(0) == '*') return; // 単語活用の途中
+	if(word.charAt(word.length()-1) == '*') return;
 
 	String p = "";
 	for(i=0;i<level+1;i++) p += patStack[i];
