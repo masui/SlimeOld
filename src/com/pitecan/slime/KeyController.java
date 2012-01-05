@@ -139,11 +139,11 @@ class KeyController {
 	// 2タッチでスライドがあれば全部2タッチ目のスライドとして扱うことにする
 
 	int pointerIndex = ev.findPointerIndex(pointerId);
-	// Log.v("Slime-ontouch","count="+pointerCount+", actionindex="+actionIndex+", pointerid="+pointerId+", action="+action);
+	Log.v("Slime-ontouch","count="+pointerCount+", actionindex="+actionIndex+", pointerid="+pointerId+", pointerIndex="+pointerIndex+", action="+action);
 
 	mousex = ev.getX(pointerIndex) / keyView.expand;
 	mousey = ev.getY(pointerIndex) / keyView.expand;
-	// Log.v("Slime","mousex="+mousex+", mousey="+mousey);
+	Log.v("Slime","mousex="+mousex+", mousey="+mousey);
 	
 	switch (action & MotionEvent.ACTION_MASK) {
 	case MotionEvent.ACTION_DOWN:
@@ -171,8 +171,10 @@ class KeyController {
 	case MotionEvent.ACTION_MOVE:
 	    // このあたり微妙に機種依存してるかも
 	    if(pointerCount == 2){ // 2本指でタッチしているときは2本目の座標を取得
-		mousex = ev.getX(1);
-		mousey = ev.getY(1);
+		// mousex = ev.getX(1);
+		mousex = ev.getX(1) / keyView.expand;
+		// mousey = ev.getY(1);
+		mousey = ev.getY(1) / keyView.expand;
 	    }
 	    // Log.v("Slime","MOVE - "+mousex);
 	    trans(Event.MOVE);
