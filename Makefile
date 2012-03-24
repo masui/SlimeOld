@@ -1,3 +1,6 @@
+VERSIONCODE=20
+VERSION=1.3.1
+
 all:
 	sed -e "s/VERSIONCODE/${VERSIONCODE}/" AndroidManifest.template | sed -e "s/VERSION/${VERSION}/" > AndroidManifest.xml
 	ant debug
@@ -14,8 +17,6 @@ push:
 	git push git@github.com:masui/Slime.git
 
 # 署名してアップロード
-VERSIONCODE=20
-VERSION=1.3.1
 publish: clean
 	sed -e "s/VERSIONCODE/${VERSIONCODE}/" AndroidManifest.template | sed -e "s/VERSION/${VERSION}/" > AndroidManifest.xml
 	ant release
@@ -26,12 +27,13 @@ publish: clean
 	scp bin/Slime.apk pitecan.com:/www/www.pitecan.com/Slime
 	scp bin/Slime.apk pitecan.com:/www/www.pitecan.com/Slime/Slime-${VERSION}.apk
 
-# Gyazz.com/kdict から辞書を作成!
+# Gyazz.com/SlimeDictから辞書を作成!
 #
 dict:
 	cd ../SlimeDict; make; cd ../Slime
 	cp ../SlimeDict/dict.txt assets/dict.txt
 
+# Gyazz.com/kdict から辞書を作成!
 dict-old:
 	ruby -I~/GyazzDict ~/GyazzDict/gyazz2dic 'kdict::リスト' 'kdict::名詞' 'kdict::固有名詞' 'kdict::増井リスト' > /tmp/tmp
 	/bin/rm -r -f assets
