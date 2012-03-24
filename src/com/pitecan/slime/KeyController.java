@@ -114,6 +114,7 @@ class KeyController {
     private State state = State.STATE0;
 
     private float mousex, mousey;      // タッチ座標
+    private float mousex2, mousey2;    // (Desireのバグ回避用)
     private float downx, downy;        // 最初にタッチしたときの座標
 
     // タイマ処理用
@@ -144,10 +145,41 @@ class KeyController {
 	mousex = ev.getX(pointerIndex) / keyView.expand;
 	mousey = ev.getY(pointerIndex) / keyView.expand;
 	Log.v("Slime","mousex="+mousex+", mousey="+mousey);
+
+	// Desire向け対策
+	if(false){
+	    if(pointerIndex == 1){
+		float mousex1, mousey1;
+		if((action & MotionEvent.ACTION_MASK) == MotionEvent.ACTION_UP ||
+		   (action & MotionEvent.ACTION_MASK) == MotionEvent.ACTION_POINTER_UP){
+		    mousex = mousex2;
+		    mousey = mousey2;
+		}
+		/*
+		  else {
+		  mousex1 = ev.getX(0) / keyView.expand;
+		  mousey1 = ev.getY(0) / keyView.expand;
+		  Log.v("Slime","2222222 mousex="+mousex+", mousey="+mousey);
+		  Log.v("Slime","2222222 mousex1="+mousex1+", mousey1="+mousey1);
+		  Log.v("Slime","2222222 downx="+downx+", downy="+downy);
+		  if(downx - mousex1 > 40.0 || mousex1 - downx > 40.0){
+		  Log.v("Slime","Change mousex from "+mousex+" to "+mousex1);
+		  mousex = mousex1;
+		  }
+		  if(downy - mousey1 > 40.0 || mousey1 - downy > 40.0){
+		  Log.v("Slime","Change mousey from "+mousey+" to "+mousey1);
+		  mousey = mousey1;
+		  }
+		  }
+		*/
+	    }
+	}
 	
 	switch (action & MotionEvent.ACTION_MASK) {
 	case MotionEvent.ACTION_DOWN:
 	case MotionEvent.ACTION_POINTER_DOWN:
+	    mousex2 = mousex;
+	    mousey2 = mousey;
 	    if(pointerId == 0){
 		// Log.v("Slime","DOWN1 - "+mousex);
 		trans(Event.DOWN1);
@@ -169,6 +201,8 @@ class KeyController {
 	    }
 	    break;
 	case MotionEvent.ACTION_MOVE:
+	    mousex2 = mousex;
+	    mousey2 = mousey;
 	    // このあたり微妙に機種依存してるかも
 	    if(pointerCount == 2){ // 2本指でタッチしているときは2本目の座標を取得
 		// mousex = ev.getX(1);
