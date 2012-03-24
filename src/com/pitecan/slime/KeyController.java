@@ -395,9 +395,21 @@ class KeyController {
 		if(selectedKey != null){ // 入力文字処理
 		    processKey(selectedKey);
 		}
-		keypat = keys.keypat0;
-		keyView.draw(keypat, null, null, candPage);
-		state = State.STATE0;
+		if(selectedKey != null && Pattern.matches("[a-zA-Z0-9]",selectedKey.str)){
+		    shiftLockTimeout = new Runnable(){
+			    public void run() {
+				trans(Event.SHIFTLOCKTIMER);
+			    }
+			};
+		    shiftLockTimeoutHandler.postDelayed(shiftLockTimeout,1200);
+		    keyView.draw(keypat, null, null, 0);
+		    state = State.STATE7;
+		}
+		else {
+		    keypat = keys.keypat0;
+		    keyView.draw(keypat, null, null, candPage);
+		    state = State.STATE0;
+		}
 		break;
 	    case MOVE:
 		keyView.draw(keypat, selectedKey, null, 0);
