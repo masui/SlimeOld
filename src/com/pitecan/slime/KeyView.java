@@ -66,7 +66,6 @@ public class KeyView extends View {
     private Key[] keypat = null;
     private Key selectedKey;
     private Key selectedKey2;
-    // private boolean showCand = false;
     private int candPage = 0;
 
     public static CandButton[] candButtons;

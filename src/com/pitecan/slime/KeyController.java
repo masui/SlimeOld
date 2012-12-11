@@ -290,13 +290,17 @@ class KeyController {
 	    switch(e){
 	    case UP1:
 		if(selectedCand >= 0){ // 候補選択
+		    searchTask.cancel(true); // !!!!!
 		    fix(keyView.candButtons[selectedCand].text,
 			keyView.candButtons[selectedCand].pat);
+
+		    searchTask = new SearchTask(keyView,useGoogle); //!!!!
+		    searchTask.execute("","");
 		}
-		else { // 何もないところをタップしたらキーを隠す
-		    if(keyView.candButtons[0].text == ""){
-			slime.hide();
-		    }
+		else {
+		    // if(keyView.candButtons[0].text == ""){ // 何もないところをタップしたらキーを隠す
+		    slime.hide();
+		    // }
 		}
 		LocalDict.exactMode = false;
 		keypat = keys.keypat0;

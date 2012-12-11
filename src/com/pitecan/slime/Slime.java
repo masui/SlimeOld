@@ -102,7 +102,8 @@ public class Slime extends InputMethodService
 
     @Override public void onStartInputView(EditorInfo info, boolean restarting) {
 	// 別アプリに切り替わったときなど初期化する
-	getCurrentInputConnection().commitText("",1);
+	InputConnection ic = getCurrentInputConnection();
+	if(ic != null) ic.commitText("",1);
 	onFinishInput();
 	keyController.resetInput();
     }
@@ -112,14 +113,16 @@ public class Slime extends InputMethodService
     }
 
     public void input(String s){
-	getCurrentInputConnection().commitText(s,1); // 入力貼り付け
+	InputConnection ic = getCurrentInputConnection();
+	if(ic != null) ic.commitText(s,1); // 入力貼り付け
     }
 
     public void keyDownUp(int keyEventCode) { // キー入力
-        getCurrentInputConnection().sendKeyEvent(
-                new KeyEvent(KeyEvent.ACTION_DOWN, keyEventCode));
-        getCurrentInputConnection().sendKeyEvent(
-                new KeyEvent(KeyEvent.ACTION_UP, keyEventCode));
+	InputConnection ic = getCurrentInputConnection();
+	if(ic != null){
+	    ic.sendKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN, keyEventCode));
+	    ic.sendKeyEvent(new KeyEvent(KeyEvent.ACTION_UP, keyEventCode));
+	}
     }
 
     public void showComposingText(){
@@ -134,7 +137,10 @@ public class Slime extends InputMethodService
 		composingText += keyController.inputCharArray.get(i);
 	    }
 	}
-	getCurrentInputConnection().setComposingText(composingText,1);
+	InputConnection ic = getCurrentInputConnection();
+	if(ic != null){
+	    ic.setComposingText(composingText,1);
+	}
     }
 
     public void hide(){

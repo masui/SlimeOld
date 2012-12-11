@@ -22,7 +22,25 @@ public class SearchTask extends AsyncTask<String, Integer, Candidate[]> {
 	Candidate[] res;
 	String pat = searchParams[0];
 	String word = searchParams[1];
-	res = Search.search(pat,word,useGoogle,this); // this.cancel()が呼ばれるとthis.isCancelled()がtrueになる
+	if(pat != ""){
+	    res = Search.search(pat,word,useGoogle,this); // this.cancel()が呼ばれるとthis.isCancelled()がtrueになる
+	    if(isCancelled()){
+	    }
+	}
+	else {
+	    Search.ncands = 0;
+	    Search.addCandidateWithLevel("。",".",0);
+	    Search.addCandidateWithLevel("、",",",0);
+	    Search.addCandidateWithLevel("が","ga",0);
+	    Search.addCandidateWithLevel("の","no",0);
+	    Search.addCandidateWithLevel("に","ni",0);
+	    Search.addCandidateWithLevel("を","wo",0);
+	    Search.addCandidateWithLevel("と","to",0);
+	    Search.addCandidateWithLevel("も","mo",0);
+	    Search.addCandidateWithLevel("へ","he",0);
+	    res = Search.candidates;
+	}
+
 	// Log.v("Slime","doInBackground end");
 	return res;
     }
