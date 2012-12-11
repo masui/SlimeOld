@@ -245,6 +245,13 @@ class Keys {
 	new Key(267, 162, 53, 53,  "-",  "",   keypat17),
     };
     public static final Key[] keypat18 =  {
+	/* 助詞を入れやすくする工夫をしてみたがイマイチなのでコメントにしておく
+	new Key(1,   3,   53, 53,  "が",  "",   null),
+	new Key(54,  3,   53, 53,  "は",  "",   null),
+	new Key(107, 3,   53, 53,  "の",  "",   null),
+	new Key(160, 3,   53, 53,  "に",  "",   null),
+	new Key(213, 3,   53, 53,  "を",  "",   null),
+	*/
 	new Key(1,   109, 106, 53,  "ゃ", "Ya", null),
 	new Key(107, 109, 53,  53,  "ゅ", "Yu", null),
 	new Key(160, 109, 106, 53,  "ょ", "Yo", null),
@@ -253,6 +260,13 @@ class Keys {
 	new Key(160, 162, 106, 53,  "よ", "yo", null),
     };
     public static final Key[] keypat8 =  {
+	/*
+	new Key(1,   3,   53, 53,  "が",  "",   keypat18),
+	new Key(54,  3,   53, 53,  "は",  "",   keypat18),
+	new Key(107, 3,   53, 53,  "の",  "",   keypat18),
+	new Key(160, 3,   53, 53,  "に",  "",   keypat18),
+	new Key(213, 3,   53, 53,  "を",  "",   keypat18),
+	*/
 	new Key(1,   109, 106, 53,  "ゃ", "Ya", keypat18),
 	new Key(107, 109, 53,  53,  "ゅ", "Yu", keypat18),
 	new Key(160, 109, 106, 53,  "ょ", "Yo", keypat18),

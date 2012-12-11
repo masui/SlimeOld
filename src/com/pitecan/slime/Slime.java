@@ -31,7 +31,7 @@ import android.text.ClipboardManager;
 public class Slime extends InputMethodService 
 {
     private Keys keys;
-    /*private */ public static KeyView keyView; ////!!!!
+    private KeyView keyView;
     private KeyController keyController;
     private LocalDict dict;
     private SQLDict sqlDict;

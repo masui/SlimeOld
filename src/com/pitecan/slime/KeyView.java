@@ -71,8 +71,6 @@ public class KeyView extends View {
 
     public static CandButton[] candButtons;
 
-    ////!!!!public static KeyView keyView;
-
     public KeyView(Context context, AttributeSet attrs) {
 	super(context,attrs);
 
@@ -93,8 +91,6 @@ public class KeyView extends View {
 	    CandButton button = new CandButton();
 	    candButtons[i] = button;
 	}
-
-	////!!!!keyView = this;
     }
 
     private void initGraphics(){
