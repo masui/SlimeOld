@@ -45,6 +45,8 @@ public class LocalDict {
 
     public static boolean exactMode = false;
 
+    static int fib1, fib2;
+
     //
     // assetsディレクトリの中のdict.txtを使用
     //
@@ -176,6 +178,7 @@ public class LocalDict {
     // ローカル辞書の接続検索
     static void search(String pat,SearchTask searchTask){
 	patInit(pat,0);
+	fib1 = fib2 = 1;
 	generateCand(0, patInd(pat), 0, "", "", 0, searchTask); // 接続辞書を使って候補を生成
     }
 
@@ -195,6 +198,13 @@ public class LocalDict {
 		int matchlen = m.group(1).length();
 		if(matchlen == patlen && (!exactMode || exactMode && dict[d].pat.length() == matchlen)){ // 最後までマッチ
 		    addConnectedCandidate(dict[d].word, dict[d].pat, dict[d].outConnection, level, matchlen);
+		    //Log.v("Slime","ncands = " + Search.ncands + ", fib1 = " + fib1);
+		    if(Search.ncands >= fib1){
+			int tmp = fib1;
+			searchTask.progress(0); //いくつかみつかったら画面更新
+			fib1 += fib2;
+			fib2 = tmp;
+		    }
 		}
 		else if(matchlen == dict[d].pat.length() && dict[d].outConnection != 0){ // とりあえずその単語まではマッチ
 		    generateCand(dict[d].outConnection, 0, len+matchlen, dict[d].word, dict[d].pat, level+1, searchTask);

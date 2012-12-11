@@ -1,5 +1,5 @@
-VERSIONCODE=21
-VERSION=1.3.2
+VERSIONCODE=22
+VERSION=1.3.3
 
 all:
 	sed -e "s/VERSIONCODE/${VERSIONCODE}/" AndroidManifest.template | sed -e "s/VERSION/${VERSION}/" > AndroidManifest.xml

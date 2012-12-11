@@ -140,11 +140,11 @@ class KeyController {
 	// 2タッチでスライドがあれば全部2タッチ目のスライドとして扱うことにする
 
 	int pointerIndex = ev.findPointerIndex(pointerId);
-	Log.v("Slime-ontouch","count="+pointerCount+", actionindex="+actionIndex+", pointerid="+pointerId+", pointerIndex="+pointerIndex+", action="+action);
+	//Log.v("Slime-ontouch","count="+pointerCount+", actionindex="+actionIndex+", pointerid="+pointerId+", pointerIndex="+pointerIndex+", action="+action);
 
 	mousex = ev.getX(pointerIndex) / keyView.expand;
 	mousey = ev.getY(pointerIndex) / keyView.expand;
-	Log.v("Slime","mousex="+mousex+", mousey="+mousey);
+	//Log.v("Slime","mousex="+mousex+", mousey="+mousey);
 
 	// Desire向け対策
 	if(false){
@@ -267,7 +267,9 @@ class KeyController {
 				    trans(Event.SHIFTTIMER);
 				}
 			    };
-			shiftTimeoutHandler.postDelayed(shiftTimeout,300);
+			// 長押し判定時間
+			// 以前は300msだったが長すぎたので変更 (2012/12/10 22:20:13)
+			shiftTimeoutHandler.postDelayed(shiftTimeout,150);
 			state = State.STATE1;
 		    }
 		}
@@ -321,7 +323,7 @@ class KeyController {
 		break;
 	    case MOVE:
 		//Log.v("Slime","STATE1-MOVE");
-		if(Math.hypot(mousex-downx, mousey-downy) >= 30.0){
+		if(Math.hypot(mousex-downx, mousey-downy) >= 15.0){
 		    keypat = downKey.shiftKeypat;
 
 		    downKey = findKey(keypat, (int)downx, (int)downy);

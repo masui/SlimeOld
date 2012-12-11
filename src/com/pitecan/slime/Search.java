@@ -6,7 +6,7 @@ package com.pitecan.slime;
 
 import java.util.Arrays;
 import android.util.Log;
-import android.os.AsyncTask;
+// import android.os.AsyncTask;
 
 class Candidate {
     String pat, word;
@@ -82,7 +82,8 @@ public class Search {
 	for(int j=ncands;j<Slime.MAXCANDS;j++){
 	    candidates[j].weight = 100;
 	}
-	Arrays.sort(candidates, new CandidateComparator());
+	// ソートをやめてみたが全く違いがわからない... 要るのだろうか?? (2012/12/11 08:58:42)
+	//Arrays.sort(candidates, new CandidateComparator());
 
 	return candidates;
     }

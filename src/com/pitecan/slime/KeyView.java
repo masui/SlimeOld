@@ -71,6 +71,8 @@ public class KeyView extends View {
 
     public static CandButton[] candButtons;
 
+    ////!!!!public static KeyView keyView;
+
     public KeyView(Context context, AttributeSet attrs) {
 	super(context,attrs);
 
@@ -91,6 +93,8 @@ public class KeyView extends View {
 	    CandButton button = new CandButton();
 	    candButtons[i] = button;
 	}
+
+	////!!!!keyView = this;
     }
 
     private void initGraphics(){
@@ -160,14 +164,14 @@ public class KeyView extends View {
 	invalidate();
     }
 
-    public void drawDefault2(){
-	this.keypat = keys.keypat0;
-	this.selectedKey = null;
-	this.selectedKey2 = null;
-	this.candPage = 1;
-	bgcolor = 0xffd0d0d0;
-	invalidate();
-    }
+    //public void drawDefault2(){
+    //	this.keypat = keys.keypat0;
+    //	this.selectedKey = null;
+    //	this.selectedKey2 = null;
+    //	this.candPage = 1;
+    //	bgcolor = 0xffd0d0d0;
+    //	invalidate();
+    //}
 
     //
     // 候補バッファを12行ぶん用意しておいて3行ずつ表示する
