@@ -29,12 +29,12 @@ class GoogleIME {
 
 	String jsonText = "[[\"\",[]]]";
 
-	Log.d("Slime", urlstr);
+	//Log.d("Slime", urlstr);
 
 	try {
 	    // http://stackoverflow.com/questions/693997/how-to-set-httpresponse-timeout-for-android-in-java
 	    HttpParams httpParameters = new BasicHttpParams();
-	    Log.d("Slime", "parameters = " + httpParameters);
+	    //Log.d("Slime", "parameters = " + httpParameters);
 	    // Set the timeout in milliseconds until a connection is established.
 	    int timeoutConnection = 1500;
 	    HttpConnectionParams.setConnectionTimeout(httpParameters, timeoutConnection);
@@ -43,23 +43,22 @@ class GoogleIME {
 	    int timeoutSocket = 1500;
 	    HttpConnectionParams.setSoTimeout(httpParameters, timeoutSocket);
 	    DefaultHttpClient httpClient = new DefaultHttpClient(httpParameters);
-	    Log.d("Slime", "defaulthttpclient = " + httpClient);
+	    //Log.d("Slime", "defaulthttpclient = " + httpClient);
 
 	    //DefaultHttpClient httpClient = new DefaultHttpClient();
 
 	    httpClient.getParams().setParameter("http.protocol.content-charset", "UTF-8");
-	    Log.d("Slime", "setParameter");
+	    //Log.d("Slime", "setParameter");
 
 	    HttpGet request = new HttpGet(urlstr);
-	    Log.d("Slime", "HttpGet Success");
-	    Log.d("Slime", "request = " + request);
+	    //Log.d("Slime", "request = " + request);
 	    HttpResponse httpResponse = null;
 	    try {
-		Log.d("Slime", "Google Execute");
+		//Log.d("Slime", "Google Execute");
 		httpResponse = httpClient.execute(request);
-		Log.d("Slime", "Response get");
+		//Log.d("Slime", "Response get");
 	    } catch (Exception e) {
-		Log.d("HttpSampleActivity", "Error Execute");
+		//Log.d("HttpSampleActivity", "Error Execute");
 	    }
 	    int status = httpResponse.getStatusLine().getStatusCode();
 	    if (HttpStatus.SC_OK == status) {
@@ -67,10 +66,10 @@ class GoogleIME {
 		    ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 		    jsonText = EntityUtils.toString(httpResponse.getEntity(), "UTF-8"); // これが大事らしいが...
 		} catch (Exception e) {
-		    Log.d("Slime HttpSampleActivity", "Error");
+		    //Log.d("Slime HttpSampleActivity", "Error");
 		}
 	    } else {
-		Log.d("Slime HttpSampleActivity", "Status" + status);
+		//Log.d("Slime HttpSampleActivity", "Status" + status);
 	    }
 
 	    // http://www.google.co.jp/ime/cgiapi.html
@@ -114,7 +113,7 @@ class GoogleIME {
 		Log.e("Slime", "JSON Exception " + e);
 	    }
 	} catch (Exception e){
-	    Log.v("Slime","GoogleSuggest error");
+	    Log.v("Slime","GoogleIME error");
 	}
 	return suggestions;
     }

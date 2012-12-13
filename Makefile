@@ -1,5 +1,7 @@
-VERSIONCODE=24
-VERSION=1.4.1
+VERSIONCODE=25
+VERSION=1.5.1
+
+# 1.5.1: Google日本語入力を利用
 
 all:
 	sed -e "s/VERSIONCODE/${VERSIONCODE}/" AndroidManifest.template | sed -e "s/VERSION/${VERSION}/" > AndroidManifest.xml
