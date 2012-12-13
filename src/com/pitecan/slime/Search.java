@@ -71,7 +71,8 @@ public class Search {
 
 	// Google Suggest
 	if(useGoogle){
-	    String[] suggestions = GoogleSuggest.suggest(word);
+	    //String[] suggestions = GoogleSuggest.suggest(word);
+	    String[] suggestions = GoogleIME.ime(word);
 	    for(int i=0;suggestions[i] != "";i++){
 		// Log.v("Slime","Use Google ... suggestions = "+suggestions[i]);
 		addCandidateWithLevel(suggestions[i],Keys.hira2pat(word),50);
