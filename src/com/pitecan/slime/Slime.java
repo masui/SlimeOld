@@ -63,6 +63,7 @@ public class Slime extends InputMethodService
      * is called after creation and any configuration change.
      */
     @Override public void onInitializeInterface() {
+	super.onInitializeInterface(); // 必要??
 	keys = new Keys();
 	keyController = new KeyController();
     }
@@ -84,6 +85,7 @@ public class Slime extends InputMethodService
      * a configuration change.
      */
     @Override public View onCreateInputView() {
+	super.onCreateInputView(); // 必要??
 	/*
 	  KeyControllerクラスから他にアクセスできるようにセットする
 	 */
@@ -101,9 +103,14 @@ public class Slime extends InputMethodService
     }
 
     @Override public void onStartInputView(EditorInfo info, boolean restarting) {
+	super.onStartInputView(info,restarting); // 必要??
+	//
 	// 別アプリに切り替わったときなど初期化する
-	InputConnection ic = getCurrentInputConnection();
-	if(ic != null) ic.commitText("",1);
+	// InputConnection ic = getCurrentInputConnection();
+	// if(ic != null) ic.commitText("",1);
+	// !!!! このコードがあるせいでブラウザのURL枠をタップしたときURLが消えてしまっていた
+	// 何故こういうコードを書いたのか全く覚えていない。 (2012/12/13 21:40:11)
+	//
 	onFinishInput();
 	keyController.resetInput();
     }
