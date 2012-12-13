@@ -87,6 +87,13 @@ public class Search {
 	// ソートをやめてみたが全く違いがわからない... 要るのだろうか?? (2012/12/11 08:58:42)
 	//Arrays.sort(candidates, new CandidateComparator());
 
+	if(ncands == 0){
+	    String hira = word;
+	    String p = Keys.hira2pat(hira); // 無理矢理ひらがなをローマ字パタンに変換
+	    addCandidateWithLevel(hira,p,-100);
+	    addCandidateWithLevel(h2k(hira),p,-99);
+	}
+
 	return candidates;
     }
 
