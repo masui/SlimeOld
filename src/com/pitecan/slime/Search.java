@@ -73,7 +73,8 @@ public class Search {
 	if(useGoogle){
 	    //String[] suggestions = GoogleSuggest.suggest(word);
 	    String[] suggestions = GoogleIME.ime(word);
-	    for(int i=0;suggestions[i] != "";i++){
+	    Log.v("SLIME","length="+suggestions.length);
+	    for(int i=0;suggestions[i] != null && suggestions[i] != "";i++){
 		// Log.v("Slime","Use Google ... suggestions = "+suggestions[i]);
 		addCandidateWithLevel(suggestions[i],Keys.hira2pat(word),50);
 	    }
@@ -98,6 +99,7 @@ public class Search {
 	// Log.v("Slime","addCandidate: word="+word+" pat="+pat+" ncands="+ncands+" level="+level);
 	if(ncands >= Slime.MAXCANDS) return;
 	for(i=0;i<ncands;i++){
+	    if(candidates[i].word == null) break;
 	    if(candidates[i].word.equals(word)) break;
 	}
 	if(i >= ncands){
