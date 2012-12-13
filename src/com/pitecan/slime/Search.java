@@ -69,29 +69,31 @@ public class Search {
 	// 通常のローカル辞書を検索
 	LocalDict.search(pat,searchTask);
 
-	// Google Suggest
-	if(useGoogle){
-	    //String[] suggestions = GoogleSuggest.suggest(word);
-	    String[] suggestions = GoogleIME.ime(word);
-	    Log.v("SLIME","length="+suggestions.length);
-	    for(int i=0;suggestions[i] != null && suggestions[i] != "";i++){
-		// Log.v("Slime","Use Google ... suggestions = "+suggestions[i]);
-		addCandidateWithLevel(suggestions[i],Keys.hira2pat(word),50);
+	if(!searchTask.isCancelled()){
+	    // Google Suggest または Google日本語入力を利用
+	    if(useGoogle){
+		//String[] suggestions = GoogleSuggest.suggest(word);
+		String[] suggestions = GoogleIME.ime(word);
+		Log.v("SLIME","length="+suggestions.length);
+		for(int i=0;suggestions[i] != null && suggestions[i] != "";i++){
+		    // Log.v("Slime","Use Google ... suggestions = "+suggestions[i]);
+		    addCandidateWithLevel(suggestions[i],Keys.hira2pat(word),50);
+		}
 	    }
-	}
-
-	// 優先度に従って候補を並べなおし
-	for(int j=ncands;j<Slime.MAXCANDS;j++){
-	    candidates[j].weight = 100;
-	}
-	// ソートをやめてみたが全く違いがわからない... 要るのだろうか?? (2012/12/11 08:58:42)
-	//Arrays.sort(candidates, new CandidateComparator());
-
-	if(ncands == 0){
-	    String hira = word;
-	    String p = Keys.hira2pat(hira); // 無理矢理ひらがなをローマ字パタンに変換
-	    addCandidateWithLevel(hira,p,-100);
-	    addCandidateWithLevel(h2k(hira),p,-99);
+	    
+	    // 優先度に従って候補を並べなおし
+	    //for(int j=ncands;j<Slime.MAXCANDS;j++){
+	    //	candidates[j].weight = 100;
+	    //}
+	    // ソートをやめてみたが全く違いがわからない... 要るのだろうか?? (2012/12/11 08:58:42)
+	    //Arrays.sort(candidates, new CandidateComparator());
+	    
+	    if(ncands == 0){
+		String hira = word;
+		String p = Keys.hira2pat(hira); // 無理矢理ひらがなをローマ字パタンに変換
+		addCandidateWithLevel(hira,p,-100);
+		addCandidateWithLevel(h2k(hira),p,-99);
+	    }
 	}
 
 	return candidates;
