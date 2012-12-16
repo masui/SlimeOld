@@ -327,7 +327,7 @@ class KeyController {
 		break;
 	    case MOVE:
 		//Log.v("Slime","STATE1-MOVE");
-		if(Math.hypot(mousex-downx, mousey-downy) >= 15.0){
+		if(Math.hypot(mousex-downx, mousey-downy) >= 20.0){
 		    keypat = downKey.shiftKeypat;
 
 		    downKey = findKey(keypat, (int)downx, (int)downy);
@@ -383,7 +383,7 @@ class KeyController {
 		//		state = State.STATE4;
 		break;
 	    case MOVE:
-		if(Math.hypot(mousex-downx, mousey-downy) >= 30.0){
+		if(Math.hypot(mousex-downx, mousey-downy) >= 20.0){
 		    downKey = findKey(keypat, (int)downx, (int)downy);
 		    keypat = downKey.shiftKeypat;
 

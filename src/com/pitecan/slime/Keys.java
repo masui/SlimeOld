@@ -207,7 +207,7 @@ class Keys {
 	new Key(107, 3,   53, 53,  "2",  "",   null),
 	new Key(160, 3,   53, 53,  "3",  "",   null),
 	new Key(213, 3,   53, 53,  "4",  "",   null),
-	new Key(267, 3,   53, 53,  "=",  "",   null),
+	// new Key(267, 3,   53, 53,  "=",  "",   null),
 	new Key(267, 3,   53, 53,  "←",  "",   null),
 	new Key(1,   56,  53, 53,  "5",  "",   null),
 	new Key(54,  56,  53, 53,  "6",  "",   null),

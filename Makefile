@@ -3,6 +3,8 @@ VERSION=1.5.2
 
 # 1.5.1: Google日本語入力を利用
 # 1.5.2: ブラウザURLが消えるのを修正
+#        候補がないときひらがな/カタカナを表示
+#        キー入力で検索キャンセルを徹底
 
 all:
 	sed -e "s/VERSIONCODE/${VERSIONCODE}/" AndroidManifest.template | sed -e "s/VERSION/${VERSION}/" > AndroidManifest.xml
