@@ -40,14 +40,11 @@ class KeyController {
     public Slime slime;
 
     public static Key[] keypat;          // 現在のキー配列
-    private boolean keyPressed = false;
     private int selectedCand = -1;
     private Key downKey = null;
     private Key selectedKey = null;
     private Key secondKey = null;
-    private int nbuttons; // 生成中の候補ボタン番号
     public static int candPage = 1;   // 候補の何ページ目か
-    private String clipboardText;
 
     private SearchTask searchTask = null;
 
