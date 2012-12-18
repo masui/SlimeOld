@@ -125,6 +125,13 @@ class KeyController {
     public boolean useGoogle = false;       // GoogleSuggestを呼ぶかどうか
 
     //
+    // 戻るキーが押されたとき
+    //
+    public void backKey(){
+	slime.hide();
+    }
+
+    //
     // タッチイベント処理
     //
     public boolean onTouchEvent(MotionEvent ev) {
@@ -296,7 +303,7 @@ class KeyController {
 		}
 		else {
 		    // if(keyView.candButtons[0].text == ""){ // 何もないところをタップしたらキーを隠す
-		    slime.hide();
+		    // slime.hide();
 		    // }
 		}
 		LocalDict.exactMode = false;

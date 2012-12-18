@@ -8,6 +8,7 @@ package com.pitecan.slime;
 
 import android.view.View;
 import android.view.MotionEvent;
+import android.view.KeyEvent;
 import android.graphics.Color;
 import android.graphics.Canvas;
 import android.graphics.Paint;
@@ -122,6 +123,16 @@ public class KeyView extends View {
     public boolean onTouchEvent(MotionEvent ev) {
 	if(keyController != null){
 	    keyController.onTouchEvent(ev);
+	}
+	return true;
+    }
+
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+	if(keyCode != KeyEvent.KEYCODE_BACK){
+	    super.onKeyDown(keyCode,event);
+	}
+	else {
+	    keyController.backKey();
 	}
 	return true;
     }
