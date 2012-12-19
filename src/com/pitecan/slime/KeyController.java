@@ -278,7 +278,7 @@ class KeyController {
 		    fix(keyView.candButtons[selectedCand].text,
 			keyView.candButtons[selectedCand].pat);
 
-		    searchTask = new SearchTask(keyView,useGoogle); //!!!!
+		    searchTask = new SearchTask(keyView,useGoogle);
 		    searchTask.execute("","");
 		}
 		else {
@@ -364,7 +364,6 @@ class KeyController {
 		else {
 		    state = State.STATE4;
 		}
-		//		state = State.STATE4;
 		break;
 	    case MOVE:
 		if(Math.hypot(mousex-downx, mousey-downy) >= 20.0){

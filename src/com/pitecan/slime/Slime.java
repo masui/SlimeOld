@@ -59,7 +59,7 @@ public class Slime extends InputMethodService
 	clipboardText = (seq == null ? "" : seq.toString());
 
 	//
-	// IMEで「戻るボタン」を扱えるようにするためのもの
+	// IMEでBackボタンを扱えるようにするためのもの。
 	// android-11 以降のAPIじゃないと動かない模様
 	//
 	// Log.v("Slime","version="+Build.VERSION.SDK_INT);
@@ -184,16 +184,18 @@ public class Slime extends InputMethodService
 	}
     }
 
-    // Backボタン処理
+    //
+    // キーボードが表示されているときBackボタンが押されたら対応する
+    //
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
 	//Log.v("Slime","onKeyDown - keyCode = "+keyCode);
-	if(Build.VERSION.SDK_INT < 11 || keyCode != KeyEvent.KEYCODE_BACK || !isInputViewShown()){
-	    return super.onKeyDown(keyCode,event);
-	}
-	else {
+	if(Build.VERSION.SDK_INT >= 11 && keyCode == KeyEvent.KEYCODE_BACK && isInputViewShown()){
 	    keyController.backKey();
 	    return true;
+	}
+	else {
+	    return super.onKeyDown(keyCode,event);
 	}
     }
 }
