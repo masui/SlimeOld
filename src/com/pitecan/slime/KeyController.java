@@ -128,7 +128,18 @@ class KeyController {
     // 戻るキーが押されたとき
     //
     public void backKey(){
-	slime.hide();
+	// slime.hide();
+	if(state == State.STATE7){
+	    reset();
+	    /*
+	    state = State.STATE0;
+	    keypat = keys.keypat0;
+	    keyView.draw(keypat, null, null, 0);
+	    */
+	}
+	else {
+	    slime.hide();
+	}
     }
 
     //

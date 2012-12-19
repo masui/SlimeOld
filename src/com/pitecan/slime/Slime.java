@@ -56,6 +56,14 @@ public class Slime extends InputMethodService
 	cm = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
 	CharSequence seq = cm.getText();
 	clipboardText = (seq == null ? "" : seq.toString());
+
+	////!!!!
+	setBackDisposition(InputMethodService.BACK_DISPOSITION_WILL_NOT_DISMISS);
+	//setBackDisposition(InputMethodService.BACK_DISPOSITION_WILL_DISMISS);
+
+	//InputMethodService.setBackDisposition(2);
+	//this.getWindow();
+	//this.setBackDisposition(2);
     }
 
     /**
@@ -111,6 +119,7 @@ public class Slime extends InputMethodService
 	// !!!! このコードがあるせいでブラウザのURL枠をタップしたときURLが消えてしまっていた
 	// 何故こういうコードを書いたのか全く覚えていない。 (2012/12/13 21:40:11)
 	//
+
 	onFinishInput();
 	keyController.resetInput();
     }
@@ -170,6 +179,21 @@ public class Slime extends InputMethodService
 	}
 	else {
 	    return s;
+	}
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+	Log.v("Slime","onKeyDown - keyCode = "+keyCode);
+	// IME画面が表示されてないときはイベントとれるのに
+	// 肝心のIME画面でイベントがとれない...
+	//return super.onKeyDown(keyCode,event);
+	if(keyCode != KeyEvent.KEYCODE_BACK || !isInputViewShown()){
+	    return super.onKeyDown(keyCode,event);
+	}
+	else {
+	    keyController.backKey();
+	    return true;
 	}
     }
 }

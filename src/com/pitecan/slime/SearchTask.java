@@ -34,6 +34,7 @@ public class SearchTask extends AsyncTask<String, Integer, Candidate[]> {
 	    Search.addCandidateWithLevel("の","no",0);
 	    Search.addCandidateWithLevel("に","ni",0);
 	    Search.addCandidateWithLevel("を","wo",0);
+	    /*
 	    Search.addCandidateWithLevel("と","to",0);
 	    Search.addCandidateWithLevel("も","mo",0);
 	    Search.addCandidateWithLevel("へ","he",0);
@@ -42,6 +43,7 @@ public class SearchTask extends AsyncTask<String, Integer, Candidate[]> {
 	    Search.addCandidateWithLevel("か","ka",0);
 	    Search.addCandidateWithLevel("で","de",0);
 	    Search.addCandidateWithLevel("だ","da",0);
+	    */
 	    Search.addCandidateWithLevel("です","desu",0);
 	    Search.addCandidateWithLevel("でした","deshita",0);
 	    Search.addCandidateWithLevel("。",".",0);

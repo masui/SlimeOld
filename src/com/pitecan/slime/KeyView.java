@@ -126,16 +126,20 @@ public class KeyView extends View {
 	}
 	return true;
     }
-
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-	if(keyCode != KeyEvent.KEYCODE_BACK){
-	    super.onKeyDown(keyCode,event);
-	}
-	else {
-	    keyController.backKey();
-	}
-	return true;
-    }
+    //    @Override
+    //    public boolean onKeyDown(int keyCode, KeyEvent event) {
+    //	Log.v("Slime","onKeyDown - keyCode = "+keyCode);
+    //	// IME画面が表示されてないときはイベントとれるのに
+    //	// 肝心のIME画面でイベントがとれない...
+    //	super.onKeyDown(keyCode,event);
+    //	if(keyCode != KeyEvent.KEYCODE_BACK){
+    //	    //super.onKeyDown(keyCode,event);
+    //	}
+    //	else {
+    //	    //keyController.backKey();
+    //	}
+    //	return true;
+    //    }
 
     private int bgcolor;
 
