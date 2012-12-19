@@ -117,9 +117,11 @@ class KeyController {
     // タイマ処理用
     Handler shiftTimeoutHandler = new Handler();
     Runnable shiftTimeout;
+    private final int SHIFTTIME = 150;      // 長押しタイムアウト
 
     Handler shiftLockTimeoutHandler = new Handler();
     Runnable shiftLockTimeout;
+    private final int SHIFTLOCKTIME = 1500; // 英数字シフトロックタイムアウト
     
     public boolean googleDisplayed = false; // Google検索中を示す表示
     public boolean useGoogle = false;       // GoogleSuggestを呼ぶかどうか
@@ -128,14 +130,10 @@ class KeyController {
     // 戻るキーが押されたとき
     //
     public void backKey(){
-	// slime.hide();
+	//Log.v("Slime","BACKKEY state = "+state);
 	if(state == State.STATE7){
+	    // 英数字モードのときは日本語モードに戻る
 	    reset();
-	    /*
-	    state = State.STATE0;
-	    keypat = keys.keypat0;
-	    keyView.draw(keypat, null, null, 0);
-	    */
 	}
 	else {
 	    slime.hide();
@@ -284,7 +282,7 @@ class KeyController {
 			    };
 			// 長押し判定時間
 			// 以前は300msだったが長すぎたので変更 (2012/12/10 22:20:13)
-			shiftTimeoutHandler.postDelayed(shiftTimeout,150);
+			shiftTimeoutHandler.postDelayed(shiftTimeout,SHIFTTIME);
 			state = State.STATE1;
 		    }
 		}
@@ -422,7 +420,7 @@ class KeyController {
 				trans(Event.SHIFTLOCKTIMER);
 			    }
 			};
-		    shiftLockTimeoutHandler.postDelayed(shiftLockTimeout,1200);
+		    shiftLockTimeoutHandler.postDelayed(shiftLockTimeout,SHIFTLOCKTIME);
 		    keyView.draw(keypat, null, null, 0);
 		    state = State.STATE7;
 		}
@@ -492,7 +490,7 @@ class KeyController {
 			    trans(Event.SHIFTLOCKTIMER);
 			}
 		    };
-		shiftLockTimeoutHandler.postDelayed(shiftLockTimeout,1200);
+		shiftLockTimeoutHandler.postDelayed(shiftLockTimeout,SHIFTLOCKTIME);
 
 		keyView.draw(keypat, downKey, null, 0);
 		state = State.STATE7;
@@ -539,6 +537,9 @@ class KeyController {
     }
 
     public void reset(){
+	shiftLockTimeoutHandler.removeCallbacks(shiftLockTimeout);
+	shiftTimeoutHandler.removeCallbacks(shiftTimeout);
+	state = State.STATE0;
 	resetInput();
 	keypat = keys.keypat0;
 	keyView.draw(keypat, null, null, 0);

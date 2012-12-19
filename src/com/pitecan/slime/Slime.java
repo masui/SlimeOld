@@ -14,6 +14,7 @@ import android.view.inputmethod.InputConnection;
 import android.view.inputmethod.InputMethodManager;
 
 import android.os.Bundle;
+import android.os.Build; // for Build.VERSION.SDK_INT
 import android.view.View;
 import android.view.KeyEvent;
 import android.widget.Button;
@@ -57,13 +58,14 @@ public class Slime extends InputMethodService
 	CharSequence seq = cm.getText();
 	clipboardText = (seq == null ? "" : seq.toString());
 
-	////!!!!
-	setBackDisposition(InputMethodService.BACK_DISPOSITION_WILL_NOT_DISMISS);
-	//setBackDisposition(InputMethodService.BACK_DISPOSITION_WILL_DISMISS);
-
-	//InputMethodService.setBackDisposition(2);
-	//this.getWindow();
-	//this.setBackDisposition(2);
+	//
+	// IMEで「戻るボタン」を扱えるようにするためのもの
+	// android-11 以降のAPIじゃないと動かない模様
+	//
+	// Log.v("Slime","version="+Build.VERSION.SDK_INT);
+	if(Build.VERSION.SDK_INT >= 11){
+	    setBackDisposition(InputMethodService.BACK_DISPOSITION_WILL_NOT_DISMISS);
+	}
     }
 
     /**
@@ -182,13 +184,11 @@ public class Slime extends InputMethodService
 	}
     }
 
+    // Backボタン処理
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-	Log.v("Slime","onKeyDown - keyCode = "+keyCode);
-	// IME画面が表示されてないときはイベントとれるのに
-	// 肝心のIME画面でイベントがとれない...
-	//return super.onKeyDown(keyCode,event);
-	if(keyCode != KeyEvent.KEYCODE_BACK || !isInputViewShown()){
+	//Log.v("Slime","onKeyDown - keyCode = "+keyCode);
+	if(Build.VERSION.SDK_INT < 11 || keyCode != KeyEvent.KEYCODE_BACK || !isInputViewShown()){
 	    return super.onKeyDown(keyCode,event);
 	}
 	else {
