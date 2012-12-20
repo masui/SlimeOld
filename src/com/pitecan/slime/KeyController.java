@@ -282,7 +282,15 @@ class KeyController {
 		    searchTask.execute("","");
 		}
 		else {
-		    // if(keyView.candButtons[0].text == ""){ // 何もないところをタップしたらキーを隠す
+		    // 何もないところをタップしたとき
+		    // スワイプ操作でカーソル左右移動
+		    if(mousex - downx > 40){
+			slime.keyDownUp(KeyEvent.KEYCODE_DPAD_RIGHT);
+		    }
+		    else if(mousex - downx < -40){
+			slime.keyDownUp(KeyEvent.KEYCODE_DPAD_LEFT);
+		    }
+		    // if(keyView.candButtons[0].text == ""){
 		    // slime.hide();
 		    // }
 		}

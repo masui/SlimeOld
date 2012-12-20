@@ -43,9 +43,9 @@ public class SearchTask extends AsyncTask<String, Integer, Candidate[]> {
 	    Search.addCandidateWithLevel("か","ka",0);
 	    Search.addCandidateWithLevel("で","de",0);
 	    Search.addCandidateWithLevel("だ","da",0);
-	    */
 	    Search.addCandidateWithLevel("です","desu",0);
 	    Search.addCandidateWithLevel("でした","deshita",0);
+	    */
 	    Search.addCandidateWithLevel("。",".",0);
 	    Search.addCandidateWithLevel("、",",",0);
 	    res = Search.candidates;
