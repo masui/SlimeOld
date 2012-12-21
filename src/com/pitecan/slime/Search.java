@@ -36,6 +36,10 @@ public class Search {
 	}
     }
 
+    public static void reset(){
+	ncands = 0;
+    }
+
     //
     // いろんな辞書を使った検索!
     //

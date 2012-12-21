@@ -126,6 +126,8 @@ class KeyController {
     public boolean googleDisplayed = false; // Google検索中を示す表示
     public boolean useGoogle = false;       // GoogleSuggestを呼ぶかどうか
 
+    private final int SWIPEWIDTH = 30;
+
     //
     // 戻るキーが押されたとき
     //
@@ -284,12 +286,18 @@ class KeyController {
 		else {
 		    // 何もないところをタップしたとき
 		    // スワイプ操作でカーソル左右移動
-		    if(mousex - downx > 40){
+		    if(mousex - downx > SWIPEWIDTH){
 			slime.keyDownUp(KeyEvent.KEYCODE_DPAD_RIGHT);
+			reset();			
 		    }
-		    else if(mousex - downx < -40){
+		    else if(mousex - downx < -SWIPEWIDTH){
 			slime.keyDownUp(KeyEvent.KEYCODE_DPAD_LEFT);
+			reset();
 		    }
+		    // reset();
+
+		    //Search.reset();
+
 		    // if(keyView.candButtons[0].text == ""){
 		    // slime.hide();
 		    // }
@@ -515,6 +523,7 @@ class KeyController {
     }
 
     public void reset(){
+	Search.reset();
 	shiftLockTimeoutHandler.removeCallbacks(shiftLockTimeout);
 	shiftTimeoutHandler.removeCallbacks(shiftTimeout);
 	state = State.STATE0;
