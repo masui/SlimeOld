@@ -326,6 +326,12 @@ class KeyController {
 		shiftTimeoutHandler.removeCallbacks(shiftTimeout);
 		break;
 	    case MOVE:
+		/*
+		  指を素早くスライドして「い」や「か」を入力しやすいように
+		  こういう遷移を用意していたのだが、かえってミスタッチが
+		  多くなってしまうので高速スライドは無視するようにしたい。
+		  (2013/03/21 19:33:03)
+
 		//Log.v("Slime","STATE1-MOVE");
 		if(Math.hypot(mousex-downx, mousey-downy) >= 20.0){
 		    keypat = downKey.shiftKeypat;
@@ -338,6 +344,7 @@ class KeyController {
 		    state = State.STATE3;
 		    shiftTimeoutHandler.removeCallbacks(shiftTimeout);
 		}
+		*/
 		break;
 	    case DOWN2:
 		//Log.v("Slime","STATE1-DOWN2");
