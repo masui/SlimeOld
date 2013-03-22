@@ -117,7 +117,7 @@ class KeyController {
     // タイマ処理用
     Handler shiftTimeoutHandler = new Handler();
     Runnable shiftTimeout;
-    private final int SHIFTTIME = 150;      // 長押しタイムアウト
+    private final int SHIFTTIME = 220;      // 長押しタイムアウト
 
     Handler shiftLockTimeoutHandler = new Handler();
     Runnable shiftLockTimeout;
@@ -318,7 +318,9 @@ class KeyController {
 	    case UP1:
 		//Log.v("Slime","STATE1-UP1");
 		if(selectedKey != null){ // 入力文字処理
-		    processKey(selectedKey);
+		    // スライドしたとき指をはなしたところが入力されてしまっている! 修正 2013/03/22 17:26:45
+		    // processKey(selectedKey);
+		    processKey(downKey);
 		}
 		keypat = keys.keypat0;
 		keyView.draw(keypat, null, null, candPage);
