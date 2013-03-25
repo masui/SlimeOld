@@ -238,12 +238,12 @@ class KeyController {
 			    candPage++;
 			    keyView.draw(keypat, downKey, null, candPage);
 			}
-			state = State.STATEFB;
+			//!!!state = State.STATEFB;
 		    }
 		    else if(downKey.str == "←" && candPage > 1){
 			if(candPage > 1) candPage--;
 			keyView.draw(keypat, downKey, null, candPage);
-			state = State.STATEFB;
+			//!!!state = State.STATEFB;
 		    }
 		    else {
 			keyView.draw(keypat, downKey, null, 0);
@@ -262,8 +262,13 @@ class KeyController {
 		else { // 候補の上かも
 		    state = State.STATEC;
 		}
+		break
+	    case UP1:
+		keyView.draw(keypat, null, null, candPage);
+		//!!!state = State.STATE0;
 	    }
 	    break;
+	    /*
 	case STATEFB:
 	    switch(e){
 	    case UP1:
@@ -271,6 +276,7 @@ class KeyController {
 		state = State.STATE0;
 	    }
 	    break;
+	    */
 	case STATEC:
 	    selectedCand = findCand((int)mousex, (int)mousey);
 	    switch(e){
