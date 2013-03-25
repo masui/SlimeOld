@@ -28,6 +28,8 @@ import android.text.ClipboardManager;
 // import android.content.ClipData;
 // import android.content.ClipboardManager;
 
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 
 public class Slime extends InputMethodService 
 {
@@ -66,6 +68,9 @@ public class Slime extends InputMethodService
 	if(Build.VERSION.SDK_INT >= 11){
 	    setBackDisposition(InputMethodService.BACK_DISPOSITION_WILL_NOT_DISMISS);
 	}
+
+	ConnectivityManager cm = (ConnectivityManager)getSystemService(CONNECTIVITY_SERVICE);
+
     }
 
     /**
@@ -196,6 +201,26 @@ public class Slime extends InputMethodService
 	}
 	else {
 	    return super.onKeyDown(keyCode,event);
+	}
+    }
+
+    //
+    // ConnectivityManagerというのを使って、ネットが使えるかどうかを判断し、
+    // ネットがあるときは常にGoogleIMEを使うようにしてみる
+    // http://yife.hateblo.jp/entry/2012/10/29/203330
+    // http://wada811.blog.fc2.com/?tag=ConnectivityManager
+    // AndroidManifest.xmlに以下の追加が必要である
+    // <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    //
+    // メソッドがActivityの中でしか使えないのでここで定義する。
+    //
+    public Boolean isConnected(){
+	ConnectivityManager connManager = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
+	NetworkInfo networkInfo = connManager.getActiveNetworkInfo();
+	if(networkInfo != null && networkInfo.isConnected()){
+	    return true;
+	}else{
+	    return false;
 	}
     }
 }

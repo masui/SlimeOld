@@ -104,7 +104,7 @@ class KeyController {
     }
 
     enum Event { UP1, UP2, DOWN1, DOWN2, MOVE, SHIFTTIMER, SHIFTLOCKTIMER }; // MOVE1, MOVE2の区別がつかないかも
-    enum State { STATE0, STATE1, STATE2, STATE3, STATE4, STATE5, STATE6, STATE7, STATEC, STATEFB };
+    enum State { STATE0, STATE1, STATE2, STATE3, STATE4, STATE5, STATE6, STATE7, STATEC};
     // STATE0 初期状態
     // STATE1 タップしたときの状態
     // STATE2 スライド後またはタイムアウト後
@@ -117,14 +117,15 @@ class KeyController {
     // タイマ処理用
     Handler shiftTimeoutHandler = new Handler();
     Runnable shiftTimeout;
-    private final int SHIFTTIME = 220;      // 長押しタイムアウト
+    private final int SHIFTTIME = 200;      // 長押しタイムアウト
 
     Handler shiftLockTimeoutHandler = new Handler();
     Runnable shiftLockTimeout;
     private final int SHIFTLOCKTIME = 1500; // 英数字シフトロックタイムアウト
     
     public boolean googleDisplayed = false; // Google検索中を示す表示
-    public boolean useGoogle = false;       // GoogleSuggestを呼ぶかどうか
+    //!!!public boolean useGoogle = false;       // GoogleSuggestを呼ぶかどうか
+    public boolean useGoogle = true;       // GoogleSuggestを呼ぶかどうか
 
     private final int SWIPEWIDTH = 30;
 
@@ -220,6 +221,7 @@ class KeyController {
 		// Log.v("Slime","downKey... downkey="+downKey);
 		if(downKey != null){ // キーの上を押した
 		    if(downKey.str == "→"){
+			/*
 			// 候補が1面しか無くて「→」が押されたときだけGoogleSuggestを呼ぶようにする
 			if(!useGoogle && !googleDisplayed){
 			    useGoogle = true;
@@ -238,12 +240,13 @@ class KeyController {
 			    candPage++;
 			    keyView.draw(keypat, downKey, null, candPage);
 			}
-			//!!!state = State.STATEFB;
+			*/
+			candPage++;
+			keyView.draw(keypat, downKey, null, candPage);
 		    }
 		    else if(downKey.str == "←" && candPage > 1){
 			if(candPage > 1) candPage--;
 			keyView.draw(keypat, downKey, null, candPage);
-			//!!!state = State.STATEFB;
 		    }
 		    else {
 			keyView.draw(keypat, downKey, null, 0);
@@ -262,21 +265,12 @@ class KeyController {
 		else { // 候補の上かも
 		    state = State.STATEC;
 		}
-		break
+		break;
 	    case UP1:
+		// STATEFBというのを捨ててみたのだが
 		keyView.draw(keypat, null, null, candPage);
-		//!!!state = State.STATE0;
 	    }
 	    break;
-	    /*
-	case STATEFB:
-	    switch(e){
-	    case UP1:
-		keyView.draw(keypat, null, null, candPage);
-		state = State.STATE0;
-	    }
-	    break;
-	    */
 	case STATEC:
 	    selectedCand = findCand((int)mousex, (int)mousey);
 	    switch(e){
@@ -533,8 +527,8 @@ class KeyController {
 	    keyView.candButtons[i].visible = false;
 	}
 	candPage = 0;
-	googleDisplayed = false;
-	useGoogle = false;
+	//!!!googleDisplayed = false;
+	//!!! useGoogle = false;
     }
 
     public void reset(){
@@ -581,8 +575,8 @@ class KeyController {
 	int inputlen = inputCharArray.size();
 	boolean toExact = false;
 	if(c == "←"){
-	    googleDisplayed = false;
-	    useGoogle = false;
+	    //!!!googleDisplayed = false;
+	    //!!!useGoogle = false;
 	    if(inputlen == 0){
                 slime.keyDownUp(KeyEvent.KEYCODE_DEL);
 	    }

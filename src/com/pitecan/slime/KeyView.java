@@ -158,10 +158,12 @@ public class KeyView extends View {
 	this.selectedKey2 = selectedKey2;
 	this.candPage = candPage;
 	bgcolor = 0xfff0f0f0;
+	/*
 	if(keyController.useGoogle && !keyController.googleDisplayed){
 	    bgcolor = 0xffd0d0d0;
-	    keyController.googleDisplayed = true;
+	    //!!!!keyController.googleDisplayed = true;
 	}
+	*/
 	invalidate();
     }
 

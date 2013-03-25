@@ -76,12 +76,15 @@ public class Search {
 	if(!searchTask.isCancelled()){
 	    // Google Suggest または Google日本語入力を利用
 	    if(useGoogle){
-		//String[] suggestions = GoogleSuggest.suggest(word);
-		String[] suggestions = GoogleIME.ime(word);
-		Log.v("SLIME","length="+suggestions.length);
-		for(int i=0;suggestions[i] != null && suggestions[i] != "";i++){
-		    // Log.v("Slime","Use Google ... suggestions = "+suggestions[i]);
-		    addCandidateWithLevel(suggestions[i],Keys.hira2pat(word),50);
+		if(slime.isConnected()){
+		    // 昔はGoogleSuggestを使っていたが制限があるようなのでGoogleIME APIを利用する
+		    // String[] suggestions = GoogleSuggest.suggest(word);
+		    String[] suggestions = GoogleIME.ime(word);
+		    Log.v("SLIME","length="+suggestions.length);
+		    for(int i=0;suggestions[i] != null && suggestions[i] != "";i++){
+			// Log.v("Slime","Use Google ... suggestions = "+suggestions[i]);
+			addCandidateWithLevel(suggestions[i],Keys.hira2pat(word),50);
+		    }
 		}
 	    }
 	    
