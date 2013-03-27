@@ -71,6 +71,9 @@ public class Search {
 	}
 
 	// 通常のローカル辞書を検索
+	// 時間がかかることがあるのでSearchTaskでバックグラウンド動作させている。
+	// 何かキー入力があれば isCancelled() がtrueになる。
+	//
 	LocalDict.search(pat,searchTask);
 
 	if(!searchTask.isCancelled()){

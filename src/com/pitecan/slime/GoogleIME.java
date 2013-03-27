@@ -19,6 +19,8 @@ import org.apache.http.util.EntityUtils;
 
 class GoogleIME {
     static String[] ime(String q){
+	// Google CGI API for Japanese Input
+	// http://www.google.co.jp/ime/cgiapi.html
 	// Google日本語入力のURLは "http://google.co.jp/transliterate?langpair=ja-Hira|ja&text=かんじ" のような形式だが
 	// "|" を "%7c" にしておかないと new HttpGet() が失敗する
 	String urlstr = "http://google.co.jp/transliterate?langpair=ja-Hira%7cja&text="+q;

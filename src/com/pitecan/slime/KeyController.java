@@ -117,7 +117,7 @@ class KeyController {
     // タイマ処理用
     Handler shiftTimeoutHandler = new Handler();
     Runnable shiftTimeout;
-    private final int SHIFTTIME = 200;      // 長押しタイムアウト
+    private final int SHIFTTIME = 180;      // 長押しタイムアウト
 
     Handler shiftLockTimeoutHandler = new Handler();
     Runnable shiftLockTimeout;
@@ -318,7 +318,8 @@ class KeyController {
 	    case UP1:
 		//Log.v("Slime","STATE1-UP1");
 		if(selectedKey != null){ // 入力文字処理
-		    // スライドしたとき指をはなしたところが入力されてしまっている! 修正 2013/03/22 17:26:45
+		    // スライドしたとき指をはなしたところが入力されてしまっている!
+		    // 修正 (2013/03/22 17:26:45)
 		    // processKey(selectedKey);
 		    processKey(downKey);
 		}
@@ -334,8 +335,12 @@ class KeyController {
 		  多くなってしまうので高速スライドは無視するようにしたい。
 		  (2013/03/21 19:33:03)
 
+		  と思ったが認識する移動距離スレシホルドを大きくすれば
+		  いいような気もする。20だたのを40にしてみる。
+		  (2013/03/25 21:41:37)
+		*/
 		//Log.v("Slime","STATE1-MOVE");
-		if(Math.hypot(mousex-downx, mousey-downy) >= 20.0){
+		if(Math.hypot(mousex-downx, mousey-downy) >= 40.0){
 		    keypat = downKey.shiftKeypat;
 
 		    downKey = findKey(keypat, (int)downx, (int)downy);
@@ -346,7 +351,6 @@ class KeyController {
 		    state = State.STATE3;
 		    shiftTimeoutHandler.removeCallbacks(shiftTimeout);
 		}
-		*/
 		break;
 	    case DOWN2:
 		//Log.v("Slime","STATE1-DOWN2");
