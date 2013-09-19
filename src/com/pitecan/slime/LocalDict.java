@@ -86,7 +86,7 @@ public class LocalDict {
 		int c = line.charAt(0);
 		if(c == '#' || c == ' ' || c == '\t') continue; // コメント行
 		String[] a = TextUtils.split(line,"\t");
-		if(a[3] == null || a[3] == "") a[3] = "0";
+		if(a[3] == null || a[3] == "" || "" + a[3] == "") a[3] = "0";
 		dict[i++] = new DictEntry(a[0],a[1],Integer.valueOf(a[2]),Integer.valueOf(a[3]));
             }
             br.close();
